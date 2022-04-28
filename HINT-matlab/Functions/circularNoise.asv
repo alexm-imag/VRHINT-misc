@@ -1,14 +1,14 @@
 
-function [noiseBuf, noiseIndex] = circularNoise(noise, len, noiseIndex)
+function noiseBuf = circularNoise(noise, len)
 
     persistent nLen;
-    %persistent noiseIndex;
+    persistent noiseIndex;
 
     noiseLen = size(noise(:,1));
 
     if isempty(nLen)
         nLen = 0;
-    %    noiseIndex = 1;
+        noiseIndex = 1;
     end
 
     if nLen ~= noiseLen
@@ -24,10 +24,9 @@ function [noiseBuf, noiseIndex] = circularNoise(noise, len, noiseIndex)
     % circ case
     if noiseIndex + len > noiseLen
         disp("Circ overflow");
-        disp(["nL - NI+1: " length(1:noiseLen - noiseIndex+1) " nI:NL " length(noiseIndex:noiseLen)])
-        noiseBuf(1: noiseLen - noiseIndex + 1) = noise(noiseIndex:noiseLen);
-        disp(["nL - NI+1: " length(noiseLen - noiseIndex + 1:len) " nI:NL " length(1:len - (noiseLen - noiseIndex))])
-        noiseBuf(noiseLen - noiseIndex + 1:len) = noise(1:len - (noiseLen - noiseIndex));
+        disp(["nL - NI: " length(1:noiseLen - noiseIndex " nI:NL " length(noiseIndex:noiseLen)])
+        noiseBuf(1: noiseLen - noiseIndex) = noise(noiseIndex:noiseLen);
+        noiseBuf(noiseLen - noiseIndex) = noise(1:len - (noiseLen - noiseIndex));
         noiseIndex = len - (noiseLen - noiseIndex);
     else
         noiseBuf = noise(noiseIndex:noiseIndex + len);

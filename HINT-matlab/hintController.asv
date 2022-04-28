@@ -246,6 +246,8 @@ for j=1:numTestLists
         audioStruct(2).Channel = ChRight;   
     elseif testConditions(j) == "noiseFront"
         audioStruct(2).Channel = ChFront;
+    else
+        audioStruct(2).AudioData = 0;
     end
 
     disp(["Starting List " int2str(testLists(j)) " with condition" testConditions(j)]);
@@ -266,11 +268,8 @@ for j=1:numTestLists
         audioStruct(1).AudioData = curr_sent;
         audioStruct(1).Channel = ChFront;
 
-        if testConditions(j) ~= "quiet"
-            audioStruct(2).AudioData = noiseSegment;
-        else
-            audioStrcut(2).AudioData = 0;
-        end
+        
+        audioStruct(2).AudioData = noiseSegment;
 
         buffer = combineAudioFiles(audioStruct, sentLen);
         % play current sentence
