@@ -12,6 +12,14 @@ function init_playrec(fs)
         playrec('reset');
     end
 
+    dev = playrec('getDevices');
+    % Check installed ASIO drivers etc. if this fails!
+    if length(dev) < 1
+        disp("Warning: Playrec found no matching audio device!");
+    else
+        disp([length(dev) " audio devices found"]);
+    end
+
     playrec('init',fs,0,0)
 
     disp('Playrec successfully initialized!')
