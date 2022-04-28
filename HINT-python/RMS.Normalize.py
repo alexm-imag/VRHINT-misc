@@ -103,29 +103,3 @@ for j in range(len(dir)):
 
 print("All done!");    
     
-
-
-# %% Testing and debugging
-#sound = AudioSegment.from_file('HINT_Ger_male_single_sentences\\' + dir[0], base_type)
-sound = AudioSegment.from_file('german-hint-48kHz\Ger_male001.wav', base_type)
-print(sound.max_dBFS)
-print(sound.dBFS)
-print(sound.max)
-gain = sound.max_dBFS - sound.dBFS
-print(gain)
-maxSound = match_target_amplitude(sound, sound.max_dBFS)
-print(maxSound.dBFS)
-max_sound2 =  sound.apply_gain(4)
-print(max_sound2.dBFS);
-print(max_sound2.max_possible_amplitude);
-print(max_sound2.max);
-#max_sound2.export("testfile2.wav", base_type)
-
-
-# %%
-test = []
-
-for i in range(10):
-    test.append(i)
-    print(test[i])
-    
