@@ -25,6 +25,14 @@ practiceList = 12;
 practiceRounds = 5;
 practiceCondition = "noiseFront";
 
+%% Testing of functions
+
+%%
+%audioData = struct("data", curr_sent, "channel", 1, "data", noise, "channel", 3);
+%testBuf = createAudioBuffer(curr_sent, 1, noise, 1, 2);
+%init_playrec(fs);
+%playrec('play', buffer, [1 2]);
+
 %% user login
 prompt = "Enter participants name:";
 name = input(prompt, "s");
@@ -55,10 +63,10 @@ resultStorage = repmat(resTemplate, numTestLists, 1 );
 init_playrec(fs);
 
 % define channel map
-%ChMap= [1 2 3]; % uni setup
+%ChMap= [1 3 5]; % uni setup
 %ChLeft = 1;
-%ChFront = 2;
-%ChRight = 3;
+%ChFront = 3;
+%ChRight = 5;
 
 ChMap = [1 2]; % at home
 ChLeft = 1;
@@ -79,14 +87,16 @@ testConditions = repmat("emptyCondition", numTestLists, 1 );
 % REPLACE THIS WITH LATIN SQUARES!
 for i=1:numTestLists
     randNum = randi(4,1);
-    if randNum == 1
-        testConditions(i) = "quiet";
-    elseif randNum == 2
-        testConditions(i) = "noiseFront";
-    elseif randNum == 3
-        testConditions(i) = "noiseLeft";
-    else
-        testConditions(i) = "noiseRight";
+
+    switch(randNum)
+        case 1
+            testConditions(i) = "quiet";
+        case 2
+            testConditions(i) = "noiseFront";
+        case 3
+            testConditions(i) = "noiseLeft";
+        case 4
+            testConditions(i) = "noiseRight";
     end
 end
 
@@ -104,33 +114,28 @@ hitQuotes = zeros(20, 1);
 % starting at 0 dB
 currentSNR = 0;
 
-%for i=1:listSentences
 for i=1:practiceRounds
     % get random index
     index = randOrder(i);
     % load current sentence
-
     sentencePath = [hintDir '0' int2str(practiceList) '\-0dB\Ger_male00' num2str(index) '.wav'];
 
     disp(["Current playback level: " int2str(currentSNR)]);
     disp(["Round " int2str(i) " out of " int2str(practiceRounds)]);
     [curr_sent, fs] = loadSentenceAudio(practiceList, index, currentSNR, hintDir);
 
-    % combine sentence and noise within one Nx3 matrix for simultaneous
-    % playback
-    audioLen = size(curr_sent, 1);
-    buffer = zeros(audioLen, 3);
 
-    buffer(:,ChFront) = curr_sent();
+    sentLen = size(curr_sent, 1);
+    noiseSegment = circularNoise(noise, sentLen);
+
     if practiceCondition == "noiseLeft"
-        buffer(:,ChLeft) = noise(1:audioLen);
+        buffer = createAudioBuffer(sentLen, curr_sent, ChFront, noiseSegment, ChLeft, 3);
     elseif practiceCondition == "noiseRight"
-        buffer(:,ChRight) = noise(1:audioLen);
+        buffer = createAudioBuffer(sentLen, curr_sent, ChFront, noiseSegment, ChRight, 3);
     elseif practiceCondition == "noiseFront"
-        buffer(:,ChFront) = noise(1:audioLen) + curr_sent();
-        if max(buffer(:, ChFront) > 1.0)
-            disp("Clip warning!!!");
-        end
+        buffer = createAudioBuffer(sentLen, curr_sent, ChFront, noiseSegment, ChFront, 3);
+    else
+        buffer = createAudioBuffer(sentLen, curr_sent, ChFront, noiseSegment, 0, 3);
     end
 
     % play current sentence and noise
@@ -239,16 +244,17 @@ for j=1:numTestLists
         disp(["Round " int2str(i) " out of " int2str(listSentences)]);
         [curr_sent, fs] = loadSentenceAudio(testLists(j), index, currentSNR, hintDir);
     
-        audioLen = size(curr_sent, 1);
-        buffer = zeros(audioLen, 3);
+        sentLen = size(curr_sent, 1);
+        noiseSegment = circularNoise(noise, sentLen);
     
-        buffer(:,ChFront) = curr_sent();
-        if testConditions(j) == "noiseLeft"
-            buffer(:,ChLeft) = noise(1:audioLen);
-        elseif testConditions(j) == "noiseRight"
-            buffer(:,ChRight) = noise(1:audioLen);
-        elseif testConditions(j) == "noiseFront"
-            buffer(:,ChFront) = noise(1:audioLen) + curr_sent();
+        if practiceCondition == "noiseLeft"
+            buffer = createAudioBuffer(sentLen, curr_sent, ChFront, noiseSegment, ChLeft, 3);
+        elseif practiceCondition == "noiseRight"
+            buffer = createAudioBuffer(sentLen, curr_sent, ChFront, noiseSegment, ChRight, 3);
+        elseif practiceCondition == "noiseFront"
+            buffer = createAudioBuffer(sentLen, curr_sent, ChFront, noiseSegment, ChFront, 3);
+        else
+            buffer = createAudioBuffer(sentLen, curr_sent, ChFront, noiseSegment, 0, 3);
         end
 
         % play current sentence
