@@ -73,7 +73,7 @@ save('setup.mat');
 %% Load counterbalanced test order
 
 % get sentence list order (5 lists total)
-testLists = randperm(10, numTestLists);
+testLists = randperm(availableTestLists, numTestLists);
 
 % pre-allocate text array
 testConditions = repmat("emptyCondition", numTestLists, 1 ); 
