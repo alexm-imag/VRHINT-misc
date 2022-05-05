@@ -26,10 +26,75 @@ class NumpyEncoder(json.JSONEncoder):
             return obj.tolist()
         return json.JSONEncoder.default(self, obj)
     
+
+def loadSentenceAudio(listIndex, sentenceIndex, dbLevel, hintDir):
+
+    if listIndex < 10:
+        audioPath = [hintDir + '0' + str(listIndex)]; 
+    else:
+        audioPath = [hintDir + str(listIndex)]; 
+
+    if dbLevel == 0:
+        audioPath = [audioPath + '\-' + str(dbLevel) + 'dB'];
+    elif dbLevel > 0:
+        audioPath = [audioPath + '\+' + str(dbLevel) + 'dB'];
+    else:
+        audioPath = [audioPath + '\\'  + str(dbLevel) + 'dB'];
+
+    sentenceNum = sentenceIndex + (listIndex - 1) * 20;
+
+    if sentenceNum < 10:
+        audioPath = [audioPath + '\Ger_male00' + str(sentenceNum) + '.wav'];
+    elif sentenceNum < 100:
+        audioPath = [audioPath + '\Ger_male0' + str(sentenceNum) + '.wav'];
+    else:
+        audioPath = [audioPath + '\Ger_male' + str(sentenceNum) + '.wav'];
+
+    return AudioSegment.from_file(audioPath, base_type);
+
+
+def loadListSentences(listIndex, hintDir):
+    
+    if listIndex < 10:
+        filePath = [hintDir + '0' + str(listIndex) + '\\' + 'list' + str(listIndex) + '.txt'];
+    else:
+        filePath = [hintDir  + str(listIndex) + '\\' + 'list' + str(listIndex) + '.txt'];
+
+    print(str(filePath));
+    print("test");
+    f = open(filePath, "r");
+    #f = open("german-hint-adaptive-48kHz\\12\\list12.txt", "r");
+    return f.readlines();
+
+
+def combineAudioFiles(audioStruct, buflen):
+    
+    chnNums = max([audioStruct["Channel"]]);
+    print("Channels: " + chnNums);
+
+    # preallocate buffer    
+    for i in range(chnNums):
+        buffer.append(np.zeros(buflen));
+
+    for i in range(len(audioStruct)):
+        # check for channel dublications
+        if (max(buffer(audioStruct[i]["Channel"])) > 0):
+            buffer[audioStruct[i]["Channel"]] += audioStruct[i]["AudioData"][1:min(buflen, len(audioStruct[i]["AudioData"]))];
+
+            if (max(buffer[audioStruct[i]["Channel"]]) > 1):
+                print("Warning: Clipping on channel " + audioStruct[i]["Channel"]);
+        else:
+            buffer[audioStruct[i]["Channel"]] = audioStruct[i]["AudioData"][1:min(buflen, len(audioStruct[i]["AudioData"]))];
+        
+    
+    return buffer;
+
+    
     
 # %%
 hintDir = 'german-hint-adaptive-48kHz\\';
 base_type = 'wav';
+importDir = 'G:\VRHINT-misc\HINT-python\german-hint-adaptive-48kHz\\';
 
 # Test setup
 # lists open for test
@@ -50,7 +115,6 @@ practiceRounds = 5;
 practiceCondition = "noiseFront";
 
 # %% Type definitions etc
-#tempAudioStruct = struct('AudioData', 1, 'Channel', 1);
 audioStructTemplate = {"AudioData": 1,
                        "Channel": 1};
 
@@ -59,7 +123,6 @@ templateData = np.zeros(listSentences);
 templateCondition = "noiseLeft";
 templateListIndex = 12;
 
-#resTemplate = struct('ListIndex', templateListIndex, 'Condition', templateCondition, 'ListSNRs', templateData, 'ListHitQuotes', templateData);
 resultTemplate = {
     "ListIndex": templateListIndex,
     "Condition": templateCondition,
@@ -69,7 +132,6 @@ resultTemplate = {
 print(resultTemplate);
 
 # allocate numTestLists structs to store results
-#resultStorage = repmat(resTemplate, numTestLists, 1 ); 
 resultStorage = [resultTemplate for k in range(numTestLists)];
 
 json_obj = json.dumps(resultStorage, indent = 4, cls=NumpyEncoder);
@@ -90,11 +152,8 @@ name = input();
 #jsonFileName = sprintf("results-%s-%s.json", name, datestr(now, 'dd-mm-yyyy-hh:MM'));
 jsonFileName = "results-%s.json" % (name);
 
-#%% load stimuli
-# load calibration noise
-#calibrationNoise = audioread([hintDir 'NBNoise1000.wav']);
+#%% load noise
 calibrationNoise = AudioSegment.from_file(hintDir + "NBNoise1000.wav" , base_type)
-#[noise,fs] = audioread([hintDir 'noiseGR_male.wav']);
 noise = AudioSegment.from_file(hintDir + "noiseGR_male.wav", base_type)
 
 #%% Initialize playrec
@@ -115,11 +174,9 @@ ChFront = 2;
 #%% Load counterbalanced test order
 
 # get sentence list order (5 lists total)
-#testLists = randperm(availableTestLists, numTestLists);
 testLists = np.random.permutation([range(10)]);
 
 # pre-allocate text array
-#testConditions = repmat("emptyCondition", numTestLists, 1 ); 
 testConditions = ["emptyCondition" for k in range(numTestLists)]; 
 
 # assign random order of test conditions
@@ -127,7 +184,6 @@ testConditions = ["emptyCondition" for k in range(numTestLists)];
 for i in range(numTestLists):
     #randNum = randi(4,1);
     randNum = np.random.randint(1, 5);
-    print(randNum)
     if(randNum == 1):
         testConditions[i] = "quiet";
     elif(randNum == 2):
@@ -140,7 +196,7 @@ for i in range(numTestLists):
 
 
 #%% start practice condition 
-#sentences = loadListSentences(practiceList, hintDir);
+sentences = loadListSentences(practiceList, hintDir);
 randOrder = np.random.permutation([range(20)]);
 
 # store SNR for each sentence
@@ -161,10 +217,11 @@ for i in range(practiceRounds):
 
     print(["Current playback level: " + str(currentSNR)]);
     print(["Round " + str(i) + " out of " + str(practiceRounds)]);
-    #[curr_sent, fs] = loadSentenceAudio(practiceList, index, currentSNR, hintDir);
+    curr_sent = loadSentenceAudio(practiceList, index, currentSNR, hintDir);
 
     sentLen = len(curr_sent);
     #[noiseSegment, noiseIndex] = circularNoise(noise, sentLen, noiseIndex);
+    noiseSegment = noise[0::sentLen];
 
     audioStruct[1]["AudioData"] = curr_sent;
     audioStruct[1]["Channel"] = ChFront;
@@ -245,8 +302,8 @@ jsonFile = "practice-%s.json" % (name);
 pracRes = resultTemplate;
 pracRes["ListIndex"] = practiceList;
 pracRes["Condition"] = practiceCondition;
-#pracRes["SNRs"] = listSNR;
-#pracRes["HitQuotes"] = hitQuotes;
+pracRes["SNRs"] = listSNR;
+pracRes["HitQuotes"] = hitQuotes;
 
 # parse struct into json
 practiceResults = json.dumps(pracRes, indent = 4, cls=NumpyEncoder);
