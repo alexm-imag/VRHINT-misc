@@ -9,6 +9,7 @@ import numpy as np;
 from pydub import AudioSegment;
 import sounddevice as sd;
 import soundfile as sf;
+import os;
 
 hintDir = 'german-hint-adaptive-48kHz\\';
 base_type = 'wav';
@@ -21,8 +22,8 @@ sentenceIndex = 7;
 randOrder = np.random.permutation(range(20));
 testOrder = np.zeros(20);
 
-
-data, fs = sf.read(hintDir + "noiseGR_male.wav");
+#data, fs = sf.read("german-hint-adaptive-48kHz\\noiseGR_male.wav");
+data, fs = sf.read(importDir + "noiseGR_male.wav");
 sd.play(data, fs);
 status = sd.wait();
 #noise = AudioSegment.from_file(hintDir + "noiseGR_male.wav", base_type);

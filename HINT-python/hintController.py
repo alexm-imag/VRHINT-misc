@@ -151,8 +151,8 @@ name = input();
 jsonFileName = "results-%s.json" % (name);
 
 #%% load noise
-calibrationNoise, fs = sf.read(hintDir + "NBNoise1000.wav");
-noise, fs = sf.read(hintDir + "noiseGR_male.wav");
+calibrationNoise, fs = sf.read(importDir + "NBNoise1000.wav");
+noise, fs = sf.read(importDir + "noiseGR_male.wav");
 
 #%% Initialize playrec
 #init_playrec(fs);
@@ -172,7 +172,7 @@ ChFront = 2;
 #%% Load counterbalanced test order
 
 # get sentence list order (5 lists total)
-testLists = np.random.permutation([range(10)]);
+testLists = np.random.permutation(range(10));
 
 # pre-allocate text array
 testConditions = ["emptyCondition" for k in range(numTestLists)]; 
@@ -215,8 +215,11 @@ for i in range(practiceRounds):
 
     print(["Current playback level: " + str(currentSNR)]);
     print(["Round " + str(i) + " out of " + str(practiceRounds)]);
-    curr_sent = loadSentenceAudio(practiceList, index, currentSNR, hintDir);
+    curr_sent = loadSentenceAudio(practiceList, index, currentSNR, importDir);
     
+    print("Start playback!");
+    sd.play(curr_sent, fs);
+    status = sd.wait();
     
     audioStructTemplate = {"AudioData": curr_sent,
                        "Channel": "noiseLeft"};
@@ -261,6 +264,7 @@ for i in range(practiceRounds):
     # get experimenter feedback
     print("How many words have been correct?");
     correctWords = int(input());
+    print(type(correctWords));
 
     # alternative: just ask if below or above 50% hit
     # less data but quicker
@@ -322,8 +326,8 @@ with open(jsonFile, "w") as outfile:
 #%% Test procedure
 for j in range(numTestLists):
 
-    #sentences = loadListSentences(testLists(j), hintDir);
-    randOrder = np.random.permutation([range(20)]);
+    sentences = loadListSentences(testLists[j], hintDir);
+    randOrder = np.random.permutation(range(20));
     currentCondition = testConditions[j];
     
     # store SNR for each sentence
@@ -347,7 +351,7 @@ for j in range(numTestLists):
 
     for i in range(listSentences):
         # get random index
-        index = randOrder(i);
+        index = randOrder[i];
         # load current sentence
         sentencePath = [hintDir +'0' + str(testLists[j]) + '\-0dB\Ger_male00' + str(index) + '.wav'];
     
