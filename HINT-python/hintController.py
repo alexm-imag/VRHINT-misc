@@ -6,9 +6,10 @@ Created on Thu May  5 13:52:26 2022
 """
 
 import numpy as np;
-from pydub import AudioSegment;
+#from pydub import AudioSegment;
 import json;
 import os;
+import soundfile as sf;
 import sounddevice as sd;
 
 #%%
@@ -30,50 +31,49 @@ class NumpyEncoder(json.JSONEncoder):
 def loadSentenceAudio(listIndex, sentenceIndex, dbLevel, hintDir):
 
     if listIndex < 10:
-        audioPath = [hintDir + '0' + str(listIndex)]; 
+        audioPath = hintDir + '0' + str(listIndex); 
     else:
-        audioPath = [hintDir + str(listIndex)]; 
+        audioPath = hintDir + str(listIndex); 
 
     if dbLevel == 0:
-        audioPath = [audioPath + '\-' + str(dbLevel) + 'dB'];
+        audioPath = audioPath + '\-' + str(dbLevel) + 'dB';
     elif dbLevel > 0:
-        audioPath = [audioPath + '\+' + str(dbLevel) + 'dB'];
+        audioPath = audioPath + '\+' + str(dbLevel) + 'dB';
     else:
-        audioPath = [audioPath + '\\'  + str(dbLevel) + 'dB'];
+        audioPath = audioPath + '\\'  + str(dbLevel) + 'dB';
 
     sentenceNum = sentenceIndex + (listIndex - 1) * 20;
 
     if sentenceNum < 10:
-        audioPath = [audioPath + '\Ger_male00' + str(sentenceNum) + '.wav'];
+        audioPath = audioPath + '\Ger_male00' + str(sentenceNum) + '.wav';
     elif sentenceNum < 100:
-        audioPath = [audioPath + '\Ger_male0' + str(sentenceNum) + '.wav'];
+        audioPath = audioPath + '\Ger_male0' + str(sentenceNum) + '.wav';
     else:
-        audioPath = [audioPath + '\Ger_male' + str(sentenceNum) + '.wav'];
+        audioPath = audioPath + '\Ger_male' + str(sentenceNum) + '.wav';
 
-    return AudioSegment.from_file(audioPath, base_type);
+    data,fs = sf.read(audioPath);
+    return data;
 
 
 def loadListSentences(listIndex, hintDir):
     
     if listIndex < 10:
-        filePath = [hintDir + '0' + str(listIndex) + '\\' + 'list' + str(listIndex) + '.txt'];
+        filePath = hintDir + '0' + str(listIndex) + '\\' + 'list' + str(listIndex) + '.txt';
     else:
-        filePath = [hintDir  + str(listIndex) + '\\' + 'list' + str(listIndex) + '.txt'];
-
-    print(str(filePath));
-    print("test");
-    f = open(filePath, "r");
-    #f = open("german-hint-adaptive-48kHz\\12\\list12.txt", "r");
-    return f.readlines();
+        filePath = hintDir  + str(listIndex) + '\\' + 'list' + str(listIndex) + '.txt';
+    
+    return open(filePath, "r").readlines();
 
 
 def combineAudioFiles(audioStruct, buflen):
     
     chnNums = max([audioStruct["Channel"]]);
     print("Channels: " + chnNums);
+    
+    buffer = np.zeros(buflen);
 
     # preallocate buffer    
-    for i in range(chnNums):
+    for i in range(chnNums-1):
         buffer.append(np.zeros(buflen));
 
     for i in range(len(audioStruct)):
@@ -115,8 +115,8 @@ practiceRounds = 5;
 practiceCondition = "noiseFront";
 
 # %% Type definitions etc
-audioStructTemplate = {"AudioData": 1,
-                       "Channel": 1};
+#audioStructTemplate = {"AudioData": 1,
+#                       "Channel": 1};
 
 # this format works for sentence indices, SNR values and hit Quotes
 templateData = np.zeros(listSentences);
@@ -153,8 +153,8 @@ name = input();
 jsonFileName = "results-%s.json" % (name);
 
 #%% load noise
-calibrationNoise = AudioSegment.from_file(hintDir + "NBNoise1000.wav" , base_type)
-noise = AudioSegment.from_file(hintDir + "noiseGR_male.wav", base_type)
+calibrationNoise, fs = sf.read(hintDir + "NBNoise1000.wav");
+noise, fs = sf.read(hintDir + "noiseGR_male.wav");
 
 #%% Initialize playrec
 #init_playrec(fs);
@@ -197,7 +197,7 @@ for i in range(numTestLists):
 
 #%% start practice condition 
 sentences = loadListSentences(practiceList, hintDir);
-randOrder = np.random.permutation([range(20)]);
+randOrder = np.random.permutation(range(20));
 
 # store SNR for each sentence
 listSNR = np.zeros(20);
@@ -207,35 +207,44 @@ hitQuotes = np.zeros(20);
 # starting at 0 dB
 currentSNR = 0;
 noiseIndex = 1;
-audioStruct = [audioStructTemplate for k in range(2)]; 
+#audioStruct = [audioStructTemplate for k in range(2)]; 
 
 for i in range(practiceRounds):
     # get random index
-    index = randOrder(i);
+    index = randOrder[i];
     # load current sentence
     sentencePath = [hintDir + '0' + str(practiceList) + '\-0dB\Ger_male00' + str(index) + '.wav'];
 
     print(["Current playback level: " + str(currentSNR)]);
     print(["Round " + str(i) + " out of " + str(practiceRounds)]);
     curr_sent = loadSentenceAudio(practiceList, index, currentSNR, hintDir);
+    
+    
+    audioStructTemplate = {"AudioData": curr_sent,
+                       "Channel": "noiseLeft"};
+    audioStruct = [audioStructTemplate for k in range(2)]; 
+    
 
     sentLen = len(curr_sent);
     #[noiseSegment, noiseIndex] = circularNoise(noise, sentLen, noiseIndex);
-    noiseSegment = noise[0::sentLen];
+    noiseSegment = noise[0::len(curr_sent)];
 
-    audioStruct[1]["AudioData"] = curr_sent;
-    audioStruct[1]["Channel"] = ChFront;
+    audioStruct[0]["AudioData"] = curr_sent;
+    audioStruct[0]["Channel"] = ChFront;
 
-    audioStruct[2]["AudioData"] = noiseSegment;
+    audioStruct[1]["AudioData"] = noiseSegment;
 
     if practiceCondition == "noiseLeft":
-        audioStruct[2]["Channel"] = ChLeft;
+        audioStruct[1]["Channel"] = ChLeft;
     elif practiceCondition == "noiseRight":
-        audioStruct[2]["Channel"] = ChRight;
+        audioStruct[1]["Channel"] = ChRight;
     elif practiceCondition == "noiseFront":
-        audioStruct[2]["Channel"] = ChFront;
+        audioStruct[1]["Channel"] = ChFront;
     else:
-        audioStruct[2]["AudioData"] = 0;
+        audioStruct[1]["AudioData"] = 0;
+
+    sd.play(audioStruct[0]["AudioData"], fs);
+    status = sd.wait();
 
     #buffer = combineAudioFiles(audioStruct, sentLen);
 
@@ -246,14 +255,14 @@ for i in range(practiceRounds):
     sentenceLength = len(sentences[index].split());
 
     # print out current sentence string
-    print([sentences(index) + sentenceLength]);
+    print([sentences[index] + str(sentenceLength)]);
 
     # only prompt this after playback is done
     #while ~playrec('isFinished', playbackID)
 
     # get experimenter feedback
     print("How many words have been correct?");
-    correctWords = input();
+    correctWords = int(input());
 
     # alternative: just ask if below or above 50% hit
     # less data but quicker
@@ -329,11 +338,11 @@ for j in range(numTestLists):
     noiseIndex = 1;
 
     if testConditions[j] == "noiseLeft":
-        audioStruct[2]["Channel"] = ChLeft;
+        audioStruct[1]["Channel"] = ChLeft;
     elif testConditions[j] == "noiseRight":
-        audioStruct[2]["Channel"] = ChRight;   
+        audioStruct[1]["Channel"] = ChRight;   
     elif testConditions[j] == "noiseFront":
-        audioStruct[2]["Channel"] = ChFront;
+        audioStruct[1]["Channel"] = ChFront;
 
 
     print(["Starting List " + str(testLists[j]) + " with condition" + testConditions[j]]);
@@ -346,21 +355,21 @@ for j in range(numTestLists):
     
         print(["Current playback level: " + str(currentSNR)]);
         print(["Round " + str(i) + " out of " + str(listSentences)]);
-        #[curr_sent, fs] = loadSentenceAudio(testLists(j), index, currentSNR, hintDir);
+        curr_sent = loadSentenceAudio(testLists[j], index, currentSNR, hintDir);
     
         sentLen = len(curr_sent);
         #[noiseSegment, noiseIndex] = circularNoise(noise, sentLen, noiseIndex);
     
-        audioStruct[1]["AudioData"] = curr_sent;
-        audioStruct[1]["Channel"] = ChFront;
+        audioStruct[0]["AudioData"] = curr_sent;
+        audioStruct[0]["Channel"] = ChFront;
 
         if testConditions[j] != "quiet":
-            audioStruct[2]["AudioData"] = noiseSegment;
+            audioStruct[1]["AudioData"] = noiseSegment;
         else:
-            audioStruct[2]["AudioData"] = 0;
+            audioStruct[1]["AudioData"] = 0;
         
 
-        #buffer = combineAudioFiles(audioStruct, sentLen);
+        buffer = combineAudioFiles(audioStruct, sentLen);
         # play current sentence
         #playbackID = playrec('play', curr_sent, ChMap);
     
