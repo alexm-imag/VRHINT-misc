@@ -65,9 +65,16 @@ def loadListSentences(listIndex, hintDir):
 
 def combineAudioFiles(audioStruct, buflen):
     
-    chnNums = max([audioStruct["Channel"]]);
+    #chnNums = max([audioStruct["Channel"]]);
+    chnNums = 0;
+    for i in range (len(audioStruct)):
+        if audioStruct[i]["Channel"] > chnNums:
+            chnNums = audioStruct[i]["Channel"];
+            
+            
     print("Channels: " + chnNums);
     
+    #testAud = np.array([curr_sent, noise[0:len(curr_sent)]]).transpose();
     buffer = np.zeros(buflen);
 
     # preallocate buffer    
@@ -110,7 +117,7 @@ maxSNR = 2;
 # practice setup
 practiceList = 12;
 practiceRounds = 5;
-practiceCondition = "noiseFront";
+practiceCondition = "noiseLeft";
 
 # %% Type definitions etc
 #audioStructTemplate = {"AudioData": 1,
@@ -153,6 +160,7 @@ jsonFileName = "results-%s.json" % (name);
 #%% load noise
 calibrationNoise, fs = sf.read(importDir + "NBNoise1000.wav");
 noise, fs = sf.read(importDir + "noiseGR_male.wav");
+sd.default.samplerate = fs;
 
 #%% Initialize playrec
 #init_playrec(fs);
@@ -221,41 +229,30 @@ for i in range(practiceRounds):
     #[noiseSegment, noiseIndex] = circularNoise(noise, sentLen, noiseIndex);
 
         
-    audioStruct = [
-                {
-                   "AudioData": curr_sent,
-                   "Channel": ChFront
-                 },
-                {
-                  "AudioData": noise[0:len(curr_sent)],
-                  "Channel": "noiseLeft"
-                }
-                ];
+   # audioStruct = [
+    #            {
+     #              "AudioData": curr_sent,
+      #             "Channel": ChFront
+       #          },
+       #         {
+       #           "AudioData": noise[0:len(curr_sent)],
+       #           "Channel": "noiseLeft"
+       #         }
+       #         ];
     
-    testAud = np.array([curr_sent, noise[0:len(curr_sent)]]).transpose();
-    #sd.default.channels = 2;
-    sd.default.samplerate = fs;
-    sd.play(testAud, blocking = 'true', mapping = [1, 2]);
-    status = sd.wait();
-
+    audioBuffer = np.array([curr_sent, noise[0:len(curr_sent)]]).transpose();
+    
     sentLen = len(curr_sent);
 
-    audioStruct[1]["AudioData"] = noiseSegment;
-
     if practiceCondition == "noiseLeft":
-        audioStruct[1]["Channel"] = ChLeft;
+        sd.play(audioBuffer, blocking = 'true', mapping = [ChFront, ChLeft]);
     elif practiceCondition == "noiseRight":
-        audioStruct[1]["Channel"] = ChRight;
+        sd.play(audioBuffer, blocking = 'true', mapping = [ChFront, ChRight]);
     elif practiceCondition == "noiseFront":
-        audioStruct[1]["Channel"] = ChFront;
+        sd.play(curr_sent + noise[0:len(curr_sent)], blocking = 'true', mapping = [ChFront]);
     else:
-        audioStruct[1]["AudioData"] = 0;
+        sd.play(audioBuffer[0], blocking = 'true', mapping = [ChFront]);
 
-    #print("Playback from buffer!");
-    #sd.play(audioStruct[0]["AudioData"], fs);
-    #status = sd.wait();
-
-    #buffer = combineAudioFiles(audioStruct, sentLen);
 
     # get length of current sentence
     sentenceLength = len(sentences[index].split());
