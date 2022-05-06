@@ -216,22 +216,29 @@ for i in range(practiceRounds):
     print(["Current playback level: " + str(currentSNR)]);
     print(["Round " + str(i) + " out of " + str(practiceRounds)]);
     curr_sent = loadSentenceAudio(practiceList, index, currentSNR, importDir);
+        
+    #noiseSegment = noise[0:len(curr_sent)];
+    #[noiseSegment, noiseIndex] = circularNoise(noise, sentLen, noiseIndex);
+
+        
+    audioStruct = [
+                {
+                   "AudioData": curr_sent,
+                   "Channel": ChFront
+                 },
+                {
+                  "AudioData": noise[0:len(curr_sent)],
+                  "Channel": "noiseLeft"
+                }
+                ];
     
-    print("Start playback!");
-    sd.play(curr_sent, fs);
+    testAud = np.array([curr_sent, noise[0:len(curr_sent)]]).transpose();
+    #sd.default.channels = 2;
+    sd.default.samplerate = fs;
+    sd.play(testAud, blocking = 'true', mapping = [1, 2]);
     status = sd.wait();
-    
-    audioStructTemplate = {"AudioData": curr_sent,
-                       "Channel": "noiseLeft"};
-    audioStruct = [audioStructTemplate for k in range(2)]; 
-    
 
     sentLen = len(curr_sent);
-    #[noiseSegment, noiseIndex] = circularNoise(noise, sentLen, noiseIndex);
-    noiseSegment = noise[0::len(curr_sent)];
-
-    audioStruct[0]["AudioData"] = curr_sent;
-    audioStruct[0]["Channel"] = ChFront;
 
     audioStruct[1]["AudioData"] = noiseSegment;
 
@@ -244,13 +251,11 @@ for i in range(practiceRounds):
     else:
         audioStruct[1]["AudioData"] = 0;
 
-    sd.play(audioStruct[0]["AudioData"], fs);
-    status = sd.wait();
+    #print("Playback from buffer!");
+    #sd.play(audioStruct[0]["AudioData"], fs);
+    #status = sd.wait();
 
     #buffer = combineAudioFiles(audioStruct, sentLen);
-
-    # play current sentence and noise
-    #playbackID = playrec('play', buffer, ChMap);
 
     # get length of current sentence
     sentenceLength = len(sentences[index].split());
@@ -258,8 +263,6 @@ for i in range(practiceRounds):
     # print out current sentence string
     print([sentences[index] + str(sentenceLength)]);
 
-    # only prompt this after playback is done
-    #while ~playrec('isFinished', playbackID)
 
     # get experimenter feedback
     print("How many words have been correct?");
