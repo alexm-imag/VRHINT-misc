@@ -105,7 +105,7 @@ resultTemplate = {
 resultStorage = [resultTemplate for k in range(numTestLists)];
     
 
-with open('testConditions-latinSquares.csv', mode ='r')as file:
+with open('lqConditions.csv', mode ='r')as file:
   lqConditions = list(csv.reader(file));
  
 lqConds = [item for sublist in lqConditions for item in sublist]
@@ -156,22 +156,10 @@ testLists = lqLists[userIndex % availableTestLists];
 # pre-allocate text array
 testConditions = ["emptyCondition" for k in range(numTestLists)]; 
 
-# create wrapping start index depending on userIndex and number of test lists
-# the 1st user will get conditions 0 to numTestLists-1, while the 2nd will get
-# numTestList to (numTestLists * 2) - 1 until it wraps around at len(lqConds).
-condStartIndex = (userIndex * numTestLists) % len(lqConds);
-
-for i in range(numTestLists):
-    
-    if(lqConds[(condStartIndex + i) % len(lqConds)] == 'Q'):
-        testConditions[i] = "quiet";
-    elif(lqConds[(condStartIndex + i) % len(lqConds)] == 'F'):
-        testConditions[i] = "noiseFront";
-    elif(lqConds[(condStartIndex + i) % len(lqConds)] == 'L'):
-        testConditions[i] = "noiseLeft";
-    else:
-        testConditions[i] = "noiseRight";
-
+# userIndex determines start line of lqConditions matrix
+# 5th condition is taken from the next line (considering wrapping!)
+testConditions[0:4] = lqConditions[userIndex % len(lqConditions)];
+testConditions[4] = lqConditions[(userIndex + 1) % len(lqConditions)][0];
 
 #%% start practice condition 
 sentences = loadListSentences(practiceList, hintDir);
