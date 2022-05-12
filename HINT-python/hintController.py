@@ -202,7 +202,8 @@ for i in range(practiceRounds):
 
     print(["Current playback level: " + str(currentSNR)]);
     print(["Round " + str(i) + " out of " + str(practiceRounds)]);
-    curr_sent = loadSentenceAudio(practiceList, index, currentSNR, importDir);
+    # audio files are labeled from Ger_male001 and not Ger_male000 so add '1'
+    curr_sent = loadSentenceAudio(practiceList, index + 1, currentSNR, importDir);
         
     #noiseSegment = noise[0:len(curr_sent)];
     #[noiseSegment, noiseIndex] = circularNoise(noise, sentLen, noiseIndex);
@@ -314,7 +315,8 @@ for j in range(numTestLists):
     
         print(["Current playback level: " + str(currentSNR)]);
         print(["Round " + str(i) + " out of " + str(listSentences)]);
-        curr_sent = loadSentenceAudio(testLists[j], index, currentSNR, hintDir);
+        # audio files are labeled from Ger_male001 and not Ger_male000 so add '1'
+        curr_sent = loadSentenceAudio(testLists[j], index + 1, currentSNR, hintDir);
     
         sentLen = len(curr_sent);
         #[noiseSegment, noiseIndex] = circularNoise(noise, sentLen, noiseIndex);
