@@ -9,6 +9,8 @@ import numpy as np;
 import json;
 import soundfile as sf;
 import sounddevice as sd;
+import csv;
+import datetime as dt;
 
 #%%
 class NumpyEncoder(json.JSONEncoder):
@@ -138,24 +140,35 @@ print(resultTemplate);
 
 # allocate numTestLists structs to store results
 resultStorage = [resultTemplate for k in range(numTestLists)];
+    
 
-json_obj = json.dumps(resultStorage, indent = 4, cls=NumpyEncoder);
-
-# Writing to sample.json
-with open("sample2.json", "w") as outfile:
-    outfile.write(json_obj)
+with open('testConditions-latinSquares.csv', mode ='r')as file:
+   
+  # reading the CSV file
+  condsCSV = csv.reader(file)
+ 
+  # displaying the contents of the CSV file
+  for lines in condsCSV:
+        print(lines)
+        
+        
+with open('testListOrder-latinSquares.csv', mode ='r')as file:
+   
+  # reading the CSV file
+  listsCSV = csv.reader(file)
+ 
+  # displaying the contents of the CSV file
+  for lines in listsCSV:
+        print(lines)
 
 
 #%% user login
 print("Enter participants name:");
 name = input();
-
-#%% pre-allocate struct array for results
-
 # add system to check if username has already been used!
 # create file name based on user name
-#jsonFileName = sprintf("results-%s-%s.json", name, datestr(now, 'dd-mm-yyyy-hh:MM'));
-jsonFileName = "results-%s.json" % (name);
+resultFileName = "results\\results-%s-%s.json" % (name,  dt.datetime.now().strftime("%d-%m-%y--%H-%M-%S"));
+practiceFileName = "results\\results-%s-%s.json" % (name,  dt.datetime.now().strftime("%d-%m-%y--%H-%M-%S"));
 
 #%% load noise
 calibrationNoise, fs = sf.read(importDir + "NBNoise1000.wav");
@@ -213,7 +226,6 @@ hitQuotes = np.zeros(20);
 # starting at 0 dB
 currentSNR = 0;
 noiseIndex = 1;
-#audioStruct = [audioStructTemplate for k in range(2)]; 
 
 for i in range(practiceRounds):
     # get random index
@@ -228,18 +240,6 @@ for i in range(practiceRounds):
     #noiseSegment = noise[0:len(curr_sent)];
     #[noiseSegment, noiseIndex] = circularNoise(noise, sentLen, noiseIndex);
 
-        
-   # audioStruct = [
-    #            {
-     #              "AudioData": curr_sent,
-      #             "Channel": ChFront
-       #          },
-       #         {
-       #           "AudioData": noise[0:len(curr_sent)],
-       #           "Channel": "noiseLeft"
-       #         }
-       #         ];
-    
     audioBuffer = np.array([curr_sent, noise[0:len(curr_sent)]]).transpose();
     
     sentLen = len(curr_sent);
@@ -307,8 +307,6 @@ for i in range(practiceRounds):
 print("Practice done!");
 
 #%% Test JSON format
-# create file name based on user name
-jsonFile = "practice-%s.json" % (name);
 # fill struct with list data
 pracRes = resultTemplate;
 pracRes["ListIndex"] = practiceList;
@@ -319,9 +317,8 @@ pracRes["HitQuotes"] = hitQuotes;
 # parse struct into json
 practiceResults = json.dumps(pracRes, indent = 4, cls=NumpyEncoder);
 # store json into file
-with open(jsonFile, "w") as outfile:
+with open(practiceFileName, "w") as outfile:
     outfile.write(practiceResults)
-
 
 #%% Test procedure
 for j in range(numTestLists):
@@ -339,13 +336,6 @@ for j in range(numTestLists):
     currentSNR = 0;
     noiseIndex = 1;
 
-    if testConditions[j] == "noiseLeft":
-        audioStruct[1]["Channel"] = ChLeft;
-    elif testConditions[j] == "noiseRight":
-        audioStruct[1]["Channel"] = ChRight;   
-    elif testConditions[j] == "noiseFront":
-        audioStruct[1]["Channel"] = ChFront;
-
 
     print(["Starting List " + str(testLists[j]) + " with condition" + testConditions[j]]);
 
@@ -361,29 +351,22 @@ for j in range(numTestLists):
     
         sentLen = len(curr_sent);
         #[noiseSegment, noiseIndex] = circularNoise(noise, sentLen, noiseIndex);
-    
-        audioStruct[0]["AudioData"] = curr_sent;
-        audioStruct[0]["Channel"] = ChFront;
 
-        if testConditions[j] != "quiet":
-            audioStruct[1]["AudioData"] = noiseSegment;
+        if practiceCondition == "noiseLeft":
+            sd.play(audioBuffer, blocking = 'true', mapping = [ChFront, ChLeft]);
+        elif practiceCondition == "noiseRight":
+            sd.play(audioBuffer, blocking = 'true', mapping = [ChFront, ChRight]);
+        elif practiceCondition == "noiseFront":
+            sd.play(curr_sent + noise[0:len(curr_sent)], blocking = 'true', mapping = [ChFront]);
         else:
-            audioStruct[1]["AudioData"] = 0;
-        
-
-        buffer = combineAudioFiles(audioStruct, sentLen);
-        # play current sentence
-        #playbackID = playrec('play', curr_sent, ChMap);
-    
+            sd.play(audioBuffer[0], blocking = 'true', mapping = [ChFront]);
+            
 
         # get length of current sentence
         sentenceLength = len(sentences[index].split());
 
         # print out current sentence string
         print([sentences(index) + sentenceLength]);      
-        
-        # only prompt this after playback is done
-        #while ~playrec('isFinished', playbackID) end
 
         # get experimenter feedback
         print("How many words have been correct?");
@@ -441,7 +424,7 @@ for j in range(numTestLists):
 # parse dict into json
 results = json.dumps(resultStorage, indent = 4, cls=NumpyEncoder);
 # store json into file
-with open(jsonFileName, "w") as outfile:
+with open(resultFileName, "w") as outfile:
     outfile.write(results)
 
 
