@@ -11,6 +11,7 @@ import soundfile as sf;
 import sounddevice as sd;
 import csv;
 import datetime as dt;
+import os;
 
 #%%
 class NumpyEncoder(json.JSONEncoder):
@@ -149,8 +150,13 @@ ChFront = 2;
 
 #%% Load counterbalanced test order
 
+userIndex = len(os.listdir('results'));
+print("User Index is: " + str(userIndex));
+print("Is this correct? y/n");
+if str(input()) != 'y':
+    exit();
+
 # this will be determined by number of result files!
-userIndex = 1;
 testLists = lqLists[userIndex % availableTestLists];
 
 # pre-allocate text array
