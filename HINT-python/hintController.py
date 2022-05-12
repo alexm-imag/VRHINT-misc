@@ -107,7 +107,9 @@ resultStorage = [resultTemplate for k in range(numTestLists)];
 
 with open('testConditions-latinSquares.csv', mode ='r')as file:
   lqConditions = list(csv.reader(file));
-  
+ 
+lqConds = [item for sublist in lqConditions for item in sublist]
+
         
 with open('testListOrder-latinSquares.csv', mode ='r')as file:
   lqLists = list(csv.reader(file));
@@ -148,29 +150,27 @@ ChFront = 2;
 #%% Load counterbalanced test order
 
 # this will be determined by number of result files!
-userIndex = 5;
+userIndex = 1;
 testLists = lqLists[userIndex % availableTestLists];
-
-# get sentence list order (5 lists total)
-#testLists = np.random.permutation(range(10));
 
 # pre-allocate text array
 testConditions = ["emptyCondition" for k in range(numTestLists)]; 
 
-# assign random order of test conditions
-# REPLACE THIS WITH LATIN SQUARES!
+# create wrapping start index depending on userIndex and number of test lists
+# the 1st user will get conditions 0 to numTestLists-1, while the 2nd will get
+# numTestList to (numTestLists * 2) - 1 until it wraps around at len(lqConds).
+condStartIndex = (userIndex * numTestLists) % len(lqConds);
+
 for i in range(numTestLists):
-    #randNum = randi(4,1);
-    randNum = np.random.randint(1, 5);
-    if(randNum == 1):
+    
+    if(lqConds[(condStartIndex + i) % len(lqConds)] == 'Q'):
         testConditions[i] = "quiet";
-    elif(randNum == 2):
+    elif(lqConds[(condStartIndex + i) % len(lqConds)] == 'F'):
         testConditions[i] = "noiseFront";
-    elif(randNum == 3):
+    elif(lqConds[(condStartIndex + i) % len(lqConds)] == 'L'):
         testConditions[i] = "noiseLeft";
     else:
         testConditions[i] = "noiseRight";
-
 
 
 #%% start practice condition 
