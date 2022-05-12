@@ -64,39 +64,6 @@ def loadListSentences(listIndex, hintDir):
     
     return open(filePath, "r", encoding='utf8').readlines();
 
-
-def combineAudioFiles(audioStruct, buflen):
-    
-    #chnNums = max([audioStruct["Channel"]]);
-    chnNums = 0;
-    for i in range (len(audioStruct)):
-        if audioStruct[i]["Channel"] > chnNums:
-            chnNums = audioStruct[i]["Channel"];
-            
-            
-    print("Channels: " + chnNums);
-    
-    #testAud = np.array([curr_sent, noise[0:len(curr_sent)]]).transpose();
-    buffer = np.zeros(buflen);
-
-    # preallocate buffer    
-    for i in range(chnNums-1):
-        buffer.append(np.zeros(buflen));
-
-    for i in range(len(audioStruct)):
-        # check for channel dublications
-        if (max(buffer(audioStruct[i]["Channel"])) > 0):
-            buffer[audioStruct[i]["Channel"]] += audioStruct[i]["AudioData"][1:min(buflen, len(audioStruct[i]["AudioData"]))];
-
-            if (max(buffer[audioStruct[i]["Channel"]]) > 1):
-                print("Warning: Clipping on channel " + audioStruct[i]["Channel"]);
-        else:
-            buffer[audioStruct[i]["Channel"]] = audioStruct[i]["AudioData"][1:min(buflen, len(audioStruct[i]["AudioData"]))];
-        
-    
-    return buffer;
-
-    
     
 # %%
 hintDir = 'german-hint-adaptive-48kHz\\';
