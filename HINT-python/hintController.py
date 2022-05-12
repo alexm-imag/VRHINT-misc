@@ -89,8 +89,6 @@ practiceRounds = 5;
 practiceCondition = "noiseLeft";
 
 # %% Type definitions etc
-#audioStructTemplate = {"AudioData": 1,
-#                       "Channel": 1};
 
 # this format works for sentence indices, SNR values and hit Quotes
 templateData = np.zeros(listSentences);
@@ -103,30 +101,20 @@ resultTemplate = {
     "SNRs": templateData,
     "HitQuotes:": templateData};
 
-print(resultTemplate);
-
 # allocate numTestLists structs to store results
 resultStorage = [resultTemplate for k in range(numTestLists)];
     
 
 with open('testConditions-latinSquares.csv', mode ='r')as file:
-   
-  # reading the CSV file
-  condsCSV = csv.reader(file)
- 
-  # displaying the contents of the CSV file
-  for lines in condsCSV:
-        print(lines)
-        
+  lqConditions = list(csv.reader(file));
+  
         
 with open('testListOrder-latinSquares.csv', mode ='r')as file:
-   
-  # reading the CSV file
-  listsCSV = csv.reader(file)
- 
-  # displaying the contents of the CSV file
-  for lines in listsCSV:
-        print(lines)
+  lqLists = list(csv.reader(file));
+
+# convert List<List<str>> to List<List<int>>
+for i in range(len(lqLists)):
+    lqLists[i] = [int(j) for j in lqLists[i]];
 
 
 #%% user login
@@ -159,8 +147,12 @@ ChFront = 2;
 
 #%% Load counterbalanced test order
 
+# this will be determined by number of result files!
+userIndex = 5;
+testLists = lqLists[userIndex % availableTestLists];
+
 # get sentence list order (5 lists total)
-testLists = np.random.permutation(range(10));
+#testLists = np.random.permutation(range(10));
 
 # pre-allocate text array
 testConditions = ["emptyCondition" for k in range(numTestLists)]; 
