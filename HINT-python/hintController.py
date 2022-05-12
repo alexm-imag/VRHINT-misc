@@ -60,7 +60,7 @@ def loadListSentences(listIndex, hintDir):
     else:
         filePath = hintDir  + str(listIndex) + '\\' + 'list' + str(listIndex) + '.txt';
     
-    return open(filePath, "r").readlines();
+    return open(filePath, "r", encoding='utf8').readlines();
 
 
 def combineAudioFiles(audioStruct, buflen):
