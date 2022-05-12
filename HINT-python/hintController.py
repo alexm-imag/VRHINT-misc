@@ -210,6 +210,13 @@ for i in range(practiceRounds):
 
     audioBuffer = np.array([curr_sent, noise[0:len(curr_sent)]]).transpose();
     
+    # get length of current sentence
+    sentenceLength = len(sentences[index].split());
+   
+    # print out current sentence string
+    print("Sentence length: " + str(sentenceLength))
+    print(sentences[index]);
+    
     sentLen = len(curr_sent);
 
     if practiceCondition == "noiseLeft":
@@ -222,17 +229,10 @@ for i in range(practiceRounds):
         sd.play(audioBuffer[0], blocking = 'true', mapping = [ChFront]);
 
 
-    # get length of current sentence
-    sentenceLength = len(sentences[index].split());
-
-    # print out current sentence string
-    print([sentences[index] + str(sentenceLength)]);
-
-
     # get experimenter feedback
     print("How many words have been correct?");
     correctWords = int(input());
-    print(type(correctWords));
+    #print(type(correctWords));
 
     # alternative: just ask if below or above 50% hit
     # less data but quicker
@@ -241,13 +241,10 @@ for i in range(practiceRounds):
         print("How many words have been correct?");
         correctWords = input();
     
-    print(['Sentence len: ' + str(sentenceLength) + ' correct: ' + str(correctWords)]);
+    print('Sentence len: ' + str(sentenceLength) + ' correct: ' + str(correctWords));
     hitQuote = correctWords / sentenceLength;
-    print(hitQuote);
+    print("HitQuote: " + str(hitQuote));
 
-    # store sentence data
-    hitQuotes[i] = hitQuote;
-    listSNR[i] = currentSNR;
 
     # adapt SNR based on hitQuote
     if i < 4 :        
@@ -256,6 +253,10 @@ for i in range(practiceRounds):
         else:
             currentSNR = currentSNR - 4;
     else:
+        # store sentence data
+        hitQuotes[i] = hitQuote;
+        listSNR[i] = currentSNR;
+        
         # adapt SNR based on hitQuote
         if hitQuote < 0.5:
             currentSNR = currentSNR + 2;
@@ -335,7 +336,8 @@ for j in range(numTestLists):
         sentenceLength = len(sentences[index].split());
 
         # print out current sentence string
-        print([sentences(index) + sentenceLength]);      
+        print("Sentence length: " + str(sentenceLength))
+        print(sentences[index]);    
 
         # get experimenter feedback
         print("How many words have been correct?");
@@ -350,12 +352,8 @@ for j in range(numTestLists):
         
         print(['Sentence len: ' + str(sentenceLength) + ' correct: ' + str(correctWords)]);
         hitQuote = correctWords / sentenceLength;
-        print(hitQuote);
-    
-        # store sentence data
-        hitQuotes[i] = hitQuote;
-        listSNR[i] = currentSNR;
-    
+        print("HitQuote: " + str(hitQuote));
+        
         # adapt SNR based on hitQuote
         if i < 4:
             if hitQuote < 0.5:
@@ -363,6 +361,11 @@ for j in range(numTestLists):
             else:
                 currentSNR = currentSNR - 4;
         else:
+            
+            # store sentence data
+            hitQuotes[i] = hitQuote;
+            listSNR[i] = currentSNR;
+            
             # adapt SNR based on hitQuote
             if hitQuote < 0.5:
                 currentSNR = currentSNR + 2;
