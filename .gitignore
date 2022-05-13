@@ -1,0 +1,9 @@
+thesis/*.log
+thesis/*.bbl
+thesis/*.aux
+thesis/*.bcf
+thesis/*.out
+thesis/*.toc
+thesis/*.synctex.gz
+thesis/*.run.xml
+thesis/*.blg
