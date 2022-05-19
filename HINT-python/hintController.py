@@ -65,6 +65,42 @@ def loadListSentences(listIndex, hintDir):
     
     return open(filePath, "r", encoding='utf8').readlines();
 
+
+def circularNoise(noise, segmentLen, noiseIndex):
+
+    noiseLen = len(noise);
+
+    if circularNoise.counter == 0:
+        circularNoise.counter = noiseLen;
+
+
+    if circularNoise.counter != noiseLen:
+        circularNoise.counter = noiseLen;
+        # reset noiseIndex if a new noise was submitted!
+        noiseIndex = 0;
+        print("New noise file detected");
+
+
+    noiseBuf = noise;
+    print("Len: " + str(segmentLen) + " noiseInd: " + str(noiseIndex) + " noiseLen: " + str(noiseLen));
+
+    # circ case
+    if noiseIndex + segmentLen > noiseLen:
+        print("Circ overflow");
+        #print("nL - NI+1: " + str(len(0:noiseLen - noiseIndex)) + " nI:NL " + str(len(noiseIndex:noiseLen)));
+        noiseBuf[0:noiseLen - noiseIndex] = noise[noiseIndex:noiseLen];
+        #print("nL - NI+1: " + str(length(noiseLen - noiseIndex:segmentLen)) + " nI:NL " + str(length(1:segmentLen - (noiseLen - noiseIndex))))
+        noiseBuf[noiseLen - noiseIndex + 1:segmentLen] = noise[0:segmentLen - (noiseLen - noiseIndex)];
+        noiseIndex = segmentLen - (noiseLen - noiseIndex);
+    else:
+        noiseBuf = noise[noiseIndex:noiseIndex + segmentLen];
+        noiseIndex = noiseIndex + segmentLen;
+    
+
+    print("Post noiseInd: " + str(noiseIndex));
+    
+    return noiseBuf, noiseIndex;
+
     
 # %%
 hintDir = 'german-hint-adaptive-48kHz\\';
@@ -108,11 +144,8 @@ resultStorage = [resultTemplate for k in range(numTestLists)];
 
 with open('lqConditions.csv', mode ='r')as file:
   lqConditions = list(csv.reader(file));
- 
-lqConds = [item for sublist in lqConditions for item in sublist]
-
         
-with open('testListOrder-latinSquares.csv', mode ='r')as file:
+with open('lqLists.csv', mode ='r')as file:
   lqLists = list(csv.reader(file));
 
 # convert List<List<str>> to List<List<int>>
@@ -149,7 +182,6 @@ ChRight = 2;
 ChFront = 2;
 
 #%% Load counterbalanced test order
-
 userIndex = len(os.listdir('results'));
 print("User Index is: " + str(userIndex));
 print("Is this correct? y/n");
