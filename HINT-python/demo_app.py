@@ -2,7 +2,7 @@
 """
 Created on Fri May 20 09:42:13 2022
 
-@author: cocot
+@author: Alexander Müller
 """
 
 

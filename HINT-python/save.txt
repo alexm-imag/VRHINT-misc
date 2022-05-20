@@ -1,1 +1,1 @@
-C:/Program Files/Audacity/Audacity.exe,C:/Program Files/Audacity/Audacity.exe,C:/Program Files (x86)/Audacity/audacity.exe,
+emptyPath,default
