@@ -8,6 +8,7 @@ Created on Fri May 20 09:19:25 2022
 import numpy as np;
 import json;
 import soundfile as sf;
+import datetime as dt;
 
 
 class NumpyEncoder(json.JSONEncoder):
@@ -23,7 +24,17 @@ class NumpyEncoder(json.JSONEncoder):
         elif isinstance(obj, (np.ndarray,)):
             return obj.tolist()
         return json.JSONEncoder.default(self, obj)
+  
     
+def exportResults(resultStorage, userName):
+    
+    resultFileName = "results\\results-%s-%s.json" % (userName,  dt.datetime.now().strftime("%d-%m-%y--%H-%M-%S"));
+    
+    results = json.dumps(resultStorage, indent = 4, cls=NumpyEncoder);
+    # store json into file
+    with open(resultFileName, "w") as outfile:
+        outfile.write(results)
+        
 
 def loadSentenceAudio(listIndex, sentenceIndex, dbLevel, hintDir):
 
