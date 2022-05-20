@@ -6,10 +6,10 @@ Created on Fri May 20 10:25:07 2022
 """
 
 import tkinter as tk
-from tkinter import ttk
-#from tkinter import * #filedialog, Text, messagebox
 import os
-from functools import partial
+#from tkinter import ttk
+#from tkinter import * #filedialog, Text, messagebox
+#from functools import partial
 
 root = tk.Tk()
 
@@ -44,10 +44,19 @@ def enterName():
     
     
 def clearUserName():
-    nameField.delete(0,10)
+    nameField.delete(0, 'end');
 
+
+def practice():
+    print("Start HINT practice");
+
+
+def startTest():
+    print("Start test procedure");
     
-
+    
+    
+    
 
 canvas = tk.Canvas(root, height = 700, width = 700, bg = '#263D42')
 canvas.pack()
@@ -65,8 +74,17 @@ nameField.pack()
 nameBtn = tk.Button(frame, text="Enter participants name", padx = 10, pady = 5, fg = "white", bg = "#263D42", command=enterName)
 nameBtn.pack()
 
+clearBtn = tk.Button(frame, text="Clear field", padx = 10, pady = 5, fg = "white", bg = "#263D42", command=clearUserName)
+clearBtn.pack()
+
 pathBtn = tk.Button(frame, text="Add Path", padx = 10, pady = 5, fg = "white", bg = "#263D42", command=addPath)
 pathBtn.pack()
+
+practiceBtn = tk.Button(frame, text="Practice", padx = 10, pady = 5, fg = "white", bg = "#263D42", command=practice)
+practiceBtn.pack();
+
+startBtn = tk.Button(frame, text="Start test", padx = 10, pady = 5, fg = "white", bg = "#263D42", command=startTest)
+startBtn.pack();
 
 
 root.mainloop()
