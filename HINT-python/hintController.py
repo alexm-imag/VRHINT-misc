@@ -136,7 +136,8 @@ resultTemplate = {
     "ListIndex": templateListIndex,
     "Condition": templateCondition,
     "SNRs": templateData,
-    "HitQuotes:": templateData};
+    "HitQuotes:": templateData,
+    "Time": dt.datetime.now().strftime("%d-%m-%y--%H-%M-%S")};
 
 # allocate numTestLists structs to store results
 resultStorage = [resultTemplate for k in range(numTestLists)];
