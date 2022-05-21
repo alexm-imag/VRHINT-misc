@@ -7,6 +7,7 @@ Created on Fri May 20 10:25:07 2022
 
 import tkinter as tk
 import os
+import hintFunctions as hint
 #from tkinter import ttk
 #from tkinter import * #filedialog, Text, messagebox
 #from functools import partial
@@ -53,6 +54,9 @@ def practice():
 
 def startTest():
     print("Start test procedure");
+    #storage = hint.createResultStorage(5);
+    testLists, testConditions = hint.createTestSetup(hint.getUserIndex, 5);
+    hint.hintProcedure(testLists, testConditions, True);
     
     
     

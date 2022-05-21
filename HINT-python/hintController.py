@@ -256,11 +256,11 @@ for j in range(numTestLists):
         sentLen = len(curr_sent);
         #[noiseSegment, noiseIndex] = circularNoise(noise, sentLen, noiseIndex);
 
-        if practiceCondition == "noiseLeft":
+        if testConditions[j] == "noiseLeft":
             sd.play(audioBuffer, blocking = 'true', mapping = [ChFront, ChLeft]);
-        elif practiceCondition == "noiseRight":
+        elif testConditions[j] == "noiseRight":
             sd.play(audioBuffer, blocking = 'true', mapping = [ChFront, ChRight]);
-        elif practiceCondition == "noiseFront":
+        elif testConditions[j] == "noiseFront":
             sd.play(curr_sent + noise[0:len(curr_sent)], blocking = 'true', mapping = [ChFront]);
         else:
             sd.play(audioBuffer[0], blocking = 'true', mapping = [ChFront]);

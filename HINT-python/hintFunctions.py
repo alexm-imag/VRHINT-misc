@@ -14,36 +14,31 @@ import os;
 import hintUtilities as util
 
 
-#%% Globals
-ChLeft = 1;
-ChFront = 3;
-ChRight = 5;
+#%% Global / static
+# variables that are always constant / not to be changed via GUI
 
-hintDir = 'german-hint-adaptive-48kHz\\';
-base_type = 'wav';
-importDir = 'G:\VRHINT-misc\HINT-python\german-hint-adaptive-48kHz\\';
-
-# Test setup
-# lists open for test
-availableTestLists = 10;
-
-      
-# number of lists used in the test
-numTestLists = 5;
 # number of sentences in each list
 listSentences = 20;
+# lists open for test (1...10)
+availableTestLists = 10;
+# lists open for practice (11,12)
+availablePracticeLists = 2;
 
 # min/max available SNR
 minSNR = -16;
 maxSNR = 2;
 
-# practice setup
-practiceList = 12;
-practiceRounds = 5;
-practiceCondition = "noiseLeft";
+# maybe add these to setup
+ChLeft = 1;
+ChFront = 3;
+ChRight = 5;
 
-noise, fs = sf.read(importDir + "noiseGR_male.wav");
-sd.default.samplerate = fs;
+
+#%% Setup variables
+hintDir = 'german-hint-adaptive-48kHz\\';
+
+
+
 
 
 def createResultStorage(numTestLists):
@@ -66,7 +61,7 @@ def getUserIndex():
     return len(os.listdir('results'));    
     
 
-def createTestSetup(userIndex):
+def createTestSetup(userIndex, numTestLists):
     
     with open('lqConditions.csv', mode ='r')as file:
       lqConditions = list(csv.reader(file));
@@ -104,6 +99,9 @@ def hintProcedure(testLists, testConditions, storeResults):
         resultStorage = createResultStorage();
         
     
+    noise, fs = sf.read(hintDir + "noiseGR_male.wav");
+        
+    
     for j in range(testLists.count):
         sentences = util.loadListSentences(testLists[j], hintDir);
         randOrder = np.random.permutation(range(20));
@@ -130,11 +128,11 @@ def hintProcedure(testLists, testConditions, storeResults):
             
             audioBuffer = np.array([curr_sent, noise[0:len(curr_sent)]]).transpose();
     
-            if practiceCondition == "noiseLeft":
+            if testConditions[j]== "noiseLeft":
                 sd.play(audioBuffer, blocking = 'true', mapping = [ChFront, ChLeft]);
-            elif practiceCondition == "noiseRight":
+            elif testConditions[j] == "noiseRight":
                 sd.play(audioBuffer, blocking = 'true', mapping = [ChFront, ChRight]);
-            elif practiceCondition == "noiseFront":
+            elif testConditions[j] == "noiseFront":
                 sd.play(curr_sent + noise[0:len(curr_sent)], blocking = 'true', mapping = [ChFront]);
             else:
                 sd.play(audioBuffer[0], blocking = 'true', mapping = [ChFront]);
