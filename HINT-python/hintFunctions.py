@@ -37,8 +37,15 @@ ChRight = 5;
 #%% Setup variables
 hintDir = 'german-hint-adaptive-48kHz\\';
 
+#conditionCbk()
 
 
+#def setCallbacks(cbk1):
+#    conditionCbk = cbk1;
+    
+    
+#def triggerCallback():
+#    conditionCbk();
 
 
 def createResultStorage(numTestLists):
@@ -99,8 +106,7 @@ def hintProcedure(testLists, testConditions, storeResults):
         resultStorage = createResultStorage();
         
     
-    noise, fs = sf.read(hintDir + "noiseGR_male.wav");
-        
+    noise, fs = sf.read(hintDir + "noiseGR_male.wav");        
     
     for j in range(testLists.count):
         sentences = util.loadListSentences(testLists[j], hintDir);
