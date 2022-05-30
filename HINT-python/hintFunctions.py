@@ -99,7 +99,7 @@ def createTestSetup(userIndex, numTestLists):
 # testConditions: array, has to match length of testLists!
 # storeResults: bool, create and fill result storage
 # userName: string, required for JSON export
-def hintProcedure(testLists, testConditions, storeResults):
+def hintProcedure(testLists, testConditions, storeResults, sentenceCbk):
     
     if storeResults == True:
         resultStorage = createResultStorage(len(testLists));
@@ -125,6 +125,9 @@ def hintProcedure(testLists, testConditions, storeResults):
         for i in range(listSentences):
             # get random index
             index = randOrder[i];
+            
+            #gui.setSentence(sentences[i]);
+            sentenceCbk(sentences[i]);
         
             print(["Current playback level: " + str(currentSNR)]);
             print(["Round " + str(i) + " out of " + str(listSentences)]);

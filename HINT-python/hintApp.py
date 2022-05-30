@@ -9,8 +9,6 @@ import tkinter as tk
 import customtkinter as ctk
 import os
 import hintFunctions as hint
-#from tkinter import ttk
-#from tkinter import * #filedialog, Text, messagebox
 #from functools import partial
 
 
@@ -33,8 +31,8 @@ if os.path.isfile('save.txt'):
 #        apps = [x for x in tempApps if x.strip()]
  
 
-def testCallback():
-    print("Hey I'm a callback!")
+def testCallback(num):
+    print("Hey I'm a callback!" + num)
       
 
 def addPath():  
@@ -52,6 +50,7 @@ def enterName():
     global userName;
     userName = nameField.get();
     print("UserName: " + userName);
+    userLabel['text'] = "Name: " + userName;
     
     
 def clearUserName():
@@ -64,13 +63,18 @@ def practice():
 
 def startTest():
     print("Start test procedure");
-    #storage = hint.createResultStorage(5);
-    testLists, testConditions = hint.createTestSetup(hint.getUserIndex, 5);
-    hint.hintProcedure(testLists, testConditions, True);
+    userIndex = hint.getUserIndex();
+    userIndexLabel['text'] = "Index: " + str(userIndex);
+    testLists, testConditions = hint.createTestSetup(userIndex, 5);
+    hint.hintProcedure(testLists, testConditions, True, setSentence);
     
     
     
+def setSentence(sentence):
+    print("Sentence: " + sentence);
+    currentSentence['text'] = "Sentence: " + sentence;
     
+       
 #canvas = ctk.CTkCanvas(root, height = 700, width = 700, bg = '#263D42')
 #canvas.pack()
 
@@ -100,6 +104,16 @@ practiceBtn.pack();
 
 startBtn = ctk.CTkButton(frame, text="Start test", padx = 15, pady = 5, bg = "#263D42", command=startTest)
 startBtn.pack();
+
+
+userLabel = ctk.CTkLabel(frame, text="Name: ")
+userLabel.pack()
+
+userIndexLabel = ctk.CTkLabel(frame, text="Index: ")
+userIndexLabel.pack()
+
+currentSentence = ctk.CTkLabel(frame, text="Sentence: ")
+currentSentence.pack()
 
 
 
