@@ -74,6 +74,10 @@ def setSentence(sentence):
     print("Sentence: " + sentence);
     currentSentence['text'] = "Sentence: " + sentence;
     
+    
+def takeFeedback():
+    submission = feedbackField.get();
+    print(submission);
        
 #canvas = ctk.CTkCanvas(root, height = 700, width = 700, bg = '#263D42')
 #canvas.pack()
@@ -115,6 +119,14 @@ userIndexLabel.pack()
 currentSentence = ctk.CTkLabel(frame, text="Sentence: ")
 currentSentence.pack()
 
+currentSNR = ctk.CTkLabel(frame, text="SNR: ")
+currentSNR.pack()
+
+feedbackField = ctk.CTkEntry(frame)
+feedbackField.pack()
+
+submitBtn = ctk.CTkButton(frame, text="Enter", padx = 15, pady = 5, bg = "#263D42", command=takeFeedback)
+submitBtn.pack()
 
 
 # somehow get test information into GUI
