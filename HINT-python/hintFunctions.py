@@ -13,7 +13,6 @@ import datetime as dt;
 import os;
 import hintUtilities as util
 
-
 #%% Global / static
 # variables that are always constant / not to be changed via GUI
 
@@ -82,7 +81,7 @@ def createTestSetup(userIndex, numTestLists):
 
     
     # this will be determined by number of result files!
-    testLists = lqLists[userIndex % availableTestLists];
+    testLists = [lqLists[userIndex % availableTestLists][k] for k in range(numTestLists)];
     
     # pre-allocate text array
     testConditions = ["emptyCondition" for k in range(numTestLists)]; 
@@ -103,12 +102,12 @@ def createTestSetup(userIndex, numTestLists):
 def hintProcedure(testLists, testConditions, storeResults):
     
     if storeResults == True:
-        resultStorage = createResultStorage();
+        resultStorage = createResultStorage(len(testLists));
         
     
     noise, fs = sf.read(hintDir + "noiseGR_male.wav");        
     
-    for j in range(testLists.count):
+    for j in range(len(testLists)):
         sentences = util.loadListSentences(testLists[j], hintDir);
         randOrder = np.random.permutation(range(20));
         
