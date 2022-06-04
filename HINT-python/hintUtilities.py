@@ -9,6 +9,7 @@ import numpy as np;
 import json;
 import soundfile as sf;
 import datetime as dt;
+import sounddevice as sd;
 
 
 class NumpyEncoder(json.JSONEncoder):
@@ -107,3 +108,27 @@ def circularNoise(noise, segmentLen, noiseIndex):
     print("Post noiseInd: " + str(noiseIndex));
     
     return noiseBuf, noiseIndex;
+
+
+
+def playAudio(curr_sent, noise, condition, ChFront, ChLeft, ChRight):
+
+    if condition == "noiseLeft":
+        audioBuffer = np.array([curr_sent, noise[0:len(curr_sent)]]).transpose();
+        sd.play(audioBuffer, blocking = 'true', mapping = [ChFront, ChLeft]);
+    elif condition == "noiseRight":
+        audioBuffer = np.array([curr_sent, noise[0:len(curr_sent)]]).transpose();
+        sd.play(audioBuffer, blocking = 'true', mapping = [ChFront, ChRight]);
+    elif condition == "noiseFront":
+        sd.play(curr_sent + noise[0:len(curr_sent)], blocking = 'true', mapping = [ChFront]);
+    else:
+        sd.play(curr_sent, blocking = 'true', mapping = [ChFront]);
+        
+        
+def playNoise(hintDir):
+    noise, fs = sf.read(hintDir + "noiseGR_male.wav");   
+    sd.play(noise, blocking = 'true', mapping = [1, 2]);
+
+
+def playSentence(sentence):
+    sd.play(sentence, blocking = 'true', mapping = [1, 2]);

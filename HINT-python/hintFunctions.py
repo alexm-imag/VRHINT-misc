@@ -5,9 +5,9 @@ Created on Fri May 20 13:50:50 2022
 @author: cocot
 """
 import numpy as np;
-import json;
+#import json;
 import soundfile as sf;
-import sounddevice as sd;
+#import sounddevice as sd;
 import csv;
 import datetime as dt;
 import os;
@@ -29,22 +29,12 @@ maxSNR = 2;
 
 # maybe add these to setup
 ChLeft = 1;
-ChFront = 3;
-ChRight = 5;
+ChFront = 2;
+ChRight = 2;
 
 
 #%% Setup variables
 hintDir = 'german-hint-adaptive-48kHz\\';
-
-#conditionCbk()
-
-
-#def setCallbacks(cbk1):
-#    conditionCbk = cbk1;
-    
-    
-#def triggerCallback():
-#    conditionCbk();
 
 
 def createResultStorage(numTestLists):
@@ -99,7 +89,7 @@ def createTestSetup(userIndex, numTestLists):
 # testConditions: array, has to match length of testLists!
 # storeResults: bool, create and fill result storage
 # userName: string, required for JSON export
-def hintProcedure(testLists, testConditions, storeResults, sentenceCbk):
+def hintProcedure(testLists, testConditions, storeResults, sentenceCbk, snrCbk):
     
     if storeResults == True:
         resultStorage = createResultStorage(len(testLists));
@@ -120,30 +110,23 @@ def hintProcedure(testLists, testConditions, storeResults, sentenceCbk):
         currentSNR = 0;
     
     
-        print(["Starting List " + str(testLists[j]) + " with condition" + testConditions[j]]);
+        print("Starting List " + str(testLists[j]) + " with condition: " + testConditions[j]);
+    
+        print("List sentences: " + str(listSentences));
     
         for i in range(listSentences):
             # get random index
             index = randOrder[i];
+            print("Play sentence " + str(index));
             
-            #gui.setSentence(sentences[i]);
-            sentenceCbk(sentences[i]);
+            sentenceCbk(sentences[index]);
         
             print(["Current playback level: " + str(currentSNR)]);
             print(["Round " + str(i) + " out of " + str(listSentences)]);
             # audio files are labeled from Ger_male001 and not Ger_male000 so add '1'
             curr_sent = util.loadSentenceAudio(testLists[j], index + 1, currentSNR, hintDir);
             
-            audioBuffer = np.array([curr_sent, noise[0:len(curr_sent)]]).transpose();
-    
-            if testConditions[j]== "noiseLeft":
-                sd.play(audioBuffer, blocking = 'true', mapping = [ChFront, ChLeft]);
-            elif testConditions[j] == "noiseRight":
-                sd.play(audioBuffer, blocking = 'true', mapping = [ChFront, ChRight]);
-            elif testConditions[j] == "noiseFront":
-                sd.play(curr_sent + noise[0:len(curr_sent)], blocking = 'true', mapping = [ChFront]);
-            else:
-                sd.play(audioBuffer[0], blocking = 'true', mapping = [ChFront]);
+            util.playAudio(curr_sent, noise, testConditions[j], ChFront, ChLeft, ChRight);
                 
     
             # get length of current sentence
@@ -155,7 +138,8 @@ def hintProcedure(testLists, testConditions, storeResults, sentenceCbk):
     
             # get experimenter feedback
             print("How many words have been correct?");
-            correctWords = input();
+            #correctWords = input();
+            correctWords = 3;
         
             # alternative: just ask if below or above 50% hit
             # less data but quicker
@@ -195,6 +179,7 @@ def hintProcedure(testLists, testConditions, storeResults, sentenceCbk):
                 currentSNR = maxSNR;
                 print(["Warning: reached max SNR!" + str(maxSNR)]);
             
+            snrCbk(currentSNR);
         
     
         print(["List" + str(j) + " out of" + str(testLists.count) + " done!"]);
@@ -209,3 +194,164 @@ def hintProcedure(testLists, testConditions, storeResults, sentenceCbk):
             
     print("Test procedure done!");
     return resultStorage;
+
+
+class hintTest:
+    
+    # put stuff here that only has to be set once
+    def __init__(self, testDir, numLists, userIndex, practiceSentences):
+        
+        self.hintDir = testDir;
+        # statics
+        self.sentenceCount = 20;
+        self.practiceList = 12;
+        self.numPracticeSentences = practiceSentences;
+        
+        self.numTestLists = numLists;
+        
+        [self.testLists, self.testConditions] = createTestSetup(userIndex, numLists);
+        self.resultsStorage = createResultStorage(numLists);
+        
+        self.noise, self.fs = sf.read(hintDir + "noiseGR_male.wav");    
+        
+        self.listIndex = self.testLists[0];
+        self.sentenceIndex = 0;
+        
+        self.listSentenceOrder = np.random.permutation(range(self.sentenceCount));
+        self.listSentenceStrings = util.loadListSentences(self.testLists[self.listIndex], self.hintDir);
+        
+        self.minSNR = -16;
+        self.maxSNR = 4;
+        self.currSNR = 0;
+        self.currCondition = "emptyCondition";
+        self.currList = 0;
+        self.currSentenceString = "empty";
+        
+        
+    def listSetup(self):
+        print(["Starting List " + str(self.listIndex) + " with condition: " + self.testConditions[self.listIndex]]);
+        
+        self.listSentenceOrder = np.random.permutation(range(self.sentenceCount));
+        
+        self.listSentenceStrings = util.loadListSentences(self.testLists[self.listIndex], self.hintDir);
+        
+        self.listSNR = np.zeros(20);
+        self.listHitQuotes = np.zeros(20);
+        
+        self.currSNR = 0;
+        self.currCondition = self.testConditions[self.listIndex];
+        self.currList = self.testLists[self.listIndex];
+        
+        self.currSentenceString = self.listSentenceStrings[self.listSentenceOrder[0]];
+        self.currSentenceLength = len(self.currSentenceString.split());
+        
+    
+    def getCurrentSentenceString(self):
+        return self.currSentenceString;
+    
+    def getCurrentSentenceLen(self):
+        return self.currSentenceLength
+    
+
+    def practiceSetup(self):
+         self.currSNR = 0;
+         self.listSentenceOrder = np.random.permutation(range(self.sentenceCount));  
+         
+        
+    def playPracticeSentence(self):
+         # get random index        
+        index = self.listSentenceOrder[self.sentenceIndex];
+        
+        print(["Practice: Current playback level: " + str(self.currSNR)]);
+        print(["Practice: Round " + str(self.sentenceIndex + 1) + " out of " + str(self.numPracticeSentences)]);
+        # audio files are labeled from Ger_male001 and not Ger_male000 so add '1'
+        currSentenceAudio = util.loadSentenceAudio(self.practiceList, index + 1, self.currSNR, self.hintDir);
+            
+        util.playAudio(currSentenceAudio, self.noise, self.currCondition, ChFront, ChLeft, ChRight);
+
+
+    def playCurrentSentence(self):
+               
+        # a new list has been loaded
+        if self.sentenceIndex == 0:
+            self.listSetup();
+
+        # get random index        
+        index = self.listSentenceOrder[self.sentenceIndex];
+        
+        print(["Current playback level: " + str(self.currSNR)]);
+        print(["Round " + str(self.sentenceIndex + 1) + " out of " + str(self.sentenceCount)]);
+        # audio files are labeled from Ger_male001 and not Ger_male000 so add '1'
+        currSentenceAudio = util.loadSentenceAudio(self.currList, index + 1, self.currSNR, self.hintDir);
+            
+        util.playAudio(currSentenceAudio, self.noise, self.currCondition, ChFront, ChLeft, ChRight);       
+    
+   
+    def enterFeedback(self, correctWords):    
+
+        # alternative: just ask if below or above 50% hit
+        # less data but quicker
+        if correctWords > self.currSentenceLength:
+            print("Invalid input. Try again!");
+            return;
+
+        
+        print(['Sentence len: ' + str(self.currSentenceLength) + ' correct: ' + str(correctWords)]);
+        hitQuote = correctWords / self.currSentenceLength;
+        print("HitQuote: " + str(hitQuote));
+        
+        # adapt SNR based on hitQuote
+        # first 4 sentences: 4 dB steps and NO TRACKING!
+        # MAKE THIS CLEANER!
+        if self.sentenceIndex < 4:
+            if hitQuote < 0.5:
+                self.currSNR = self.currSNR + 4;
+            else:
+                self.currSNR = self.currSNR - 4;
+       # other sentences: 2 dB steps         
+        else:
+            # store sentence data
+            self.listHitQuotes[self.sentenceIndex] = hitQuote;
+            self.listSNR[self.sentenceIndex] = self.currSNR;
+            
+            # adapt SNR based on hitQuote
+            if hitQuote < 0.5:
+                self.currSNR = self.currSNR+ 2;
+            else:
+                self.currSNR = self.currSNR - 2;
+
+    
+        # SNR sanity check
+        if self.currSNR < self.minSNR:
+            self.currSNR = self.minSNR;
+            print(["Warning: reached min SNR!" + str(self.minSNR)]);
+        elif self.currSNR > self.maxSNR:
+            self.currSNR = self.maxSNR;
+            print(["Warning: reached max SNR!" + str(self.maxSNR)]);
+            
+            
+        
+        self.sentenceIndex = self.sentenceIndex + 1;
+        
+        if self.sentenceIndex + 1 >= self.sentenceCount:
+            print("List " + self.listIndex + " finished!");
+            self.listIndex = self.listIndex + 1;
+            self.sentenceIndex = 0;
+        else:
+            index = self.listSentenceOrder[self.sentenceIndex];
+            self.currSentenceString = self.listSentenceStrings[index];
+            self.currSentenceLength = len(self.currSentenceString.split());
+        
+        
+        return self.currSNR;        
+            
+ 
+    def storeResults(self):
+        print(["Storing resutls for list" + str(self.listIndex) + " out of" + str(self.numTestLists)]);
+    
+        # store data in resultStorage
+        self.resultStorage[self.listIndex]["ListIndex"] = self.testLists[self.listIndex];
+        self.resultStorage[self.listIndex]["Condition"] = self.testConditions[self.listIndex];
+        self.resultStorage[self.listIndex]["ListSNRs"] = self.listSNR;
+        self.resultStorage[self.listIndex]["ListHitQuotes"] = self.hitQuotes;
+            

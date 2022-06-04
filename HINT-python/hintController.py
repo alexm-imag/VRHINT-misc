@@ -38,7 +38,7 @@ maxSNR = 2;
 # practice setup
 practiceList = 12;
 practiceRounds = 5;
-practiceCondition = "noiseLeft";
+practiceCondition = "quiet";
 
 # %% Type definitions etc
 
@@ -138,30 +138,18 @@ for i in range(practiceRounds):
     print(["Round " + str(i) + " out of " + str(practiceRounds)]);
     # audio files are labeled from Ger_male001 and not Ger_male000 so add '1'
     curr_sent = util.loadSentenceAudio(practiceList, index + 1, currentSNR, importDir);
-        
-    #noiseSegment = noise[0:len(curr_sent)];
-    #[noiseSegment, noiseIndex] = circularNoise(noise, sentLen, noiseIndex);
 
-    audioBuffer = np.array([curr_sent, noise[0:len(curr_sent)]]).transpose();
-    
+    #noiseSegment = noise[0:len(curr_sent)];
+    #[noiseSegment, noiseIndex] = circularNoise(noise, sentLen, noiseIndex);    
+
+    util.playAudio(curr_sent, noise, practiceCondition, ChFront, ChLeft, ChRight);
+       
     # get length of current sentence
     sentenceLength = len(sentences[index].split());
    
     # print out current sentence string
     print("Sentence length: " + str(sentenceLength))
     print(sentences[index]);
-    
-    sentLen = len(curr_sent);
-
-    if practiceCondition == "noiseLeft":
-        sd.play(audioBuffer, blocking = 'true', mapping = [ChFront, ChLeft]);
-    elif practiceCondition == "noiseRight":
-        sd.play(audioBuffer, blocking = 'true', mapping = [ChFront, ChRight]);
-    elif practiceCondition == "noiseFront":
-        sd.play(curr_sent + noise[0:len(curr_sent)], blocking = 'true', mapping = [ChFront]);
-    else:
-        sd.play(audioBuffer[0], blocking = 'true', mapping = [ChFront]);
-
 
     # get experimenter feedback
     print("How many words have been correct?");
@@ -250,21 +238,11 @@ for j in range(numTestLists):
     
         print(["Current playback level: " + str(currentSNR)]);
         print(["Round " + str(i) + " out of " + str(listSentences)]);
+        
         # audio files are labeled from Ger_male001 and not Ger_male000 so add '1'
         curr_sent = util.loadSentenceAudio(testLists[j], index + 1, currentSNR, hintDir);
-    
-        sentLen = len(curr_sent);
-        #[noiseSegment, noiseIndex] = circularNoise(noise, sentLen, noiseIndex);
+        util.playAudio(curr_sent, noise, practiceCondition, ChFront, ChLeft, ChRight);
 
-        if testConditions[j] == "noiseLeft":
-            sd.play(audioBuffer, blocking = 'true', mapping = [ChFront, ChLeft]);
-        elif testConditions[j] == "noiseRight":
-            sd.play(audioBuffer, blocking = 'true', mapping = [ChFront, ChRight]);
-        elif testConditions[j] == "noiseFront":
-            sd.play(curr_sent + noise[0:len(curr_sent)], blocking = 'true', mapping = [ChFront]);
-        else:
-            sd.play(audioBuffer[0], blocking = 'true', mapping = [ChFront]);
-            
 
         # get length of current sentence
         sentenceLength = len(sentences[index].split());
