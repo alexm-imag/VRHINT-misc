@@ -5,11 +5,55 @@ Created on Fri May  6 10:22:05 2022
 @author: cocot
 """
 
+#%%
+
+
+import sounddevice as sd
+import soundfile as sf
+#from tkinter import *
+import tkinter as tk;  
+
+hintDir = 'german-hint-adaptive-48kHz\\';
+  
+def Voice_rec():
+    fs = 48000
+      
+    # seconds
+    duration = 5
+    myrecording = sd.rec(int(duration * fs), 
+                         samplerate=fs, channels=2)
+    sd.wait()
+      
+    # Save as FLAC file at correct sampling rate
+    return sf.write('my_Audio_file.flac', myrecording, fs)
+
+
+def audioPlayer():
+    noise, fs = sf.read(hintDir + "noiseGR_male.wav");   
+    sd.play(noise, blocking = 'true', mapping = [1, 2]);
+    
+  
+  
+master = tk.Tk()
+  
+tk.Label(master, text=" Voice Recoder : ").grid(row=0, sticky=W, rowspan=5)
+  
+  
+#b = tk.Button(master, text="Start", command=Voice_rec)
+b = tk.Button(master, text="Start", command=audioPlayer)
+b.grid(row=0, column=2, columnspan=2, rowspan=2,
+       padx=5, pady=5)
+  
+tk.mainloop()
+
+
+#%%
 import numpy as np;
 from pydub import AudioSegment;
 import sounddevice as sd;
 import soundfile as sf;
 import os;
+
 
 hintDir = 'german-hint-adaptive-48kHz\\';
 base_type = 'wav';
@@ -28,6 +72,31 @@ sd.play(data, fs);
 status = sd.wait();
 #noise = AudioSegment.from_file(hintDir + "noiseGR_male.wav", base_type);
 #sd.play(noise, 48000);
+
+#%%
+class Test:
+    
+    def __init__(self, testVar):
+        self.value = testVar;
+
+    def printValue(self):
+        print(self.value);
+
+
+obj = Test(7)
+obj.printValue();
+
+
+#%%
+import hintFunctions as hint
+
+stimuliDir = 'G:\VRHINT-misc\HINT-python\german-hint-adaptive-48kHz\\';
+userIndex = 1;
+
+
+hintObject = hint.hintTest(stimuliDir, 5, userIndex);
+hintObject.playCurrentSentence();
+
 
 
 #%%

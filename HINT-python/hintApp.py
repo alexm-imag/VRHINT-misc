@@ -6,7 +6,6 @@ Created on Fri May 20 10:25:07 2022
 """
 
 
-
 from tkinter import filedialog
 import customtkinter as ctk
 import os
@@ -30,11 +29,6 @@ if os.path.isfile('save.txt'):
         savedData = f.read()
         print(savedData);
         stimuliDir = savedData;
-        #splitData = savedData.split(',');
-        #print(savedData);
-        #stimuliDir = splitData;
-#        apps = [x for x in tempApps if x.strip()]
- 
 
 def testCallback(num):
     print("Hey I'm a callback!" + num)
@@ -63,16 +57,26 @@ def clearUserName():
 
 
 def initTest():
-    global hintObject;    
+    
+    global userName;
+    global stimuliDir;
+    global hintObject;   
+    
+    if userName == "default":
+        print("Set username!");
+        return
+    
+    
+    if stimuliDir == "emptyPath":
+        print("Set path!");
+        return;
+    
     
     userIndex = hint.getUserIndex();
     userIndexLabel['text'] = "User Index: " + str(userIndex);
-    global stimuliDir;
-    if stimuliDir == "emptyPath":
-        print("Hint path not set!");
-        return;
-    
+
     hintObject = hint.hintTest(stimuliDir, 5, userIndex, 5);
+    change_to_test()
 
 def practice():
     print("Start HINT practice");
@@ -83,10 +87,10 @@ def practice():
 
 
 def startTest():
+    
+    global hintObject;           
     print("Start test procedure");
-        
-    global hintObject;    
-    #hintObject = hint.hintTest(stimuliDir, 5, userIndex, 5);
+     
     setSentence(hintObject.getCurrentSentenceString());
     hintObject.playCurrentSentence();
     
@@ -122,76 +126,102 @@ def takeFeedback():
     
 def leaveGUI():
     root.destroy();
-    #root.quit();
-       
-#canvas = ctk.CTkCanvas(root, height = 700, width = 700, bg = '#263D42')
-#canvas.pack()
 
-frame = ctk.CTkFrame(root, bg = 'white')
-frame.place(relwidth = 0.8, relheight = 1.5, relx = 0.1, rely = 0.1)
+# Create two frames in the window
+setup = ctk.CTkFrame(root)
+test = ctk.CTkFrame(root)
+
+# Define a function for switching the frames
+def change_to_setup():
+   setup.pack(fill='both', expand=1)
+   test.pack_forget()
+
+def change_to_test():
+   test.pack(fill='both', expand=1)
+   setup.pack_forget()
+   
+ 
+############## PERSISITENT STUFF (MAPPED TO ROOT)
+# Add a button to switch between two frames
+#btn1 = ctk.CTkButton(root, text="Switch to setup", command=change_to_setup)
+#btn1.pack(pady=10)
+
+#btn2 = ctk.CTkButton(root, text="Switch to test", command=change_to_test)
+#btn2.pack(pady=10)
 
 
-topLabel = ctk.CTkLabel(frame, text="Enter user name")
+######### SHOW SETUP SCREEN AT LAUNCH
+change_to_setup()
+
+     
+############# SETUP SCREEN
+
+topLabel = ctk.CTkLabel(setup, text="Setup screen")
 topLabel.pack()
 
+userNameLabel = ctk.CTkLabel(setup, text="Enter user name");
+userNameLabel.pack();
 
-nameField = ctk.CTkEntry(frame)
+nameField = ctk.CTkEntry(setup)
 nameField.pack()
 
-# command=partial(enterName, tmp)
-nameBtn = ctk.CTkButton(frame, text="Enter participants name", padx = 15, pady = 5, bg = "#263D42", command=enterName)
+nameBtn = ctk.CTkButton(setup, text="Enter participants name", padx = 15, pady = 5, bg = "#263D42", command=enterName)
 nameBtn.pack()
 
-clearBtn = ctk.CTkButton(frame, text="Clear field", padx = 15, pady = 5, bg = "#263D42", command=clearUserName)
+clearBtn = ctk.CTkButton(setup, text="Clear field", padx = 15, pady = 5, bg = "#263D42", command=clearUserName)
 clearBtn.pack()
 
-pathBtn = ctk.CTkButton(frame, text="Add Path", padx = 15, pady = 5, bg = "#263D42", command=addPath)
+pathBtn = ctk.CTkButton(setup, text="Add Path", padx = 15, pady = 5, bg = "#263D42", command=addPath)
 pathBtn.pack()
 
-initBtn = ctk.CTkButton(frame, text="Init Test", padx = 15, pady = 5, bg = "#263D42", command=initTest)
+initBtn = ctk.CTkButton(setup, text="Init Test", padx = 15, pady = 5, bg = "#263D42", command=initTest)
 initBtn.pack();
 
-
-practiceBtn = ctk.CTkButton(frame, text="Practice", padx = 15, pady = 5, bg = "#263D42", command=practice)
-practiceBtn.pack();
-
-startBtn = ctk.CTkButton(frame, text="Start test", padx = 15, pady = 5, bg = "#263D42", command=startTest)
-startBtn.pack();
-
-
-userLabel = ctk.CTkLabel(frame, text="Name: ")
-userLabel.pack()
-
-userIndexLabel = ctk.CTkLabel(frame, text="Index: ")
-userIndexLabel.pack()
-
-currentSentence = ctk.CTkLabel(frame, text="Sentence: ")
-currentSentence.pack()
-
-currentSNR = ctk.CTkLabel(frame, text="SNR: ")
-currentSNR.pack()
-
-feedbackField = ctk.CTkEntry(frame)
-feedbackField.pack()
-
-submitBtn = ctk.CTkButton(frame, text="Enter", padx = 15, pady = 5, bg = "#263D42", command=takeFeedback)
-submitBtn.pack()
-
-quitBtn = ctk.CTkButton(frame, text="Quit", padx = 15, pady = 5, bg = "#263D42", command=leaveGUI)
+quitBtn = ctk.CTkButton(setup, text="Quit", padx = 15, pady = 5, bg = "#263D42", command=leaveGUI)
 quitBtn.pack()
 
 
+
+
+############ TEST SCREEN
+
+topLabel = ctk.CTkLabel(setup, text="Test screen")
+topLabel.pack()
+
+practiceBtn = ctk.CTkButton(test, text="Practice", padx = 15, pady = 5, bg = "#263D42", command=practice)
+practiceBtn.pack();
+
+startBtn = ctk.CTkButton(test, text="Start test", padx = 15, pady = 5, bg = "#263D42", command=startTest)
+startBtn.pack();
+
+
+userLabel = ctk.CTkLabel(test, text="Name: ")
+userLabel.pack()
+
+userIndexLabel = ctk.CTkLabel(test, text="Index: ")
+userIndexLabel.pack()
+
+currentSentence = ctk.CTkLabel(test, text="Sentence: ")
+currentSentence.pack()
+
+currentSNR = ctk.CTkLabel(test, text="SNR: ")
+currentSNR.pack()
+
+feedbackField = ctk.CTkEntry(test)
+feedbackField.pack()
+
+submitBtn = ctk.CTkButton(test, text="Enter", padx = 15, pady = 5, bg = "#263D42", command=takeFeedback)
+submitBtn.pack()
+
+setupBtn = ctk.CTkButton(test, text="Setup", padx = 15, pady = 5, bg = "#263D42", command=change_to_setup)
+setupBtn.pack()
+
+quitBtn = ctk.CTkButton(test, text="Quit", padx = 15, pady = 5, bg = "#263D42", command=leaveGUI)
+quitBtn.pack()
+
+
+
+
+
+
 root.mainloop()
-
-if stimuliDir != "emptyPath":
-    with open('save.txt', 'w') as f:
-        print("write save file");
-        f.write(stimuliDir);
-else:
-    print("Don't update save.txt if nothing has been set!");
-
-    #f.write(stimuliDir + ',');
-    #f.write(userName);
-
-
-
