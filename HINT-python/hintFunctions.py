@@ -23,10 +23,6 @@ availableTestLists = 10;
 # lists open for practice (11,12)
 availablePracticeLists = 2;
 
-# min/max available SNR
-minSNR = -16;
-maxSNR = 2;
-
 # maybe add these to setup
 ChLeft = 1;
 ChFront = 2;
@@ -94,6 +90,8 @@ def hintProcedure(testLists, testConditions, storeResults, sentenceCbk, snrCbk):
     if storeResults == True:
         resultStorage = createResultStorage(len(testLists));
         
+    minSNR = -16;
+    maxSNR = 2;
     
     noise, fs = sf.read(hintDir + "noiseGR_male.wav");        
     
@@ -221,11 +219,13 @@ class hintTest:
         self.listSentenceStrings = util.loadListSentences(self.testLists[self.listIndex], self.hintDir);
         
         self.minSNR = -16;
-        self.maxSNR = 4;
+        self.maxSNR = 2;
         self.currSNR = 0;
         self.currCondition = "emptyCondition";
         self.currList = 0;
         self.currSentenceString = "empty";
+        
+        self.listSetup();
         
         
     def listSetup(self):
@@ -250,7 +250,13 @@ class hintTest:
         return self.currSentenceString;
     
     def getCurrentSentenceLen(self):
-        return self.currSentenceLength
+        return self.currSentenceLength;
+    
+    def getCurrentSNR(self):
+        return self.currSNR;
+    
+    def getCurrentCondition(self):
+        return self.currCondition;
     
 
     def practiceSetup(self):
@@ -320,14 +326,13 @@ class hintTest:
             else:
                 self.currSNR = self.currSNR - 2;
 
-    
         # SNR sanity check
         if self.currSNR < self.minSNR:
             self.currSNR = self.minSNR;
-            print(["Warning: reached min SNR!" + str(self.minSNR)]);
+            print("Warning: reached min SNR!" + str(self.minSNR));
         elif self.currSNR > self.maxSNR:
             self.currSNR = self.maxSNR;
-            print(["Warning: reached max SNR!" + str(self.maxSNR)]);
+            print("Warning: reached max SNR!" + str(self.maxSNR));
             
             
         
@@ -341,9 +346,7 @@ class hintTest:
             index = self.listSentenceOrder[self.sentenceIndex];
             self.currSentenceString = self.listSentenceStrings[index];
             self.currSentenceLength = len(self.currSentenceString.split());
-        
-        
-        return self.currSNR;        
+             
             
  
     def storeResults(self):

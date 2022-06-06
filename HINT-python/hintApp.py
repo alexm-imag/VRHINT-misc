@@ -29,32 +29,41 @@ if os.path.isfile('save.txt'):
         savedData = f.read()
         print(savedData);
         stimuliDir = savedData;
-
-def testCallback(num):
-    print("Hey I'm a callback!" + num)
-      
+    
 
 def addPath():  
-    pathname = filedialog.askdirectory();
-    print(pathname)
-    # add a sanity check to this (check if .wav are within dir)
-    
     global stimuliDir;
-    stimuliDir = pathname + '\\';
-    print(stimuliDir)
+    pathname = filedialog.askdirectory();
+    
+    if pathSanityCheck(pathname) != True:
+        pathErrorLabel['text'] = "Invalid path!";
+        return;
+       
+    # clean up error label    
+    pathErrorLabel['text'] = "";   
+    
+    stimuliDir = pathname + '/';
+    pathLabel['text'] = "Path: " + stimuliDir;
     
     
+def pathSanityCheck(path):
     
+    dir = os.listdir(path);
+    for file in dir:
+        if file == "noiseGR_male.wav":
+            return True;
+    
+    return False;
+ 
+    
+      
 def enterName():
     global userName;
     userName = nameField.get();
     print("UserName: " + userName);
     userLabel['text'] = "Name: " + userName;
+    userNameLabel['text'] = "Name: " + userName;
     
-    
-def clearUserName():
-    nameField.delete(0, 'end');
-
 
 def initTest():
     
@@ -64,11 +73,13 @@ def initTest():
     
     if userName == "default":
         print("Set username!");
+        errorLabel['text'] = "No userName set!"; 
         return
     
     
     if stimuliDir == "emptyPath":
         print("Set path!");
+        errorLabel['text'] = "No path set!"; 
         return;
     
     
@@ -77,6 +88,7 @@ def initTest():
 
     hintObject = hint.hintTest(stimuliDir, 5, userIndex, 5);
     change_to_test()
+    
 
 def practice():
     print("Start HINT practice");
@@ -90,18 +102,29 @@ def startTest():
     
     global hintObject;           
     print("Start test procedure");
+    
+    # clean up GUI
+    practiceBtn.destroy();
+    startBtn.destroy();
+    continueBtn.pack_forget();
      
-    setSentence(hintObject.getCurrentSentenceString());
+    setSentence(hintObject.getCurrentSentenceString(), hintObject.getCurrentSentenceLen());
+    setSNR(hintObject.getCurrentSNR());
+    setCondition(hintObject.getCurrentCondition());
     hintObject.playCurrentSentence();
     
+
     
     
-def setSentence(sentence):
-    currentSentence['text'] = "Sentence: " + sentence;
+    
+def setSentence(sentence, length):
+    currentSentence['text'] = "Sentence: " + sentence + "(" + str(length) + ")";
     
 def setSNR(snr):
     currentSNR['text'] = "SNR: " + str(snr) + " dB";  
   
+def setCondition(condition):
+    currentCondition['text'] = "Condition:" + condition;
     
 def setFeedbackOptions(sentLen):
     print("sent len is: " + str(sentLen));
@@ -118,11 +141,17 @@ def takeFeedback():
         print("Invalid input");
         return;
 
+
+    hintObject.enterFeedback(int(submission));
+    setSNR(hintObject.getCurrentSNR());
+    setSentence(hintObject.getCurrentSentenceString(), hintObject.getCurrentSentenceLen());
     
-    setSNR(hintObject.enterFeedback(int(submission)));
-    setSentence(hintObject.getCurrentSentenceString());
+    continueBtn.grid(row=5);
+ 
     
+def nextRound():
     hintObject.playCurrentSentence();
+    continueBtn.pack_forget();
     
 def leaveGUI():
     root.destroy();
@@ -141,14 +170,6 @@ def change_to_test():
    setup.pack_forget()
    
  
-############## PERSISITENT STUFF (MAPPED TO ROOT)
-# Add a button to switch between two frames
-#btn1 = ctk.CTkButton(root, text="Switch to setup", command=change_to_setup)
-#btn1.pack(pady=10)
-
-#btn2 = ctk.CTkButton(root, text="Switch to test", command=change_to_test)
-#btn2.pack(pady=10)
-
 
 ######### SHOW SETUP SCREEN AT LAUNCH
 change_to_setup()
@@ -157,25 +178,35 @@ change_to_setup()
 ############# SETUP SCREEN
 
 topLabel = ctk.CTkLabel(setup, text="Setup screen")
-topLabel.pack()
+topLabel.pack(pady=10)
 
-userNameLabel = ctk.CTkLabel(setup, text="Enter user name");
-userNameLabel.pack();
+enterUserNameLabel = ctk.CTkLabel(setup, text="Enter user name");
+enterUserNameLabel.pack();
 
 nameField = ctk.CTkEntry(setup)
 nameField.pack()
 
-nameBtn = ctk.CTkButton(setup, text="Enter participants name", padx = 15, pady = 5, bg = "#263D42", command=enterName)
+nameBtn = ctk.CTkButton(setup, text="Enter username", padx = 15, pady = 5, bg = "#263D42", command=enterName)
 nameBtn.pack()
 
-clearBtn = ctk.CTkButton(setup, text="Clear field", padx = 15, pady = 5, bg = "#263D42", command=clearUserName)
-clearBtn.pack()
+userNameLabel = ctk.CTkLabel(setup, text="Username: default");
+userNameLabel.pack();
 
 pathBtn = ctk.CTkButton(setup, text="Add Path", padx = 15, pady = 5, bg = "#263D42", command=addPath)
 pathBtn.pack()
 
+pathErrorLabel = ctk.CTkLabel(setup, text="");
+pathErrorLabel.pack();
+
+pathLabel = ctk.CTkLabel(setup, text="Path: " + stimuliDir);
+pathLabel.pack();
+
+
 initBtn = ctk.CTkButton(setup, text="Init Test", padx = 15, pady = 5, bg = "#263D42", command=initTest)
-initBtn.pack();
+initBtn.pack(pady=20);
+
+errorLabel = ctk.CTkLabel(setup, text=" ");
+errorLabel.pack();
 
 quitBtn = ctk.CTkButton(setup, text="Quit", padx = 15, pady = 5, bg = "#263D42", command=leaveGUI)
 quitBtn.pack()
@@ -185,7 +216,7 @@ quitBtn.pack()
 
 ############ TEST SCREEN
 
-topLabel = ctk.CTkLabel(setup, text="Test screen")
+topLabel = ctk.CTkLabel(test, text="Test screen")
 topLabel.pack()
 
 practiceBtn = ctk.CTkButton(test, text="Practice", padx = 15, pady = 5, bg = "#263D42", command=practice)
@@ -204,6 +235,9 @@ userIndexLabel.pack()
 currentSentence = ctk.CTkLabel(test, text="Sentence: ")
 currentSentence.pack()
 
+currentCondition = ctk.CTkLabel(test, text="Condition: ")
+currentCondition.pack()
+
 currentSNR = ctk.CTkLabel(test, text="SNR: ")
 currentSNR.pack()
 
@@ -213,15 +247,22 @@ feedbackField.pack()
 submitBtn = ctk.CTkButton(test, text="Enter", padx = 15, pady = 5, bg = "#263D42", command=takeFeedback)
 submitBtn.pack()
 
+continueBtn = ctk.CTkButton(test, text="Next", padx = 15, pady = 5, bg = "#263D42", command=nextRound)
+continueBtn.pack()
+
 setupBtn = ctk.CTkButton(test, text="Setup", padx = 15, pady = 5, bg = "#263D42", command=change_to_setup)
-setupBtn.pack()
+setupBtn.pack(pady=20)
 
 quitBtn = ctk.CTkButton(test, text="Quit", padx = 15, pady = 5, bg = "#263D42", command=leaveGUI)
 quitBtn.pack()
 
 
 
-
-
-
 root.mainloop()
+
+if stimuliDir != "emptyPath":
+    with open('save.txt', 'w') as f:
+        print("write save file");
+        f.write(stimuliDir);
+else:
+    print("Don't update save.txt if nothing has been set!");
