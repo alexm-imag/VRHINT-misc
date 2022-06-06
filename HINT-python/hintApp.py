@@ -15,8 +15,6 @@ import hintFunctions as hint
 ctk.set_appearance_mode("System")
 ctk.set_default_color_theme("blue")
 
-root = ctk.CTk()
-
 
 stimuliDir = "emptyPath";
 userName = "default";
@@ -30,6 +28,11 @@ if os.path.isfile('save.txt'):
         print(savedData);
         stimuliDir = savedData;
     
+
+
+def quit_me():
+    root.quit();
+    root.destroy();
 
 def addPath():  
     global stimuliDir;
@@ -87,7 +90,7 @@ def initTest():
     userIndexLabel['text'] = "User Index: " + str(userIndex);
 
     hintObject = hint.hintTest(stimuliDir, 5, userIndex, 5);
-    change_to_test()
+    show_test()
     
 
 def practice():
@@ -103,28 +106,29 @@ def startTest():
     global hintObject;           
     print("Start test procedure");
     
-    # clean up GUI
-    practiceBtn.destroy();
-    startBtn.destroy();
-    continueBtn.pack_forget();
+    show_test_running();    
      
     setSentence(hintObject.getCurrentSentenceString(), hintObject.getCurrentSentenceLen());
+    setSentenceNumber(hintObject.getSentenceIndex());
     setSNR(hintObject.getCurrentSNR());
     setCondition(hintObject.getCurrentCondition());
-    hintObject.playCurrentSentence();
-    
-
-    
+      
+    feedbackField.grid_forget();
+    submitBtn.grid_forget();
+        
     
     
 def setSentence(sentence, length):
-    currentSentence['text'] = "Sentence: " + sentence + "(" + str(length) + ")";
+    currentSentence['text'] = sentence + "(" + str(length) + ")";
     
 def setSNR(snr):
     currentSNR['text'] = "SNR: " + str(snr) + " dB";  
   
 def setCondition(condition):
-    currentCondition['text'] = "Condition:" + condition;
+    currentCondition['text'] = "Condition: " + condition;
+    
+def setSentenceNumber(sentIndex):
+    sentenceIndexLabel['text'] = "Round: " + str(sentIndex);
     
 def setFeedbackOptions(sentLen):
     print("sent len is: " + str(sentLen));
@@ -141,124 +145,169 @@ def takeFeedback():
         print("Invalid input");
         return;
 
-
-    hintObject.enterFeedback(int(submission));
-    setSNR(hintObject.getCurrentSNR());
-    setSentence(hintObject.getCurrentSentenceString(), hintObject.getCurrentSentenceLen());
     
-    continueBtn.grid(row=5);
+    hintObject.enterFeedback(int(submission));
+    
+    ##### WRAP THESE INTO UPDATE TEST MONITORING FUNCTION
+    setSentence(hintObject.getCurrentSentenceString(), hintObject.getCurrentSentenceLen());
+    setSentenceNumber(hintObject.getSentenceIndex());
+    setSNR(hintObject.getCurrentSNR());
+    setCondition(hintObject.getCurrentCondition());
+     
+    feedbackField.grid_forget();
+    submitBtn.grid_forget();
+    
+    continueBtn.grid(row = 1, column = 1);
  
     
 def nextRound():
     hintObject.playCurrentSentence();
-    continueBtn.pack_forget();
+    continueBtn.grid_forget();
+    feedbackField.grid(row = 1, column = 1);
+    submitBtn.grid(row = 2, column = 1);
+ 
     
-def leaveGUI():
-    root.destroy();
+# Define a function for switching the frames
+def show_setup():
+   setup.pack(fill='both', expand=1)
+   test.pack_forget()
+   test_running.pack_forget()
 
+def show_test():
+    
+   global userName; 
+   
+   userLabel1['text'] = "Name: " + userName;
+   userIndexLabel1['text'] = "Index: " + str(hint.getUserIndex());
+   test.pack(fill='both', expand=1)
+   
+   setup.pack_forget()
+   test_running.pack_forget()
+    
+def show_test_running():
+    test_running.pack(fill='both', expand=1)
+    setup.pack_forget()
+    test.pack_forget()
+    
+    
+root = ctk.CTk()
+root.geometry("400x500");
+root.title("Python HINT");
+root.protocol("WM_DELETE_WINDOW", quit_me);  
+    
 # Create two frames in the window
 setup = ctk.CTkFrame(root)
 test = ctk.CTkFrame(root)
+test_running = ctk.CTkFrame(root)
 
-# Define a function for switching the frames
-def change_to_setup():
-   setup.pack(fill='both', expand=1)
-   test.pack_forget()
-
-def change_to_test():
-   test.pack(fill='both', expand=1)
-   setup.pack_forget()
-   
- 
 
 ######### SHOW SETUP SCREEN AT LAUNCH
-change_to_setup()
+show_setup()
 
      
 ############# SETUP SCREEN
 
 topLabel = ctk.CTkLabel(setup, text="Setup screen")
-topLabel.pack(pady=10)
+topLabel.grid(row = 0, column = 1);
 
-enterUserNameLabel = ctk.CTkLabel(setup, text="Enter user name");
-enterUserNameLabel.pack();
 
 nameField = ctk.CTkEntry(setup)
-nameField.pack()
+nameField.grid(row = 2, column = 1);
 
 nameBtn = ctk.CTkButton(setup, text="Enter username", padx = 15, pady = 5, bg = "#263D42", command=enterName)
-nameBtn.pack()
+nameBtn.grid(row = 3, column = 1);
 
 userNameLabel = ctk.CTkLabel(setup, text="Username: default");
-userNameLabel.pack();
+userNameLabel.grid(row = 4, column = 1);
 
 pathBtn = ctk.CTkButton(setup, text="Add Path", padx = 15, pady = 5, bg = "#263D42", command=addPath)
-pathBtn.pack()
+pathBtn.grid(row = 5, column = 1);
 
 pathErrorLabel = ctk.CTkLabel(setup, text="");
-pathErrorLabel.pack();
+pathErrorLabel.grid(row = 6, column = 1);
 
 pathLabel = ctk.CTkLabel(setup, text="Path: " + stimuliDir);
-pathLabel.pack();
+pathLabel.grid(row = 7, columnspan = 3)
 
 
 initBtn = ctk.CTkButton(setup, text="Init Test", padx = 15, pady = 5, bg = "#263D42", command=initTest)
-initBtn.pack(pady=20);
+initBtn.grid(row = 8, column = 1);
 
 errorLabel = ctk.CTkLabel(setup, text=" ");
-errorLabel.pack();
+errorLabel.grid(row = 9, column = 1);
 
-quitBtn = ctk.CTkButton(setup, text="Quit", padx = 15, pady = 5, bg = "#263D42", command=leaveGUI)
-quitBtn.pack()
-
-
+quitBtn = ctk.CTkButton(setup, text="Quit", padx = 15, pady = 5, bg = "#263D42", command=quit_me)
+quitBtn.grid(row = 10, column = 1);
 
 
-############ TEST SCREEN
+
+
+############ TEST SCREEN 1
 
 topLabel = ctk.CTkLabel(test, text="Test screen")
-topLabel.pack()
+topLabel.grid(row = 0, column = 0);
 
 practiceBtn = ctk.CTkButton(test, text="Practice", padx = 15, pady = 5, bg = "#263D42", command=practice)
-practiceBtn.pack();
+practiceBtn.grid(row = 1, column = 1);
 
 startBtn = ctk.CTkButton(test, text="Start test", padx = 15, pady = 5, bg = "#263D42", command=startTest)
-startBtn.pack();
+startBtn.grid(row = 2, column = 1);
+
+userLabel1 = ctk.CTkLabel(test, text="Name: ")
+userLabel1.grid(row = 1, column = 0);
+
+userIndexLabel1 = ctk.CTkLabel(test, text="Index: ")
+userIndexLabel1.grid(row = 2, column = 0);
 
 
-userLabel = ctk.CTkLabel(test, text="Name: ")
-userLabel.pack()
+setupBtn = ctk.CTkButton(test, text="Setup", padx = 15, pady = 5, bg = "#263D42", command=show_setup)
+setupBtn.grid(row = 4, column = 1);
 
-userIndexLabel = ctk.CTkLabel(test, text="Index: ")
-userIndexLabel.pack()
+quitBtn = ctk.CTkButton(test, text="Quit", padx = 15, pady = 5, bg = "#263D42", command=quit_me)
+quitBtn.grid(row = 5, column = 1);
 
-currentSentence = ctk.CTkLabel(test, text="Sentence: ")
-currentSentence.pack()
 
-currentCondition = ctk.CTkLabel(test, text="Condition: ")
-currentCondition.pack()
 
-currentSNR = ctk.CTkLabel(test, text="SNR: ")
-currentSNR.pack()
 
-feedbackField = ctk.CTkEntry(test)
-feedbackField.pack()
 
-submitBtn = ctk.CTkButton(test, text="Enter", padx = 15, pady = 5, bg = "#263D42", command=takeFeedback)
-submitBtn.pack()
+################ TEST SCREEN 2
+topLabel = ctk.CTkLabel(test_running, text="Test screen")
+topLabel.grid(row = 0, column = 0);
 
-continueBtn = ctk.CTkButton(test, text="Next", padx = 15, pady = 5, bg = "#263D42", command=nextRound)
-continueBtn.pack()
+userLabel = ctk.CTkLabel(test_running, text="Name: ")
+userLabel.grid(row = 0, column = 0);
 
-setupBtn = ctk.CTkButton(test, text="Setup", padx = 15, pady = 5, bg = "#263D42", command=change_to_setup)
-setupBtn.pack(pady=20)
+userIndexLabel = ctk.CTkLabel(test_running, text="Index: ")
+userIndexLabel.grid(row = 1, column = 0);
 
-quitBtn = ctk.CTkButton(test, text="Quit", padx = 15, pady = 5, bg = "#263D42", command=leaveGUI)
-quitBtn.pack()
+currentSentence = ctk.CTkLabel(test_running, text="")
+currentSentence.grid(row = 2, column = 0);
 
+sentenceIndexLabel = ctk.CTkLabel(test_running, text="Round: ");
+sentenceIndexLabel.grid(row = 3, column = 0);
+
+currentCondition = ctk.CTkLabel(test_running, text="Condition: ")
+currentCondition.grid(row = 4, column = 0);
+
+currentSNR = ctk.CTkLabel(test_running, text="SNR: ")
+currentSNR.grid(row = 5, column = 0);
+
+feedbackField = ctk.CTkEntry(test_running)
+feedbackField.grid(row = 1, column = 1);
+
+submitBtn = ctk.CTkButton(test_running, text="Enter", padx = 15, pady = 5, bg = "#263D42", command=takeFeedback)
+submitBtn.grid(row = 2, column = 1);
+
+continueBtn = ctk.CTkButton(test_running, text="Play", padx = 15, pady = 5, bg = "#263D42", command=nextRound)
+continueBtn.grid(row = 1, column = 1);
+
+quitBtn = ctk.CTkButton(test_running, text="Quit", padx = 15, pady = 5, bg = "#263D42", command=quit_me)
+quitBtn.grid(row = 4, column = 1);
+    
 
 
 root.mainloop()
+
 
 if stimuliDir != "emptyPath":
     with open('save.txt', 'w') as f:

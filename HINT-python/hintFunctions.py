@@ -245,12 +245,20 @@ class hintTest:
         self.currSentenceString = self.listSentenceStrings[self.listSentenceOrder[0]];
         self.currSentenceLength = len(self.currSentenceString.split());
         
+        self.sentenceIndex = 0;
+        
     
     def getCurrentSentenceString(self):
         return self.currSentenceString;
     
     def getCurrentSentenceLen(self):
         return self.currSentenceLength;
+    
+    def getSentenceIndex(self):
+        return self.sentenceIndex;
+    
+    def getSentenceCount(self):
+        return self.sentenceCount;
     
     def getCurrentSNR(self):
         return self.currSNR;
@@ -279,8 +287,8 @@ class hintTest:
     def playCurrentSentence(self):
                
         # a new list has been loaded
-        if self.sentenceIndex == 0:
-            self.listSetup();
+        if self.sentenceIndex >= self.sentenceCount:
+            print("Sentence range exceeded!");
 
         # get random index        
         index = self.listSentenceOrder[self.sentenceIndex];
@@ -341,7 +349,9 @@ class hintTest:
         if self.sentenceIndex + 1 >= self.sentenceCount:
             print("List " + self.listIndex + " finished!");
             self.listIndex = self.listIndex + 1;
-            self.sentenceIndex = 0;
+            print("Storing results");
+            self.storeResults();
+            self.listSetup();
         else:
             index = self.listSentenceOrder[self.sentenceIndex];
             self.currSentenceString = self.listSentenceStrings[index];
