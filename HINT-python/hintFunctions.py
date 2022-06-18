@@ -276,8 +276,8 @@ class hintTest:
          # get random index        
         index = self.listSentenceOrder[self.sentenceIndex];
         
-        print(["Practice: Current playback level: " + str(self.currSNR)]);
-        print(["Practice: Round " + str(self.sentenceIndex + 1) + " out of " + str(self.numPracticeSentences)]);
+        print("Practice: Current playback level: " + str(self.currSNR));
+        print("Practice: Round " + str(self.sentenceIndex + 1) + " out of " + str(self.numPracticeSentences));
         # audio files are labeled from Ger_male001 and not Ger_male000 so add '1'
         currSentenceAudio = util.loadSentenceAudio(self.practiceList, index + 1, self.currSNR, self.hintDir);
             
@@ -293,8 +293,8 @@ class hintTest:
         # get random index        
         index = self.listSentenceOrder[self.sentenceIndex];
         
-        print(["Current playback level: " + str(self.currSNR)]);
-        print(["Round " + str(self.sentenceIndex + 1) + " out of " + str(self.sentenceCount)]);
+        print("Current playback level: " + str(self.currSNR));
+        print("Round " + str(self.sentenceIndex + 1) + " out of " + str(self.sentenceCount));
         # audio files are labeled from Ger_male001 and not Ger_male000 so add '1'
         currSentenceAudio = util.loadSentenceAudio(self.currList, index + 1, self.currSNR, self.hintDir);
             
@@ -310,7 +310,7 @@ class hintTest:
             return;
 
         
-        print(['Sentence len: ' + str(self.currSentenceLength) + ' correct: ' + str(correctWords)]);
+        print('Sentence len: ' + str(self.currSentenceLength) + ' correct: ' + str(correctWords));
         hitQuote = correctWords / self.currSentenceLength;
         print("HitQuote: " + str(hitQuote));
         

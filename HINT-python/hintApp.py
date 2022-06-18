@@ -64,7 +64,7 @@ def enterName():
     global userName;
     userName = nameField.get();
     print("UserName: " + userName);
-    userLabel['text'] = "Name: " + userName;
+    userLabel['text'] = userName;
     userNameLabel['text'] = "Name: " + userName;
     
 
@@ -87,7 +87,7 @@ def initTest():
     
     
     userIndex = hint.getUserIndex();
-    userIndexLabel['text'] = "User Index: " + str(userIndex);
+    userIndexLabel['text'] = str(userIndex);
 
     hintObject = hint.hintTest(stimuliDir, 5, userIndex, 5);
     show_test()
@@ -119,16 +119,17 @@ def startTest():
     
     
 def setSentence(sentence, length):
-    currentSentence['text'] = sentence + "(" + str(length) + ")";
+    currentSentence['text'] = sentence.replace("\n", "" );
+    currentLength['text'] = str(length);
     
 def setSNR(snr):
-    currentSNR['text'] = "SNR: " + str(snr) + " dB";  
+    currentSNR['text'] = str(snr) + " dB";  
   
 def setCondition(condition):
-    currentCondition['text'] = "Condition: " + condition;
+    currentCondition['text'] = condition;
     
 def setSentenceNumber(sentIndex):
-    sentenceIndexLabel['text'] = "Round: " + str(sentIndex);
+    sentenceIndexLabel['text'] = str(sentIndex);
     
 def setFeedbackOptions(sentLen):
     print("sent len is: " + str(sentLen));
@@ -157,14 +158,14 @@ def takeFeedback():
     feedbackField.grid_forget();
     submitBtn.grid_forget();
     
-    continueBtn.grid(row = 1, column = 1);
+    continueBtn.grid(row = 2, column = 2);
  
     
 def nextRound():
     hintObject.playCurrentSentence();
     continueBtn.grid_forget();
-    feedbackField.grid(row = 1, column = 1);
-    submitBtn.grid(row = 2, column = 1);
+    feedbackField.grid(row = 2, column = 2);
+    submitBtn.grid(row = 3, column = 2);
  
     
 # Define a function for switching the frames
@@ -274,35 +275,59 @@ quitBtn.grid(row = 5, column = 1);
 topLabel = ctk.CTkLabel(test_running, text="Test screen")
 topLabel.grid(row = 0, column = 0);
 
-userLabel = ctk.CTkLabel(test_running, text="Name: ")
-userLabel.grid(row = 0, column = 0);
+nameLabel = ctk.CTkLabel(test_running, text="Name: ")
+nameLabel.grid(row = 0, column = 0, pady = 7);
 
-userIndexLabel = ctk.CTkLabel(test_running, text="Index: ")
-userIndexLabel.grid(row = 1, column = 0);
+userLabel = ctk.CTkLabel(test_running, text="default")
+userLabel.grid(row = 0, column = 1, pady = 7);
+
+indexLabel = ctk.CTkLabel(test_running, text="User Index: ")
+indexLabel.grid(row = 1, column = 0, pady = 7);
+
+userIndexLabel = ctk.CTkLabel(test_running, text= "0");
+userIndexLabel.grid(row = 1, column = 1, pady = 7, padx = 80);
+
+sentenceLabel = ctk.CTkLabel(test_running, text="Sentence: ")
+sentenceLabel.grid(row = 2, column = 0, pady = 7);
 
 currentSentence = ctk.CTkLabel(test_running, text="")
-currentSentence.grid(row = 2, column = 0);
+currentSentence.grid(row = 2, column = 1, pady = 7);
 
-sentenceIndexLabel = ctk.CTkLabel(test_running, text="Round: ");
-sentenceIndexLabel.grid(row = 3, column = 0);
+lengthLabel = ctk.CTkLabel(test_running, text="Length: ")
+lengthLabel.grid(row = 3, column = 0, pady = 7);
 
-currentCondition = ctk.CTkLabel(test_running, text="Condition: ")
-currentCondition.grid(row = 4, column = 0);
+currentLength = ctk.CTkLabel(test_running, text="0")
+currentLength.grid(row = 3, column = 1, pady = 7);
 
-currentSNR = ctk.CTkLabel(test_running, text="SNR: ")
-currentSNR.grid(row = 5, column = 0);
+roundLabel = ctk.CTkLabel(test_running, text="Round: ");
+roundLabel.grid(row = 4, column = 0, pady = 7);
+
+sentenceIndexLabel = ctk.CTkLabel(test_running, text="0");
+sentenceIndexLabel.grid(row = 4, column = 1, pady = 7);
+
+conditionLabel = ctk.CTkLabel(test_running, text="Condition: ")
+conditionLabel.grid(row = 5, column = 0, pady = 7);
+
+currentCondition = ctk.CTkLabel(test_running, text="emptyCondition")
+currentCondition.grid(row = 5, column = 1, pady = 7);
+
+snrLabel = ctk.CTkLabel(test_running, text="SNR: ")
+snrLabel.grid(row = 6, column = 0, pady = 5);
+
+currentSNR = ctk.CTkLabel(test_running, text="0 dB")
+currentSNR.grid(row = 6, column = 1, pady = 5);
 
 feedbackField = ctk.CTkEntry(test_running)
-feedbackField.grid(row = 1, column = 1);
+feedbackField.grid(row = 1, column = 2);
 
 submitBtn = ctk.CTkButton(test_running, text="Enter", padx = 15, pady = 5, bg = "#263D42", command=takeFeedback)
-submitBtn.grid(row = 2, column = 1);
+submitBtn.grid(row = 2, column = 2);
 
 continueBtn = ctk.CTkButton(test_running, text="Play", padx = 15, pady = 5, bg = "#263D42", command=nextRound)
-continueBtn.grid(row = 1, column = 1);
+continueBtn.grid(row = 2, column = 2);
 
 quitBtn = ctk.CTkButton(test_running, text="Quit", padx = 15, pady = 5, bg = "#263D42", command=quit_me)
-quitBtn.grid(row = 4, column = 1);
+quitBtn.grid(row = 6, column = 2);
     
 
 
