@@ -39,11 +39,9 @@ def addPath():
     pathname = filedialog.askdirectory();
     
     if pathSanityCheck(pathname) != True:
-        pathErrorLabel['text'] = "Invalid path!";
+        pathLabel['text'] = "Invalid path!";
+        pathLabel.after(2000, resetPathLabel);
         return;
-       
-    # clean up error label    
-    pathErrorLabel['text'] = "";   
     
     stimuliDir = pathname + '/';
     pathLabel['text'] = "Path: " + stimuliDir;
@@ -135,6 +133,9 @@ def setFeedbackOptions(sentLen):
     print("sent len is: " + str(sentLen));
     # add buttons (0, 1, 2, 3, ..., sentLen)
     
+def resetPathLabel():
+    pathLabel['text'] = "Path: " + stimuliDir;
+    
     
 def takeFeedback():
     
@@ -208,6 +209,8 @@ show_setup()
      
 ############# SETUP SCREEN
 
+setup.columnconfigure(0, weight = 1)
+
 topLabel = ctk.CTkLabel(setup, text="Setup screen")
 topLabel.grid(row = 0, column = 1);
 
@@ -223,9 +226,6 @@ userNameLabel.grid(row = 4, column = 1);
 
 pathBtn = ctk.CTkButton(setup, text="Add Path", padx = 15, pady = 5, bg = "#263D42", command=addPath)
 pathBtn.grid(row = 5, column = 1);
-
-pathErrorLabel = ctk.CTkLabel(setup, text="");
-pathErrorLabel.grid(row = 6, column = 1);
 
 pathLabel = ctk.CTkLabel(setup, text="Path: " + stimuliDir);
 pathLabel.grid(row = 7, columnspan = 3)
