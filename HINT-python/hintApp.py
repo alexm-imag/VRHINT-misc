@@ -188,12 +188,13 @@ def show_test():
     
 def show_test_running():
     test_running.pack(fill='both', expand=1)
+    root.geometry("550x300");
     setup.pack_forget()
     test.pack_forget()
     
     
 root = ctk.CTk()
-root.geometry("400x500");
+root.geometry("400x300");
 root.title("Python HINT");
 root.protocol("WM_DELETE_WINDOW", quit_me);  
     
@@ -210,6 +211,8 @@ show_setup()
 ############# SETUP SCREEN
 
 setup.columnconfigure(0, weight = 1)
+setup.columnconfigure(1, weight = 1)
+setup.columnconfigure(2, weight = 1)
 
 topLabel = ctk.CTkLabel(setup, text="Setup screen")
 topLabel.grid(row = 0, column = 1);
@@ -245,8 +248,8 @@ quitBtn.grid(row = 10, column = 1);
 
 ############ TEST SCREEN 1
 
-topLabel = ctk.CTkLabel(test, text="Test screen")
-topLabel.grid(row = 0, column = 0);
+#topLabel = ctk.CTkLabel(test, text="Test screen")
+#topLabel.grid(row = 0, column = 0);
 
 practiceBtn = ctk.CTkButton(test, text="Practice", padx = 15, pady = 5, bg = "#263D42", command=practice)
 practiceBtn.grid(row = 1, column = 1);
