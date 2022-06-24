@@ -277,7 +277,6 @@ class hintTest:
          self.listSentenceOrder = np.random.permutation(range(self.sentenceCount));  
          self.listSentenceStrings = util.loadListSentences(self.practiceList, self.hintDir);
          self.currSentenceString = self.listSentenceStrings[self.listSentenceOrder[0]];
-         print("Setup sent: " + self.currSentenceString + " index: " + str(self.listSentenceOrder[0]));
          self.currSentenceLength = len(self.currSentenceString.split());
          
         

@@ -105,25 +105,26 @@ class HintTestProcedure(ctk.CTkFrame):
         self.feedbackField = ctk.CTkEntry(self)
         self.feedbackField.grid(row = 1, column = 2);
         
-        self.submitBtn = ctk.CTkButton(self, text="Enter", padx = 15, pady = 5, bg = "#263D42", command=self.takeFeedback)
-        self.submitBtn.grid(row = 2, column = 2);
-        
         self.continueBtn = ctk.CTkButton(self, text="Play", padx = 15, pady = 5, bg = "#263D42", command=self.nextRound)
         self.continueBtn.grid(row = 2, column = 2);
         
         self.quitBtn = ctk.CTkButton(self, text="Quit", padx = 15, pady = 5, bg = "#263D42", command= controller.quit_app)
         self.quitBtn.grid(row = 6, column = 2);
         
-        self.feedbackField.bind('<Return>', self.takeFeedback)
+        self.feedbackField.bind('<Return>', self.takeFeedback);
+        self.continueBtn.bind('<Return>', self.nextRound);
     
     
     def nextRound(self):
-        print("Trigger next round");
+        
+        if self.continueBtn.grid_info() == {}:
+            print("Play not available");
+            return;
+            
         self.hintObject.playCurrentSentence();
         self.continueBtn.grid_forget();
         self.feedbackField.grid(row = 2, column = 2);
-        self.feedbackField.focus_set();
-        self.submitBtn.grid(row = 3, column = 2);
+        self.feedbackField.focus();
         
     def takeFeedback(self, event=None):
         
@@ -143,15 +144,11 @@ class HintTestProcedure(ctk.CTkFrame):
         
         self.feedbackField.delete(0, 'end');
         self.feedbackField.grid_forget();
-        self.submitBtn.grid_forget();
-        print(self.feedbackField.grid_info())
         self.continueBtn.grid(row = 2, column = 2);
         
     def startTest(self):
         self.updateHintLabels();          
         self.feedbackField.grid_forget();
-        self.submitBtn.grid_forget();
-        
         
     def setSentence(self, sentence, length):
         self.currentSentence['text'] = sentence.replace("\n", "" );
@@ -240,9 +237,6 @@ class HintPractice(ctk.CTkFrame):
         self.feedbackField = ctk.CTkEntry(self)
         self.feedbackField.grid(row = 1, column = 2);
         
-        self.submitBtn = ctk.CTkButton(self, text="Enter", padx = 15, pady = 5, bg = "#263D42", command=self.takeFeedback)
-        self.submitBtn.grid(row = 2, column = 2);
-        
         self.continueBtn = ctk.CTkButton(self, text="Play", padx = 15, pady = 5, bg = "#263D42", command=self.nextRound)
         self.continueBtn.grid(row = 2, column = 2);
         
@@ -252,14 +246,19 @@ class HintPractice(ctk.CTkFrame):
         self.quitBtn.grid(row = 6, column = 2);
         
         self.feedbackField.bind('<Return>', self.takeFeedback)
+        self.continueBtn.bind('<Return>', self.nextRound)
     
     
     def nextRound(self):
+        
+        if self.continueBtn.grid_info() == {}:
+            print("Play not available");
+            return;
+        
         self.hintObject.playPracticeSentence();
         self.continueBtn.grid_forget();
         self.feedbackField.grid(row = 2, column = 2);
-        self.feedbackField.focus_set();
-        self.submitBtn.grid(row = 3, column = 2);
+        self.feedbackField.focus();
         
     def takeFeedback(self, event=None):
         
@@ -279,7 +278,6 @@ class HintPractice(ctk.CTkFrame):
         
         self.feedbackField.delete(0, 'end');
         self.feedbackField.grid_forget();
-        self.submitBtn.grid_forget();
         self.continueBtn.grid(row = 2, column = 2);
         
         if self.hintObject.getSentenceIndex() >= self.hintObject.getPracticeRounds():
@@ -290,7 +288,6 @@ class HintPractice(ctk.CTkFrame):
     def startTest(self):
         self.updateHintLabels();          
         self.feedbackField.grid_forget();
-        self.submitBtn.grid_forget();
         
         
     def setSentence(self, sentence, length):

@@ -65,11 +65,9 @@ class hintGUIMaster(ctk.CTk):
         
         # show first frame
         self.frames[setup.HintSetup].setDefaultPath(self.path);
-        #self.show_frame(setup.HintSetup)
         self.showSetup()
         
     def show_frame(self, cont):
-        # ALSO RESIZE WINDOW HERE?
        frame = self.frames[cont]
        # raises the current frame to the top
        frame.tkraise()
@@ -113,8 +111,8 @@ class hintGUIMaster(ctk.CTk):
                
 
         
-testObj = hintGUIMaster()
-testObj.mainloop();
+guiObj = hintGUIMaster()
+guiObj.mainloop();
 
 
 if stimuliDir != "emptyPath":
