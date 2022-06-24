@@ -58,7 +58,7 @@ def pathSanityCheck(path):
  
     
       
-def enterName():
+def enterName(event=None):
     global userName;
     userName = nameField.get();
     print("UserName: " + userName);
@@ -210,46 +210,45 @@ show_setup()
      
 ############# SETUP SCREEN
 
+root.bind('<Return>', enterName)
+
 setup.columnconfigure(0, weight = 1)
 setup.columnconfigure(1, weight = 1)
 setup.columnconfigure(2, weight = 1)
 
-topLabel = ctk.CTkLabel(setup, text="Setup screen")
+topLabel = ctk.CTkLabel(setup, text="Setup")
 topLabel.grid(row = 0, column = 1);
 
 
 nameField = ctk.CTkEntry(setup)
-nameField.grid(row = 2, column = 1);
-
-nameBtn = ctk.CTkButton(setup, text="Enter username", padx = 15, pady = 5, bg = "#263D42", command=enterName)
-nameBtn.grid(row = 3, column = 1);
+nameField.grid(row = 1, column = 1);
 
 userNameLabel = ctk.CTkLabel(setup, text="Username: default");
-userNameLabel.grid(row = 4, column = 1);
+userNameLabel.grid(row = 2, column = 1);
 
-pathBtn = ctk.CTkButton(setup, text="Add Path", padx = 15, pady = 5, bg = "#263D42", command=addPath)
-pathBtn.grid(row = 5, column = 1);
+pathBtn = ctk.CTkButton(setup, text="Select Path", padx = 15, pady = 5, bg = "#263D42", command=addPath)
+pathBtn.grid(row = 3, column = 1, pady = 5);
 
-pathLabel = ctk.CTkLabel(setup, text="Path: " + stimuliDir);
-pathLabel.grid(row = 7, columnspan = 3)
+pathLabel = ctk.CTkLabel(setup, text = stimuliDir);
+pathLabel.grid(row = 4, columnspan = 3)
 
 
 initBtn = ctk.CTkButton(setup, text="Init Test", padx = 15, pady = 5, bg = "#263D42", command=initTest)
-initBtn.grid(row = 8, column = 1);
+initBtn.grid(row = 5, column = 1, pady = 5);
 
 errorLabel = ctk.CTkLabel(setup, text=" ");
-errorLabel.grid(row = 9, column = 1);
+errorLabel.grid(row = 6, column = 1);
 
 quitBtn = ctk.CTkButton(setup, text="Quit", padx = 15, pady = 5, bg = "#263D42", command=quit_me)
-quitBtn.grid(row = 10, column = 1);
+quitBtn.grid(row = 7, column = 1, pady = 5);
 
 
 
 
 ############ TEST SCREEN 1
 
-#topLabel = ctk.CTkLabel(test, text="Test screen")
-#topLabel.grid(row = 0, column = 0);
+topLabel = ctk.CTkLabel(test, text="Test Overview ")
+topLabel.grid(row = 0, column = 1);
 
 practiceBtn = ctk.CTkButton(test, text="Practice", padx = 15, pady = 5, bg = "#263D42", command=practice)
 practiceBtn.grid(row = 1, column = 1);
