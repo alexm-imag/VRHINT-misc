@@ -29,7 +29,6 @@ class HintSetup(ctk.CTkFrame):
         self.topLabel = ctk.CTkLabel(self, text="Setup")
         self.topLabel.grid(row = 0, column = 1);
         
-        
         self.nameField = ctk.CTkEntry(self)
         self.nameField.grid(row = 1, column = 1);
         
@@ -41,7 +40,6 @@ class HintSetup(ctk.CTkFrame):
         
         self.pathLabel = ctk.CTkLabel(self, text = self.path);
         self.pathLabel.grid(row = 4, columnspan = 3)
-        
         
         self.initBtn = ctk.CTkButton(self, text="Init Test", padx = 15, pady = 5, bg = "#263D42", command=self.initTest)
         self.initBtn.grid(row = 5, column = 1, pady = 5);
@@ -73,8 +71,7 @@ class HintSetup(ctk.CTkFrame):
         self.pathLabel['text'] = self.path;
         
         
-    def pathSanityCheck(self, path):
-        
+    def pathSanityCheck(self, path):  
         dir = os.listdir(path);
         for file in dir:
             if file == "noiseGR_male.wav":
@@ -91,8 +88,7 @@ class HintSetup(ctk.CTkFrame):
         self.userNameLabel['text'] = "Name: " + self.userName;
         
     
-    def initTest(self):    
-        
+    def initTest(self):        
         if self.userName == "default":
             self.errorLabel['text'] = "No userName set!"; 
             return

@@ -33,7 +33,9 @@ if os.path.isfile('save.txt'):
 class hintGUIMaster(ctk.CTk):
     
     def __init__(self, *args, **kwargs):
-        self.root = ctk.CTk.__init__(self, *args, **kwargs)
+        #self.root = 
+        ctk.CTk.__init__(self, *args, **kwargs)
+        self.root = ctk.CTk;
         # Adding a title to the window
         self.wm_title("Test Application")
  
@@ -43,18 +45,18 @@ class hintGUIMaster(ctk.CTk):
         self.hintObject = '';
  
         # creating a frame and assigning it to container
-        container = ctk.CTkFrame(self, height=400, width=600)
+        self.container = ctk.CTkFrame(self, height=400, width=600)
         # specifying the region where the frame is packed in root
-        container.pack(side="top", fill="both", expand=True)
+        self.container.pack(side="top", fill="both", expand=True)
  
         # configuring the location of the container using grid
-        container.grid_rowconfigure(0, weight=1)
-        container.grid_columnconfigure(0, weight=1)
+        self.container.grid_rowconfigure(0, weight=1)
+        self.container.grid_columnconfigure(0, weight=1)
     
         self.frames = {}
         
         for F in (setup.HintSetup, test.HintTestOverview, test.HintTestProcedure, test.HintPractice):
-            frame = F(container, self)
+            frame = F(self.container, self)
  
             # the windows class acts as the root window for the frames.
             self.frames[F] = frame
@@ -63,7 +65,8 @@ class hintGUIMaster(ctk.CTk):
         
         # show first frame
         self.frames[setup.HintSetup].setDefaultPath(self.path);
-        self.show_frame(setup.HintSetup)
+        #self.show_frame(setup.HintSetup)
+        self.showSetup()
         
     def show_frame(self, cont):
         # ALSO RESIZE WINDOW HERE?
@@ -76,6 +79,8 @@ class hintGUIMaster(ctk.CTk):
        self.destroy();
        
     def showSetup(self):
+        print("Show setup");
+        self.root.geometry(self, "400x300");
         self.show_frame(setup.HintSetup);
        
     def setHintParameters(self, userName, path):
@@ -86,17 +91,21 @@ class hintGUIMaster(ctk.CTk):
         self.hintObject = hint.hintTest(stimuliDir, 5, self.userIndex, 5); 
         
         self.frames[test.HintTestOverview].setParams(self.userName, self.userIndex);  
+        
+        self.root.geometry(self, "400x250");
         self.show_frame(test.HintTestOverview);
         
     def startHintPractice(self):
         self.frames[test.HintPractice].setParams(self.userName, self.userIndex, self.hintObject);
         self.hintObject.practiceSetup();
         self.frames[test.HintPractice].startTest();
+        self.root.geometry(self, "550x300");
         self.show_frame(test.HintPractice);
         
     def startHintProcedure(self):
         self.frames[test.HintTestProcedure].setParams(self.userName, self.userIndex, self.hintObject);
         self.frames[test.HintTestProcedure].startTest();
+        self.root.geometry(self, "550x300");
         self.show_frame(test.HintTestProcedure);
         
     def practiceDone(self):

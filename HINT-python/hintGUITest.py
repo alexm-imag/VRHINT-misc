@@ -19,26 +19,24 @@ class HintTestOverview(ctk.CTkFrame):
         self.path = "emptyPath";
         self.userIndex = 0;
         
-        self.topLabel = ctk.CTkLabel(self, text="Test Overview ")
-        self.topLabel.grid(row = 0, column = 1);
+        self.topLabel = ctk.CTkLabel(self, text="Test Overview")
+        self.topLabel.grid(row = 0, column = 0, columnspan = 3, pady = 10);
+        
+        self.columnconfigure(0, weight = 1)
+        self.columnconfigure(1, weight = 1)
+        self.columnconfigure(2, weight = 1)
         
         self.practiceBtn = ctk.CTkButton(self, text="Practice", padx = 15, pady = 5, bg = "#263D42", command= controller.startHintPractice);
-        self.practiceBtn.grid(row = 1, column = 1);
+        self.practiceBtn.grid(row = 1, column = 1, pady = 5);
         
         self.startBtn = ctk.CTkButton(self, text="Start test", padx = 15, pady = 5, bg = "#263D42", command= controller.startHintProcedure);
-        self.startBtn.grid(row = 2, column = 1);
+        self.startBtn.grid(row = 2, column = 1, pady = 5);
         
-        self.userNameLabel = ctk.CTkLabel(self, text="Name: " + self.userName)
-        self.userNameLabel.grid(row = 1, column = 0);
-        
-        self.userIndexLabel = ctk.CTkLabel(self, text="Index: ")
-        self.userIndexLabel.grid(row = 2, column = 0);
-        
-        self.setupBtn = ctk.CTkButton(self, text="Setup", padx = 15, pady = 5, bg = "#263D42", command=lambda: controller.showSetup);
-        self.setupBtn.grid(row = 4, column = 1);
+        self.setupBtn = ctk.CTkButton(self, text="Setup", padx = 15, pady = 5, bg = "#263D42", command= controller.showSetup);
+        self.setupBtn.grid(row = 4, column = 1, pady = 5);
         
         self.quitBtn = ctk.CTkButton(self, text="Quit", padx = 15, pady = 5, bg = "#263D42", command= controller.quit_app)
-        self.quitBtn.grid(row = 5, column = 1);      
+        self.quitBtn.grid(row = 5, column = 1, pady = 5);      
         
     def setParams(self, userName, userIndex):
         self.userName = userName;
@@ -46,8 +44,7 @@ class HintTestOverview(ctk.CTkFrame):
         self.updateLabels();
         
     def updateLabels(self):
-        self.userNameLabel['text'] = "Name: " + self.userName;
-        self.userIndexLabel['text'] = "Index: " + str(self.userIndex);
+        self.topLabel['text'] = "Test Overview (" + self.userName +") " + str(self.userIndex);
         
         
 class HintTestProcedure(ctk.CTkFrame):
@@ -250,7 +247,6 @@ class HintPractice(ctk.CTkFrame):
         self.continueBtn.grid(row = 2, column = 2);
         
         self.doneBtn = ctk.CTkButton(self, text="Done", padx = 15, pady = 5, bg = "#263D42", command=controller.practiceDone)
-        #self.doneBtn.grid(row = 2, column = 2);
         
         self.quitBtn = ctk.CTkButton(self, text="Quit", padx = 15, pady = 5, bg = "#263D42", command= controller.quit_app)
         self.quitBtn.grid(row = 6, column = 2);
@@ -259,7 +255,6 @@ class HintPractice(ctk.CTkFrame):
     
     
     def nextRound(self):
-        print("Trigger next round");
         self.hintObject.playPracticeSentence();
         self.continueBtn.grid_forget();
         self.feedbackField.grid(row = 2, column = 2);
@@ -288,11 +283,9 @@ class HintPractice(ctk.CTkFrame):
         self.continueBtn.grid(row = 2, column = 2);
         
         if self.hintObject.getSentenceIndex() >= self.hintObject.getPracticeRounds():
-            print("Practice done!");
             # hide Play button
             self.continueBtn.grid_forget();
             self.doneBtn.grid(row = 2, column = 2);
-            #self.controller.practiceDone();
         
     def startTest(self):
         self.updateHintLabels();          
