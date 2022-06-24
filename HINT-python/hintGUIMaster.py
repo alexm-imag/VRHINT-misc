@@ -53,7 +53,7 @@ class hintGUIMaster(ctk.CTk):
     
         self.frames = {}
         
-        for F in (setup.HintSetup, test.HintTestOverview, test.HintTestProcedure):
+        for F in (setup.HintSetup, test.HintTestOverview, test.HintTestProcedure, test.HintPractice):
             frame = F(container, self)
  
             # the windows class acts as the root window for the frames.
@@ -88,16 +88,22 @@ class hintGUIMaster(ctk.CTk):
         self.frames[test.HintTestOverview].setParams(self.userName, self.userIndex);  
         self.show_frame(test.HintTestOverview);
         
+    def startHintPractice(self):
+        self.frames[test.HintPractice].setParams(self.userName, self.userIndex, self.hintObject);
+        self.hintObject.practiceSetup();
+        self.frames[test.HintPractice].startTest();
+        self.show_frame(test.HintPractice);
+        
     def startHintProcedure(self):
         self.frames[test.HintTestProcedure].setParams(self.userName, self.userIndex, self.hintObject);
         self.frames[test.HintTestProcedure].startTest();
         self.show_frame(test.HintTestProcedure);
+        
+    def practiceDone(self):
+        self.show_frame(test.HintTestOverview);
                
-    
-    
-#class HintPractice(ctk.CTkFrame):
-            
-print("Start");
+
+        
 testObj = hintGUIMaster()
 testObj.mainloop();
 

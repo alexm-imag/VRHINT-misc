@@ -202,8 +202,10 @@ class hintTest:
         self.hintDir = testDir;
         # statics
         self.sentenceCount = 20;
+        
         self.practiceList = 12;
         self.numPracticeSentences = practiceSentences;
+        self.practiceCondition = "noiseLeft";
         
         self.numTestLists = numLists;
         
@@ -266,22 +268,74 @@ class hintTest:
     def getCurrentCondition(self):
         return self.currCondition;
     
+    def getPracticeRounds(self):
+        return self.numPracticeSentences;
+    
 
     def practiceSetup(self):
          self.currSNR = 0;
          self.listSentenceOrder = np.random.permutation(range(self.sentenceCount));  
+         self.listSentenceStrings = util.loadListSentences(self.practiceList, self.hintDir);
+         self.currSentenceString = self.listSentenceStrings[self.listSentenceOrder[0]];
+         print("Setup sent: " + self.currSentenceString + " index: " + str(self.listSentenceOrder[0]));
+         self.currSentenceLength = len(self.currSentenceString.split());
          
         
     def playPracticeSentence(self):
          # get random index        
         index = self.listSentenceOrder[self.sentenceIndex];
+        print("Prac index: " + str(index));
         
         print("Practice: Current playback level: " + str(self.currSNR));
         print("Practice: Round " + str(self.sentenceIndex + 1) + " out of " + str(self.numPracticeSentences));
         # audio files are labeled from Ger_male001 and not Ger_male000 so add '1'
         currSentenceAudio = util.loadSentenceAudio(self.practiceList, index + 1, self.currSNR, self.hintDir);
             
-        util.playAudio(currSentenceAudio, self.noise, self.currCondition, ChFront, ChLeft, ChRight);
+        util.playAudio(currSentenceAudio, self.noise, self.practiceCondition, ChFront, ChLeft, ChRight);
+        
+    
+    def enterPracticeFeedback(self, correctWords):
+        
+        if correctWords > self.currSentenceLength:
+            print("Invalid input. Try again!");
+            return;
+    
+        print('Sentence len: ' + str(self.currSentenceLength) + ' correct: ' + str(correctWords));
+        hitQuote = correctWords / self.currSentenceLength;
+        print("HitQuote: " + str(hitQuote));
+
+        if self.sentenceIndex < 4:
+            if hitQuote < 0.5:
+                self.currSNR = self.currSNR + 4;
+            else:
+                self.currSNR = self.currSNR - 4;
+       # other sentences: 2 dB steps         
+        else:           
+            # adapt SNR based on hitQuote
+            if hitQuote < 0.5:
+                self.currSNR = self.currSNR+ 2;
+            else:
+                self.currSNR = self.currSNR - 2;
+
+        # SNR sanity check
+        if self.currSNR < self.minSNR:
+            self.currSNR = self.minSNR;
+            print("Warning: reached min SNR!" + str(self.minSNR));
+        elif self.currSNR > self.maxSNR:
+            self.currSNR = self.maxSNR;
+            print("Warning: reached max SNR!" + str(self.maxSNR));
+            
+            
+        self.sentenceIndex = self.sentenceIndex + 1;
+        
+        if self.sentenceIndex + 1 >= self.numPracticeSentences:
+            print("Practice finished!");
+            #self.listSetup();
+        else:
+            index = self.listSentenceOrder[self.sentenceIndex];
+            self.currSentenceString = self.listSentenceStrings[index];
+            self.currSentenceLength = len(self.currSentenceString.split());
+             
 
 
     def playCurrentSentence(self):
