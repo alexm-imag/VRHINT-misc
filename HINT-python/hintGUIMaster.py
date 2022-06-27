@@ -86,7 +86,7 @@ class hintGUIMaster(ctk.CTk):
         self.path = path;
     
         self.userIndex = hint.getUserIndex();
-        self.hintObject = hint.hintTest(stimuliDir, 5, self.userIndex, 5); 
+        self.hintObject = hint.hintTest(path, 5, self.userIndex, 5); 
         
         self.frames[test.HintTestOverview].setParams(self.userName, self.userIndex);  
         
