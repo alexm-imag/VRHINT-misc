@@ -5,7 +5,6 @@ Created on Thu Jun 23 12:48:37 2022
 @author: Alexander Müller
 """
 
-from tkinter import filedialog
 import customtkinter as ctk
 import os
 
