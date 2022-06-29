@@ -121,7 +121,7 @@ class hintTest:
             "Time": dt.datetime.now().strftime("%d-%m-%y--%H-%M-%S"),
             "Condition": templateCondition,
             "ListSNRs": templateData,
-            #"ListHitQuotes:": templateData,
+            "ListHitQuotes": templateData,
             "ListSNRAverage": 0
             };
         
