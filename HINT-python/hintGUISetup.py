@@ -70,6 +70,8 @@ class HintSetup(ctk.CTkFrame):
         self.path = pathname + '/';
         self.pathLabel['text'] = self.path;
         
+        self.controller.setPath(self.path);
+        
         
     def pathSanityCheck(self, path):  
         dir = os.listdir(path);
