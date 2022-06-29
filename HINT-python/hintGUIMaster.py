@@ -11,22 +11,11 @@ import os
 import hintFunctions as hint
 import hintGUISetup as setup
 import hintGUITest as test
+import hintGUIPractice as prac
+import hintGUIResults as res
 
 ctk.set_appearance_mode("System")
 ctk.set_default_color_theme("blue")
-
-# globals
-stimuliDir = "emptyPath";
-userName = "default";
-hintObject = '';
-
-# use save.txt for path and stuff
-if os.path.isfile('save.txt'):
-    with open('save.txt', 'r') as f:
-        print("load save file");
-        savedData = f.read()
-        print(savedData);
-        stimuliDir = savedData;
 
 
 class hintGUIMaster(ctk.CTk):
@@ -38,11 +27,14 @@ class hintGUIMaster(ctk.CTk):
         # Adding a title to the window
         self.wm_title("Test Application")
  
+        # set default values
         self.userName = "default";
-        self.path = stimuliDir;
+        self.path = "emptyPath";
         self.userIndex = 0;
         self.hintObject = '';
  
+        self.loadPersistentData();
+         
         # creating a frame and assigning it to container
         self.container = ctk.CTkFrame(self, height=400, width=600)
         # specifying the region where the frame is packed in root
@@ -54,14 +46,18 @@ class hintGUIMaster(ctk.CTk):
     
         self.frames = {}
         
-        for F in (setup.HintSetup, test.HintTestOverview, test.HintTestProcedure, test.HintPractice):
+        for F in (setup.HintSetup, 
+                  test.HintTestOverview, 
+                  test.HintTestProcedure, 
+                  prac.HintPractice,
+                  res.HintResults):
+            
             frame = F(self.container, self)
  
             # the windows class acts as the root window for the frames.
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
- 
-        
+         
         # show first frame
         self.frames[setup.HintSetup].setDefaultPath(self.path);
         self.showSetup()
@@ -72,8 +68,25 @@ class hintGUIMaster(ctk.CTk):
        frame.tkraise()
 
     def quit_app(self):
+       self.storePersistentData();
        self.quit();
        self.destroy();
+       
+    def loadPersistentData(self): 
+        if os.path.isfile('save.txt'):
+            with open('save.txt', 'r') as f:
+                print("Master: Loaded persistent data.");
+                savedData = f.read()
+                self.path = savedData;
+                
+    def storePersistentData(self):
+        if self.path != "emptyPath":
+            with open('save.txt', 'w') as f:
+                print("write save file");
+                print(self.path);
+                f.write(self.path);
+        else:
+            print("Don't update save.txt if nothing has been set!");
        
     def showSetup(self):
         print("Show setup");
@@ -85,7 +98,8 @@ class hintGUIMaster(ctk.CTk):
         self.path = path;
     
         self.userIndex = hint.getUserIndex();
-        self.hintObject = hint.hintTest(path, 5, self.userIndex, 5); 
+        #self.hintObject = hint.hintTest(path, self.userName, self.userIndex); 
+        self.hintObject = hint.hintTest(path, self.userName, self.userIndex, 2, 6); 
         
         self.frames[test.HintTestOverview].setParams(self.userName, self.userIndex);  
         
@@ -93,30 +107,41 @@ class hintGUIMaster(ctk.CTk):
         self.show_frame(test.HintTestOverview);
         
     def startHintPractice(self):
-        self.frames[test.HintPractice].setParams(self.userName, self.userIndex, self.hintObject);
+        self.frames[prac.HintPractice].setParams(self.userName, self.userIndex, self.hintObject);
         self.hintObject.practiceSetup();
-        self.frames[test.HintPractice].startTest();
+        self.frames[prac.HintPractice].startTest();
         self.root.geometry(self, "550x300");
-        self.show_frame(test.HintPractice);
+        self.show_frame(prac.HintPractice);
         
     def startHintProcedure(self):
         self.frames[test.HintTestProcedure].setParams(self.userName, self.userIndex, self.hintObject);
         self.frames[test.HintTestProcedure].startTest();
-        self.root.geometry(self, "550x300");
+        self.root.geometry(self, "550x350");
         self.show_frame(test.HintTestProcedure);
+        
+    def showHintResults(self):
+        # all data should be available in the hintObject (?)
+        # maybe introduce a data object...
+        self.frames[res.HintResults].setData(self.hintObject);
+        self.root.geometry(self, "550x350");
+        self.show_frame(test.HintTestProcedure);
+        
+    def testDone(self):
+        print("GUI Master: test done!");
+        self.showHintResults();
         
     def practiceDone(self):
         self.show_frame(test.HintTestOverview);
+        
+    def setPath(self, path):
+        self.path = path;
+        
+    def getPath(self):
+        return self.path;
                
 
-        
-guiObj = hintGUIMaster()
-guiObj.mainloop();
+# Create guiMasterObject        
+hintGuiMaster = hintGUIMaster();
 
-
-if stimuliDir != "emptyPath":
-    with open('save.txt', 'w') as f:
-        print("write save file");
-        f.write(stimuliDir);
-else:
-    print("Don't update save.txt if nothing has been set!");
+# run mainloop
+hintGuiMaster.mainloop();
