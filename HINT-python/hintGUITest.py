@@ -180,9 +180,6 @@ class HintTestProcedure(ctk.CTkFrame):
         self.userIndexLabel['text'] = self.userIndex;
         
 
-class HintPractice(ctk.CTkFrame):
-    def __init__(self, parent, controller):   
-                
         ctk.CTkFrame.__init__(self, parent);
         
         self.controller = controller;
