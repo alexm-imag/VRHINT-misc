@@ -127,7 +127,7 @@ class hintTest:
         
         # allocate numTestLists structs to store results
         print("NuMTestListCrate:" + str(numTestLists));
-        resultStorage = [resultTemplate for k in range(numTestLists)];
+        resultStorage = [resultTemplate.copy() for k in range(numTestLists)];
         return resultStorage;
         
         
@@ -324,8 +324,8 @@ class hintTest:
         # store data in resultStorage
         self.resultStorage[self.listIndex]["ListIndex"] = self.testLists[self.listIndex];
         self.resultStorage[self.listIndex]["Condition"] = self.testConditions[self.listIndex];
-        self.resultStorage[self.listIndex]["ListSNRs"] = self.listSNR[:];
-        self.resultStorage[self.listIndex]["ListHitQuotes"] = self.listHitQuotes[:];
+        self.resultStorage[self.listIndex]["ListSNRs"] = self.listSNR;
+        self.resultStorage[self.listIndex]["ListHitQuotes"] = self.listHitQuotes;
         
         # calculate average SNR of current list
         self.resultStorage[self.listIndex]["ListSNRAverage"] = sum(self.listSNR) / len(self.listSNR);
