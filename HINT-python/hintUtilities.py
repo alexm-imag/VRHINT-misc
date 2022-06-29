@@ -6,6 +6,7 @@ Created on Fri May 20 09:19:25 2022
 """
 
 import numpy as np;
+import os;
 import json;
 import soundfile as sf;
 import datetime as dt;
@@ -25,7 +26,10 @@ class NumpyEncoder(json.JSONEncoder):
         elif isinstance(obj, (np.ndarray,)):
             return obj.tolist()
         return json.JSONEncoder.default(self, obj)
-  
+ 
+    
+def getUserIndex():
+     return len(os.listdir('results'));  
     
 def exportResults(resultStorage, userName):
     

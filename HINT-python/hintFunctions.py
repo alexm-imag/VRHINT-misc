@@ -10,7 +10,6 @@ import soundfile as sf;
 #import sounddevice as sd;
 import csv;
 import datetime as dt;
-import os;
 import hintUtilities as util
 
 #%% Global / static
@@ -49,9 +48,6 @@ def createResultStorage(numTestLists):
     resultStorage = [resultTemplate for k in range(numTestLists)];
     return resultStorage;
 
-def getUserIndex():
-    return len(os.listdir('results'));    
-    
 
 def createTestSetup(userIndex, numTestLists):
     
