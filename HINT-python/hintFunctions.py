@@ -269,8 +269,8 @@ class hintTest:
         
         self.listSentenceStrings = util.loadListSentences(self.testLists[self.listIndex], self.hintDir);
         
-        self.listSNR = np.zeros(20);
-        self.listHitQuotes = np.zeros(20);
+        self.listSNR = np.zeros(self.rounds);
+        self.listHitQuotes = np.zeros(self.rounds);
         
         self.currSNR = 0;
         self.currCondition = self.testConditions[self.listIndex];
