@@ -97,9 +97,9 @@ class hintGUIMaster(ctk.CTk):
         self.userName = userName;
         self.path = path;
     
-        self.userIndex = hint.getUserIndex();
         #self.hintObject = hint.hintTest(path, self.userName, self.userIndex); 
-        self.hintObject = hint.hintTest(path, self.userName, self.userIndex, 2, 6); 
+        self.hintObject = hint.hintTest(self.path, self.userName, 2, 3, 0); 
+        self.userIndex = self.hintObject.getUserIndex();
         
         self.frames[test.HintTestOverview].setParams(self.userName, self.userIndex);  
         
