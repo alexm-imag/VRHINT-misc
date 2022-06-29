@@ -98,7 +98,7 @@ class hintGUIMaster(ctk.CTk):
         self.path = path;
     
         #self.hintObject = hint.hintTest(path, self.userName, self.userIndex); 
-        self.hintObject = hint.hintTest(self.path, self.userName, 2, 3, 0); 
+        self.hintObject = hint.hintTest(self.path, self.userName, 2, 2, 0); 
         self.userIndex = self.hintObject.getUserIndex();
         
         self.frames[test.HintTestOverview].setParams(self.userName, self.userIndex);  
@@ -124,7 +124,7 @@ class hintGUIMaster(ctk.CTk):
         # maybe introduce a data object...
         self.frames[res.HintResults].setData(self.hintObject);
         self.root.geometry(self, "550x350");
-        self.show_frame(test.HintTestProcedure);
+        self.show_frame(res.HintResults);
         
     def testDone(self):
         print("GUI Master: test done!");

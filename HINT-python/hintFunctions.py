@@ -121,12 +121,11 @@ class hintTest:
             "Time": dt.datetime.now().strftime("%d-%m-%y--%H-%M-%S"),
             "Condition": templateCondition,
             "ListSNRs": templateData,
-            "ListHitQuotes:": templateData,
+            #"ListHitQuotes:": templateData,
             "ListSNRAverage": 0
             };
         
         # allocate numTestLists structs to store results
-        print("NuMTestListCrate:" + str(numTestLists));
         resultStorage = [resultTemplate.copy() for k in range(numTestLists)];
         return resultStorage;
         
@@ -195,7 +194,6 @@ class hintTest:
     def playPracticeSentence(self):
          # get random index        
         index = self.listSentenceOrder[self.sentenceIndex];
-        print("Prac index: " + str(index));
         
         print("Practice: Current playback level: " + str(self.currSNR));
         print("Practice: Round " + str(self.sentenceIndex + 1) + " out of " + str(self.numPracticeSentences));
@@ -322,11 +320,12 @@ class hintTest:
         print("List index: " + str(self.listIndex));
     
         # store data in resultStorage
+        self.resultStorage[self.listIndex]["Time"] = dt.datetime.now().strftime("%d-%m-%y--%H-%M-%S");
         self.resultStorage[self.listIndex]["ListIndex"] = self.testLists[self.listIndex];
         self.resultStorage[self.listIndex]["Condition"] = self.testConditions[self.listIndex];
         self.resultStorage[self.listIndex]["ListSNRs"] = self.listSNR;
         self.resultStorage[self.listIndex]["ListHitQuotes"] = self.listHitQuotes;
-        
+              
         # calculate average SNR of current list
         self.resultStorage[self.listIndex]["ListSNRAverage"] = sum(self.listSNR) / len(self.listSNR);
         
