@@ -299,27 +299,8 @@ class hintTest:
         hitQuote = correctWords / self.currSentenceLength;
         print("HitQuote: " + str(hitQuote));
 
-        if self.sentenceIndex < 4:
-            if hitQuote < 0.5:
-                self.currSNR = self.currSNR + 4;
-            else:
-                self.currSNR = self.currSNR - 4;
-       # other sentences: 2 dB steps         
-        else:           
-            # adapt SNR based on hitQuote
-            if hitQuote < 0.5:
-                self.currSNR = self.currSNR+ 2;
-            else:
-                self.currSNR = self.currSNR - 2;
-
-        # SNR sanity check
-        if self.currSNR < self.minSNR:
-            self.currSNR = self.minSNR;
-            print("Warning: reached min SNR!" + str(self.minSNR));
-        elif self.currSNR > self.maxSNR:
-            self.currSNR = self.maxSNR;
-            print("Warning: reached max SNR!" + str(self.maxSNR));
-            
+        # adapt SNR based on hitQuote
+        self.adaptSNR(hitQuote, True);
             
         self.sentenceIndex = self.sentenceIndex + 1;
         
@@ -364,24 +345,50 @@ class hintTest:
         print("HitQuote: " + str(hitQuote));
         
         # adapt SNR based on hitQuote
-        # first 4 sentences: 4 dB steps and NO TRACKING!
-        # MAKE THIS CLEANER!
-        if self.sentenceIndex < 4:
+        self.adaptSNR(hitQuote, False);
+            
+        self.sentenceIndex = self.sentenceIndex + 1;
+        
+        if self.sentenceIndex >= self.sentenceCount:
+            print("List " + str(self.listIndex) + " finished!");
+            self.storeResults();
+            self.listIndex = self.listIndex + 1;
+            
+            
+            if self.listIndex + 1 > self.numTestLists:
+                print("Test done!");
+                util.exportResults(self.resultStorage, self.userName)
+                return 1;
+            
+            self.listSetup();
+        else:
+            index = self.listSentenceOrder[self.sentenceIndex];
+            self.currSentenceString = self.listSentenceStrings[index];
+            print("Next sentence: " + self.currSentenceString);
+            self.currSentenceLength = len(self.currSentenceString.split());
+             
+        return 0;
+    
+    
+    def adaptSNR(self, hitQuote, practiceMode):
+        
+        if self.sentenceIndex < self.calibrationRounds:
             if hitQuote < 0.5:
-                self.currSNR = self.currSNR + 4;
+                self.currSNR = self.currSNR + self.snrCalibStepSize;
             else:
-                self.currSNR = self.currSNR - 4;
+                self.currSNR = self.currSNR - self.snrCalibStepSize;
        # other sentences: 2 dB steps         
         else:
             # store sentence data
-            self.listHitQuotes[self.sentenceIndex] = hitQuote;
-            self.listSNR[self.sentenceIndex] = self.currSNR;
+            if practiceMode == False:
+                self.listHitQuotes[self.sentenceIndex - self.calibrationRounds] = hitQuote;
+                self.listSNR[self.sentenceIndex - self.calibrationRounds] = self.currSNR;
             
             # adapt SNR based on hitQuote
             if hitQuote < 0.5:
-                self.currSNR = self.currSNR+ 2;
+                self.currSNR = self.currSNR+ self.snrStepSize;
             else:
-                self.currSNR = self.currSNR - 2;
+                self.currSNR = self.currSNR - self.snrStepSize;
 
         # SNR sanity check
         if self.currSNR < self.minSNR:
