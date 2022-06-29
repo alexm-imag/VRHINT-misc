@@ -115,6 +115,7 @@ class hintGUIMaster(ctk.CTk):
         
     def startHintProcedure(self):
         self.frames[test.HintTestProcedure].setParams(self.userName, self.userIndex, self.hintObject);
+        self.hintObject.testSetup();
         self.frames[test.HintTestProcedure].startTest();
         self.root.geometry(self, "550x350");
         self.show_frame(test.HintTestProcedure);

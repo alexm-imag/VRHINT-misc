@@ -127,8 +127,8 @@ class HintPractice(ctk.CTkFrame):
     def setCondition(self, condition):
         self.currentCondition['text'] = condition;
         
-    def setSentenceNumber(self, sentIndex):
-        self.sentenceIndexLabel['text'] = str(sentIndex);
+    def setSentenceNumber(self, sentIndex, sentCount):
+        self.sentenceIndexLabel['text'] = str(sentIndex) + " of " + str(sentCount); 
         
     def setParams(self, userName, userIndex, hintObject):
         self.userName = userName;
@@ -138,7 +138,7 @@ class HintPractice(ctk.CTkFrame):
         
     def updateHintLabels(self):
         self.setSentence(self.hintObject.getCurrentSentenceString(), self.hintObject.getCurrentSentenceLen());
-        self.setSentenceNumber(self.hintObject.getSentenceIndex() + 1);
+        self.setSentenceNumber(self.hintObject.getSentenceIndex() + 1, self.hintObject.getPracticeRounds());
         self.setSNR(self.hintObject.getCurrentSNR());
         self.setCondition(self.hintObject.getCurrentCondition());
         

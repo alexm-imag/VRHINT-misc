@@ -129,6 +129,11 @@ class HintTestProcedure(ctk.CTkFrame):
         ### This does not work
         self.continueBtn.bind('<Return>', self.nextRound);
     
+    def setParams(self, userName, userIndex, hintObject):
+        self.userName = userName;
+        self.userIndex = userIndex;
+        self.hintObject = hintObject;
+        self.updateLabels();
     
     def startTest(self):
         self.updateHintLabels();          
@@ -185,12 +190,6 @@ class HintTestProcedure(ctk.CTkFrame):
         
     def setListCounter(self, listCount, totalLists):
         self.listCount['text'] = str(listCount) + " of " + str(totalLists);
-        
-    def setParams(self, userName, userIndex, hintObject):
-        self.userName = userName;
-        self.userIndex = userIndex;
-        self.hintObject = hintObject;
-        self.updateLabels();
         
     def updateHintLabels(self):
         self.setSentence(self.hintObject.getCurrentSentenceString(), self.hintObject.getCurrentSentenceLen());
