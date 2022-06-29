@@ -225,6 +225,55 @@ class hintTest:
         
         self.listSetup();
         
+    def audioSettings(self, chLeft, chFront, chRight):
+        self.chLeft = chLeft;
+        self.chFront = chFront;
+        self.chRight = chRight
+        
+    def createTestSetup(userIndex, numTestLists):
+        
+        with open('lqConditions.csv', mode ='r')as file:
+          lqConditions = list(csv.reader(file));
+                
+        with open('lqLists.csv', mode ='r')as file:
+          lqLists = list(csv.reader(file));
+        
+        # convert List<List<str>> to List<List<int>>
+        for i in range(len(lqLists)):
+            lqLists[i] = [int(j) for j in lqLists[i]];
+
+        
+        # this will be determined by number of result files!
+        testLists = [lqLists[userIndex % availableTestLists][k] for k in range(numTestLists)];
+        
+        # pre-allocate text array
+        testConditions = ["emptyCondition" for k in range(numTestLists)]; 
+        
+        # userIndex determines start line of lqConditions matrix
+        lqCondDim = len(lqConditions[0]);
+        
+        for i in range(numTestLists / lqCondDim):
+            testConditions[(i * lqCondDim):min(numTestLists, (i *lqCondDim))] = lqConditions[(userIndex + i) % len(lqConditions)];
+        
+        return testLists, testConditions;
+        
+    def createResultStorage(numTestLists, numListSentences, calibRounds):
+        # first 4 rounds of each round are not considered in results
+        templateData = np.zeros(numListSentences - calibRounds);
+        templateCondition = "noiseLeft";
+        templateListIndex = 12;
+        
+        resultTemplate = {
+            "ListIndex": templateListIndex,
+            "Condition": templateCondition,
+            "SNRs": templateData,
+            "HitQuotes:": templateData,
+            "Time": dt.datetime.now().strftime("%d-%m-%y--%H-%M-%S")};
+        
+        # allocate numTestLists structs to store results
+        resultStorage = [resultTemplate for k in range(numTestLists)];
+        return resultStorage;
+        
         
     def listSetup(self):
         print(["Starting List " + str(self.listIndex) + " with condition: " + self.testConditions[self.listIndex]]);
