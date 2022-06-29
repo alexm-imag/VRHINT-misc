@@ -120,6 +120,8 @@ class HintTestProcedure(ctk.CTkFrame):
         self.continueBtn = ctk.CTkButton(self, text="Play", padx = 15, pady = 5, bg = "#263D42", command=self.nextRound)
         self.continueBtn.grid(row = 2, column = 2);
         
+        self.resultsBtn = ctk.CTkButton(self, text="Show Results", padx = 15, pady = 5, bg = "#263D42", command=controller.showResults)
+        
         self.quitBtn = ctk.CTkButton(self, text="Quit", padx = 15, pady = 5, bg = "#263D42", command= controller.quit_app)
         self.quitBtn.grid(row = 6, column = 2);
         
@@ -157,8 +159,7 @@ class HintTestProcedure(ctk.CTkFrame):
             return;
 
         if self.hintObject.enterFeedback(int(submission)) == 1:
-            print("GUI Test: Test done!");
-            self.controller.testDone();
+            self.resultsBtn.grid(row = 2, column = 2);
             
         self.updateHintLabels();
         

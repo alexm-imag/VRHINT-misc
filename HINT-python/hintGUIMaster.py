@@ -119,16 +119,11 @@ class hintGUIMaster(ctk.CTk):
         self.root.geometry(self, "550x350");
         self.show_frame(test.HintTestProcedure);
         
-    def showHintResults(self):
-        # all data should be available in the hintObject (?)
+    def showResults(self):
         # maybe introduce a data object...
-        self.frames[res.HintResults].setData(self.hintObject);
+        self.frames[res.HintResults].setData(self.hintObject, self.userName, self.userIndex);
         self.root.geometry(self, "550x350");
         self.show_frame(res.HintResults);
-        
-    def testDone(self):
-        print("GUI Master: test done!");
-        self.showHintResults();
         
     def practiceDone(self):
         self.show_frame(test.HintTestOverview);
