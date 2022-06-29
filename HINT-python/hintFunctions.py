@@ -29,52 +29,8 @@ ChRight = 2;
 
 
 #%% Setup variables
-hintDir = 'german-hint-adaptive-48kHz\\';
-
-
-def createResultStorage(numTestLists):
-    templateData = np.zeros(listSentences);
-    templateCondition = "noiseLeft";
-    templateListIndex = 12;
+hintDir = 'german-hint-adaptive-48kHz\\';  
     
-    resultTemplate = {
-        "ListIndex": templateListIndex,
-        "Condition": templateCondition,
-        "SNRs": templateData,
-        "HitQuotes:": templateData,
-        "Time": dt.datetime.now().strftime("%d-%m-%y--%H-%M-%S")};
-    
-    # allocate numTestLists structs to store results
-    resultStorage = [resultTemplate for k in range(numTestLists)];
-    return resultStorage;
-
-
-def createTestSetup(userIndex, numTestLists):
-    
-    with open('lqConditions.csv', mode ='r')as file:
-      lqConditions = list(csv.reader(file));
-            
-    with open('lqLists.csv', mode ='r')as file:
-      lqLists = list(csv.reader(file));
-    
-    # convert List<List<str>> to List<List<int>>
-    for i in range(len(lqLists)):
-        lqLists[i] = [int(j) for j in lqLists[i]];
-
-    
-    # this will be determined by number of result files!
-    testLists = [lqLists[userIndex % availableTestLists][k] for k in range(numTestLists)];
-    
-    # pre-allocate text array
-    testConditions = ["emptyCondition" for k in range(numTestLists)]; 
-    
-    # userIndex determines start line of lqConditions matrix
-    # 5th condition is taken from the next line (considering wrapping!)
-    testConditions[0:4] = lqConditions[userIndex % len(lqConditions)];
-    testConditions[4] = lqConditions[(userIndex + 1) % len(lqConditions)][0];
-    
-    return testLists, testConditions;
-
 
 # Params:
 # testLists: array, determining numTestLists and order
@@ -193,15 +149,46 @@ def hintProcedure(testLists, testConditions, storeResults, sentenceCbk, snrCbk):
 class hintTest:
     
     # put stuff here that only has to be set once
-    def __init__(self, testDir, numLists, userIndex, practiceSentences):
+    def __init__(self, testDir, userName, userIndex, numLists = 5, rounds = 20, practiceList = 12, numPracticeSentences = 5, calibrationRounds = 4):
         
         self.hintDir = testDir;
-        # statics
-        self.sentenceCount = 20;
+        self.userName = userName
         
-        self.practiceList = 12;
-        self.numPracticeSentences = practiceSentences;
+        if numLists > 10:
+            print("Error: Invalid list number! Using default instead!");
+            numLists = 5;
+        
+        if rounds > 20:
+            print("Error: Invalid Sentence number! Using default instead!");
+            rounds = 20;
+            
+        if numPracticeSentences > 20:
+            print("Error: Invalid practiceSentence number! Using default instead!");
+            numPracticeSentences = 5;
+        
+        if practiceList < 11:
+            print("Error: Invalid practiceList! Using default instead!");
+            practiceList = 12;
+            
+        if calibrationRounds > rounds:
+            print("Error: Invalid rounds / calibration rounds pair! Using default instead!");
+            rounds = 20;
+            calibrationRounds = 4;
+            
+        
+        self.sentenceCount = rounds;
+        self.practiceList = practiceList;
+        self.numPracticeSentences = numPracticeSentences;
+        self.calibrationRounds = calibrationRounds;
+        # make this into a parameter
         self.practiceCondition = "noiseLeft";
+        
+        self.chLeft = 1;
+        self.chFront = 2;
+        self.chRight = 2;
+        
+        self.snrCalibStepSize = 4;
+        self.snrStepSize = 2;
         
         self.numTestLists = numLists;
         
