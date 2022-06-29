@@ -192,12 +192,12 @@ class hintTest:
         
         self.numTestLists = numLists;
         
-        [self.testLists, self.testConditions] = createTestSetup(userIndex, numLists);
-        self.resultsStorage = createResultStorage(numLists);
+        [self.testLists, self.testConditions] = self.createTestSetup(userIndex, numLists);
+        self.resultStorage = self.createResultStorage(numLists, self.sentenceCount, self.calibrationRounds);
         
         self.noise, self.fs = sf.read(hintDir + "noiseGR_male.wav");    
         
-        self.listIndex = self.testLists[0];
+        self.listIndex = 0;#self.testLists[0];
         self.sentenceIndex = 0;
         
         self.listSentenceOrder = np.random.permutation(range(self.sentenceCount));
@@ -294,6 +294,9 @@ class hintTest:
     def getSentenceCount(self):
         return self.sentenceCount;
     
+    def getCurrentListIndex(self):
+        return self.currList;
+    
     def getCurrentSNR(self):
         return self.currSNR;
     
@@ -302,6 +305,12 @@ class hintTest:
     
     def getPracticeRounds(self):
         return self.numPracticeSentences;
+    
+    def getNumTestLists(self):
+        return self.numTestLists;
+    
+    def getCurrentListCount(self):
+        return self.listIndex;
     
 
     def practiceSetup(self):
@@ -342,11 +351,13 @@ class hintTest:
         
         if self.sentenceIndex + 1 >= self.numPracticeSentences:
             print("Practice finished!");
-            #self.listSetup();
+            return 1;
         else:
             index = self.listSentenceOrder[self.sentenceIndex];
             self.currSentenceString = self.listSentenceStrings[index];
             self.currSentenceLength = len(self.currSentenceString.split());
+            
+        return 0;
              
 
 
@@ -434,29 +445,15 @@ class hintTest:
             self.currSNR = self.maxSNR;
             print("Warning: reached max SNR!" + str(self.maxSNR));
             
-            
-        
-        self.sentenceIndex = self.sentenceIndex + 1;
-        
-        if self.sentenceIndex + 1 >= self.sentenceCount:
-            print("List " + self.listIndex + " finished!");
-            self.listIndex = self.listIndex + 1;
-            print("Storing results");
-            self.storeResults();
-            self.listSetup();
-        else:
-            index = self.listSentenceOrder[self.sentenceIndex];
-            self.currSentenceString = self.listSentenceStrings[index];
-            self.currSentenceLength = len(self.currSentenceString.split());
-             
-            
  
     def storeResults(self):
-        print(["Storing resutls for list" + str(self.listIndex) + " out of" + str(self.numTestLists)]);
+        print(["Storing resutls for list " + str(self.listIndex + 1) + " out of " + str(self.numTestLists)]);
     
         # store data in resultStorage
         self.resultStorage[self.listIndex]["ListIndex"] = self.testLists[self.listIndex];
         self.resultStorage[self.listIndex]["Condition"] = self.testConditions[self.listIndex];
         self.resultStorage[self.listIndex]["ListSNRs"] = self.listSNR;
-        self.resultStorage[self.listIndex]["ListHitQuotes"] = self.hitQuotes;
+        self.resultStorage[self.listIndex]["ListHitQuotes"] = self.listHitQuotes;
+        print("List index: " + str(self.listIndex));
+        print(self.resultStorage[self.listIndex]["ListHitQuotes"])
             
