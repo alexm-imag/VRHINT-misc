@@ -10,6 +10,11 @@ import csv;
 import datetime as dt;
 import hintUtilities as util
 
+## statics
+sentencesPerList = 20;
+minSNR = -16;
+maxSNR = 2;
+
 class hintTest:
     
     # put stuff here that only has to be set once
@@ -22,11 +27,11 @@ class hintTest:
             print("Error: Invalid list number! Using default instead!");
             numLists = 5;
         
-        if rounds > 20:
+        if rounds > sentencesPerList:
             print("Error: Invalid Sentence number! Using default instead!");
             rounds = 20;
             
-        if numPracticeSentences > 20:
+        if numPracticeSentences > sentencesPerList:
             print("Error: Invalid practiceSentence number! Using default instead!");
             numPracticeSentences = 5;
         
@@ -39,6 +44,8 @@ class hintTest:
             rounds = 20;
             calibrationRounds = 4;
             
+        
+        print("Test Setup: " + str(numLists) + " lists, " + str(rounds) + " rounds, " + str(calibrationRounds) + " (calib)");
         
         self.sentenceCount = rounds;
         self.practiceList = practiceList;
@@ -65,11 +72,10 @@ class hintTest:
         self.listIndex = 0;     #self.testLists[0];
         self.sentenceIndex = 0;
         
-        self.listSentenceOrder = np.random.permutation(range(self.sentenceCount));
+        self.listSentenceOrder = np.zeros(self.sentenceCount);
+        #self.listSentenceOrder = np.random.permutation(range(self.sentenceCount));
         self.listSentenceStrings = util.loadListSentences(self.testLists[self.listIndex], self.hintDir);
         
-        self.minSNR = -16;
-        self.maxSNR = 2;
         self.currSNR = 0;
         self.currCondition = "emptyCondition";
         self.currList = 0;
@@ -133,7 +139,7 @@ class hintTest:
     def listSetup(self):
         print(["Starting List " + str(self.listIndex) + " with condition: " + self.testConditions[self.listIndex]]);
         
-        self.listSentenceOrder = np.random.permutation(range(self.sentenceCount));
+        self.listSentenceOrder = np.random.permutation(range(sentencesPerList))[0:self.sentenceCount];
         
         self.listSentenceStrings = util.loadListSentences(self.testLists[self.listIndex], self.hintDir);
         
@@ -185,12 +191,13 @@ class hintTest:
 
     def practiceSetup(self):
          self.currSNR = 0;
-         self.listSentenceOrder = np.random.permutation(range(self.sentenceCount));  
+         self.listSentenceOrder = np.zeros(self.numPracticeSentences);
+         self.listSentenceOrder = np.random.permutation(range(sentencesPerList))[0:self.numPracticeSentences];  
          self.listSentenceStrings = util.loadListSentences(self.practiceList, self.hintDir);
          self.currSentenceString = self.listSentenceStrings[self.listSentenceOrder[0]];
          self.currSentenceLength = len(self.currSentenceString.split());
+               
          
-        
     def playPracticeSentence(self):
          # get random index        
         index = self.listSentenceOrder[self.sentenceIndex];
@@ -228,7 +235,14 @@ class hintTest:
             
         return 0;
              
-
+    def testSetup(self):
+        self.currSNR = 0;
+        self.listSentenceOrder = np.zeros(self.sentenceCount);
+        self.listSentenceOrder = np.random.permutation(range(sentencesPerList))[0:self.sentenceCount];  
+        self.listSentenceStrings = util.loadListSentences(self.practiceList, self.hintDir);
+        self.currSentenceString = self.listSentenceStrings[self.listSentenceOrder[0]];
+        self.currSentenceLength = len(self.currSentenceString.split());
+        
 
     def playCurrentSentence(self):
                
@@ -307,12 +321,12 @@ class hintTest:
                 self.currSNR = self.currSNR - self.snrStepSize;
 
         # SNR sanity check
-        if self.currSNR < self.minSNR:
-            self.currSNR = self.minSNR;
-            print("Warning: reached min SNR!" + str(self.minSNR));
-        elif self.currSNR > self.maxSNR:
-            self.currSNR = self.maxSNR;
-            print("Warning: reached max SNR!" + str(self.maxSNR));
+        if self.currSNR < minSNR:
+            self.currSNR = minSNR;
+            print("Warning: reached min SNR!" + str(minSNR));
+        elif self.currSNR > maxSNR:
+            self.currSNR = maxSNR;
+            print("Warning: reached max SNR!" + str(maxSNR));
             
  
     def storeResults(self):
