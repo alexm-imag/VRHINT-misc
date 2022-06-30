@@ -176,6 +176,31 @@ To find possible issues originating from the translation of an auditory test pro
 \newline
 \newline
 For this purpose, the German \ac{HINT} will be used as a foundation. Using the same speech and noise stimuli as in the original study, the test will be conducted in three different conditions. In the first experiment the \ac{HINT} procedure will be performed in an anechoic chamber with a 3-way loudspeaker setup. The second condition will be performed using an Oculus Rift \ac{HMD} with Sennheiser HD600 headphones. The audio spatialization is realized through the \ac{3DTI} Unity wrapper and the TH Köln KU100 \ac{HRTF} set.
+\newline
+\newline
+WE WILL USE THE BUILT-IN RIFT HEADPHONES INSTEAD
+
+
+\subsection{Test setup I: Loudspeaker}
+To recreate the original \ac{HINT} experiment a python application has been developed. The program offers a simple \ac{GUI} that makes the usage for the experimenter easier and allows a detailed overview over all test parameters. At first the application requires a \textit{username} to be set that identifies the current participant and the path to the test resources (the German \ac{HINT} speech/noise stimuli). Afterwards a new screen presents the option of directly starting the test or entering the practice procedure. During both the actual test and the practice the experimenter has complete overview over the current noise condition (e.g. \dq noise left\dq{}), sentence list (1-10), \ac{SNR} and round (e.g. 7 of 20).
+% add screenshot here
+\newline
+\newline
+Once the test procedure is done, the \ac{GUI} presents a result screen that allows the experimenter to briefly check if the collected data is plausible and then stores all data in a \ac{JSON} file.
+
+\paragraph{Packages} To control the external audio interface the \textit{sounddevice} and \textit{soundfile} python packages have been used. The \ac{GUI} was developed based on \textit{Tkinter} with the \textit{customtkinter} wrapper package to provide a more contemporary look.
+
+%%% CHECK THE SPL LEVELS!
+\paragraph{Calibration} The initial playback levels have been measured using a CALIBDEVICE 1 located at the exact position where the participant will sit during the procedure. For this purpose the noise signal has been played from each of the three possible positions. As stated in the original \ac{HINT} papers, the noise has been setup to be presented at 52 dB \acs{SPL} while the speech will initially be played at 65 dB \ac{SPL}. Since the speech stimuli are only presented from the \dq front\dq{} position only this loudspeaker has been used for calibration.
+\newline
+\newline
+ALSO CONSIDER RMS MEASUREMENTS???
+
+\paragraph{Adaptive SNR} In order to change the \ac{SNR} during the test procedure all speech stimuli had been normalized to a range of \ac{RMS} values. The test application only has to select the correct file for the requested \ac{SNR} instead of processing the audio files in real-time or remotely controlling the audio interface. This approach offers the advantage of being able to verify the correct \ac{RMS} spacing beforehand and should also avoid unfavorable settings of the audio interface that might affect the noise floor (REFERENCE FOR THIS???). The biggest disadvantage from this approach is that the range of possible \ac{SNR} values is limited through the pre-processed range of speech stimuli \ac{RMS} levels. However, through pre-testing it can easily be ensured that the provided range is sufficient for the purpose of this test. If the \ac{SNR} limits are reached during the test procedure, the application will prompt a warning to the experimenter and will keep the current level.
+\newline
+\newline
+All audio processing has been done using Audacity with the \textit{\ac{RMS} measurement} and \textit{\ac{RMS} normalize} plugins (ADD REFERENCES!).
+
 
 % Entwicklung VR condition und MATLAB speaker setup
 \subsection{Development}
