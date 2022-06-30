@@ -12,7 +12,6 @@ import soundfile as sf;
 import datetime as dt;
 import sounddevice as sd;
 
-
 class NumpyEncoder(json.JSONEncoder):
     """ Special json encoder for numpy types """
     def default(self, obj):
@@ -65,6 +64,7 @@ def loadSentenceAudio(listIndex, sentenceIndex, dbLevel, hintDir):
         audioPath = audioPath + '\Ger_male' + str(sentenceNum) + '.wav';
 
     data,fs = sf.read(audioPath);
+    sd.default.samplerate = fs;
     return data;
 
 
