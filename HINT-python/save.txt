@@ -1,1 +1,1 @@
-C:/CSN/VRHINT-misc/HINT-python/german-hint-adaptive-48kHz/
+G:/VRHINT-misc/HINT-python/german-hint-adaptive-48kHz/

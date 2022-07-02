@@ -31,17 +31,17 @@ class HintResults(ctk.CTkFrame):
         self.userNameLabel = ctk.CTkLabel(self, text="default")
         self.userNameLabel.grid(row = 1, column = 1, pady = 5);
         
+        self.listsDescLabel = ctk.CTkLabel(self, text="Lists: ")
+        self.listsDescLabel.grid(row = 2, column = 0, pady = 5);
+        
         self.condDescLabel = ctk.CTkLabel(self, text="Conditions: ")
-        self.condDescLabel.grid(row = 2, column = 0, pady = 5);
+        self.condDescLabel.grid(row = 3, column = 0, pady = 5);
         
         self.condsLabel = ctk.CTkLabel(self, text="cond1 cond2")
-        self.condsLabel.grid(row = 2, column = 1, pady = 5);
-        
-        self.listsDescLabel = ctk.CTkLabel(self, text="Lists: ")
-        self.listsDescLabel.grid(row = 3, column = 0, pady = 5);
+        self.condsLabel.grid(row = 3, column = 1, pady = 5);
         
         self.listsLabel = ctk.CTkLabel(self, text="8 4 3")
-        self.listsLabel.grid(row = 3, column = 1, pady = 5);
+        self.listsLabel.grid(row = 2, column = 1, pady = 5);
         
         self.avgSNRDescLabel = ctk.CTkLabel(self, text="Average SNRs: ")
         self.avgSNRDescLabel.grid(row = 4, column = 0, pady = 5);

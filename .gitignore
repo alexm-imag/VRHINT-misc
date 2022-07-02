@@ -9,3 +9,5 @@ thesis/*.run.xml
 thesis/*.blg
 HINT-python/guiTesting.py
 HINT-python/guiCanvasSwitch.py
+HINT-python/dist
+HINT-python/build

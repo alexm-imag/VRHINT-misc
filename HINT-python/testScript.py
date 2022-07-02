@@ -1,11 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Fri May  6 10:22:05 2022
-
-@author: cocot
-"""
-
-#%%
 
 
 import sounddevice as sd
@@ -13,6 +6,13 @@ import soundfile as sf
 #from tkinter import *
 import tkinter as tk;  
 
+importDir = 'G:\VRHINT-misc\HINT-python\german-hint-adaptive-48kHz\\';
+data, fs = sf.read(importDir + "01\\-0dB\\Ger_male001.wav");
+sd.play(data, fs);
+status = sd.wait();
+
+
+#%%
 hintDir = 'german-hint-adaptive-48kHz\\';
   
 def Voice_rec():
@@ -67,7 +67,8 @@ randOrder = np.random.permutation(range(20));
 testOrder = np.zeros(20);
 
 #data, fs = sf.read("german-hint-adaptive-48kHz\\noiseGR_male.wav");
-data, fs = sf.read(importDir + "noiseGR_male.wav");
+#data, fs = sf.read(importDir + "noiseGR_male.wav");
+data, fs = sf.read(importDir + "01\\-0dB\\Ger_male001.wav");
 sd.play(data, fs);
 status = sd.wait();
 #noise = AudioSegment.from_file(hintDir + "noiseGR_male.wav", base_type);

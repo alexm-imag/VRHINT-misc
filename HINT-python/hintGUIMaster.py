@@ -15,7 +15,7 @@ import hintGUIPractice as prac
 import hintGUIResults as res
 
 ctk.set_appearance_mode("System")
-ctk.set_default_color_theme("blue")
+#ctk.set_default_color_theme("blue")
 
 
 class hintGUIMaster(ctk.CTk):
@@ -121,7 +121,6 @@ class hintGUIMaster(ctk.CTk):
         self.show_frame(test.HintTestProcedure);
         
     def showResults(self):
-        # maybe introduce a data object...
         self.frames[res.HintResults].setData(self.hintObject, self.userName, self.userIndex);
         self.root.geometry(self, "550x350");
         self.show_frame(res.HintResults);

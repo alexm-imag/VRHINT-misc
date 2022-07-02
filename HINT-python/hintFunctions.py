@@ -2,7 +2,7 @@
 """
 Created on Fri May 20 13:50:50 2022
 
-@author: cocot
+@author: Alexander Müller
 """
 import numpy as np;
 import soundfile as sf;
