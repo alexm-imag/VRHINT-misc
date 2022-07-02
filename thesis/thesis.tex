@@ -179,6 +179,9 @@ For this purpose, the German \ac{HINT} will be used as a foundation. Using the s
 \newline
 \newline
 WE WILL USE THE BUILT-IN RIFT HEADPHONES INSTEAD
+\newline
+\newline
+Reference: BA von Niklas?
 
 
 \subsection{Test setup I: Loudspeaker}
@@ -188,7 +191,7 @@ To recreate the original \ac{HINT} experiment a python application has been deve
 \newline
 Once the test procedure is done, the \ac{GUI} presents a result screen that allows the experimenter to briefly check if the collected data is plausible and then stores all data in a \ac{JSON} file.
 
-\paragraph{Packages} To control the external audio interface the \textit{sounddevice} and \textit{soundfile} python packages have been used. The \ac{GUI} was developed based on \textit{Tkinter} with the \textit{customtkinter} wrapper package to provide a more contemporary look.
+\paragraph{Packages} To control the external audio interface the \textit{sounddevice} \cite{Sounddevice} and \textit{soundfile} python packages have been used. The \ac{GUI} was developed based on \textit{Tkinter} with the \textit{customtkinter} wrapper package to provide a more contemporary look.
 
 %%% CHECK THE SPL LEVELS!
 \paragraph{Calibration} The initial playback levels have been measured using a CALIBDEVICE 1 located at the exact position where the participant will sit during the procedure. For this purpose the noise signal has been played from each of the three possible positions. As stated in the original \ac{HINT} papers, the noise has been setup to be presented at 52 dB \acs{SPL} while the speech will initially be played at 65 dB \ac{SPL}. Since the speech stimuli are only presented from the \dq front\dq{} position only this loudspeaker has been used for calibration.
