@@ -146,7 +146,23 @@
 
 
 \newpage
+
+\tableofcontents
+\newpage
+
 \pagenumbering{arabic}
+
+
+\section*{Abstract}
+\ac{CAPD} is described by the \ac{ASHA} as a condition, which \dq may lead to or be associated with difficulties in higher order language, learning, and communication functions\dq{} without being caused by actual hearing loss or inabilities \cite{ASHA}. Focusing on the aspect of spatial hearing Cameron and Dillon established the term \ac{SPD} and designed the \ac{LiSN} $\&$ Learn auditory training software to improve binaural processing abilities of affected children \cite{LiSN-dev}.
+\newline
+\newline
+% CUT easy to use
+Based on this foundation a new training program shall be created as an open-source project with \ac{VR} support inside the \textit{Unity} game development engine.
+Apart from offering a free alternative to the follow up product of the original \ac{LiSN} \& Learn software (\textit{Soundstorm)\footnote{Reference: \url{https://www.soundstorm.app/}}}, this project shall also make initial steps towards evaluating whether \textit{Unity} is a viable platform for auditory training applications. In further iterations potential improvements to the concept may be reviewed such as the inclusion of head tracking.
+
+
+\newpage
 
 %% Wichtiger Punkt vergessen: Spatial seperation & Spatial Release From Masking
 
@@ -171,26 +187,95 @@ There are several reasons for problems with auditory processing. The most common
 % Verkürzung des Tests (nur 12 Listen verfügbar daher 5+5 statt 10 Listen)
 % Counterbalancing der Listen muss beachtet werden (Latin Squares)
 % Unterteilung Exp1 / Exp2 für genaue Details der Prozedur
-\section{Method}
+\subsection{Method}
 To find possible issues originating from the translation of an auditory test procedure into \ac{VR} a small study will be conducted. Participants will be adults without any known hearing impairments or \ac{APD}s. The study will consists of two experiments that focus on the introduction of 3D audio rendering in \ac{VR} and the addition of a non-supervised feedback system that omits the requirement for the presence of an experimenter.
 \newline
 \newline
 For this purpose, the German \ac{HINT} will be used as a foundation. Using the same speech and noise stimuli as in the original study, the test will be conducted in three different conditions. In the first experiment the \ac{HINT} procedure will be performed in an anechoic chamber with a 3-way loudspeaker setup. The second condition will be performed using an Oculus Rift \ac{HMD} with Sennheiser HD600 headphones. The audio spatialization is realized through the \ac{3DTI} Unity wrapper and the TH Köln KU100 \ac{HRTF} set.
-\newline
-\newline
-WE WILL USE THE BUILT-IN RIFT HEADPHONES INSTEAD
-\newline
-\newline
-Reference: BA von Niklas?
 
 
+\subsection{Motivation}
+
+\section{Theoretical foundations}
+
+\subsection{Spatial hearing}
+
+\paragraph{Cocktail-party-effect}
+
+\paragraph{Spatial Release from Masking (SRM)
+
+
+\subsection{3D audio rendering}
+
+\paragraph{Head Related Transfer Functions (HRTF)}
+
+\paragraph{Simulaiton of sound propagation effects}
+
+\subsection{Virtual Reality - Design considerations}
+
+\paragraph{Multisensory information}
+
+\paragraph{Usage of generic \acs{HRTF}s)
+	
+\subsection{Auditory test procedures}
+
+\paragraph{Hearing in Noise Test (HINT)}
+
+\subparagraph{German HINT}
+
+\paragraph{LiSN-S}
+
+\paragraph{Probably more!}
+
+
+\section{Approach}
+
+\subsection{HINT analysis}
+
+\subsection{VR HINT - concept}
+
+% Briefly describe both experiments
+\section{Study design}
+
+\paragraph{Test conditions}
+
+\paragraph{Test setup}
+
+% mention alternative: MATLAB with playrec
 \subsection{Test setup I: Loudspeaker}
-To recreate the original \ac{HINT} experiment a python application has been developed. The program offers a simple \ac{GUI} that makes the usage for the experimenter easier and allows a detailed overview over all test parameters. At first the application requires a \textit{username} to be set that identifies the current participant and the path to the test resources (the German \ac{HINT} speech/noise stimuli). Afterwards a new screen presents the option of directly starting the test or entering the practice procedure. During both the actual test and the practice the experimenter has complete overview over the current noise condition (e.g. \dq noise left\dq{}), sentence list (1-10), \ac{SNR} and round (e.g. 7 of 20).
-% add screenshot here
+To recreate the original \ac{HINT} experiment a Python (version 3.9) application has been developed. The program offers a simple \ac{GUI} that makes the usage for the experimenter easier and allows a detailed overview over all test parameters. Alternatively, the same functionality could have also been achieved using MATLAB in conjunction with the \textit{playrec} utility. But in contrast to MATLAB, Python has the advantage of being free to use without any license requirements.
+
+\paragraph{Application Overview} At startup the application presents a simple setup screen that requires a \textit{username} for the participant and the path\footnote{The application will perform a simply sanity check on the path via trying to load a noise file from the given directory.} to the test stimuli to be set. Once both requirements have been fulfilled the test can be initialized and a new screen is presented in the \ac{GUI}.
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.5\textwidth]{PythonHINT-Setup.png}
+	\caption{Python HINT GUI - Setup}
+	\label{fig:pyhint-setup}
+	%\vspace{3mm}
+\end{figure}
 \newline
+\newline
+The \textit{Test Overview} screen allows to either access the \textit{practice mode} or directly start the \textit{test procedure}. During both the actual test and the practice the experimenter has complete overview over the current noise condition (e.g. \dq noise left\dq{}), sentence list (1-10), \ac{SNR} and round (e.g. 7 of 20).
+%At first the application requires a \textit{username} to be set that identifies the current participant and the path to the test resources (the German \ac{HINT} speech/noise stimuli). Afterwards a new screen presents the option of directly starting the test or entering the practice procedure. During both the actual test and the practice the experimenter has complete overview over the current noise condition (e.g. \dq noise left\dq{}), sentence list (1-10), \ac{SNR} and round (e.g. 7 of 20).
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.5\textwidth]{PythonHINT-Overview.png}
+	\caption{Python HINT GUI - Test Overview}
+	\label{fig:pyhint-overview}
+	%\vspace{3mm}
+\end{figure}
+\newline
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.5\textwidth]{PythonHINT-Practice.png}
+	\caption{Python HINT GUI - Practice}
+	\label{fig:pyhint-practice}
+	%\vspace{3mm}
+\end{figure}
 \newline
 Once the test procedure is done, the \ac{GUI} presents a result screen that allows the experimenter to briefly check if the collected data is plausible and then stores all data in a \ac{JSON} file.
 
+% Dependencies
 \paragraph{Packages} To control the external audio interface the \textit{sounddevice} \cite{Sounddevice} and \textit{soundfile} python packages have been used. The \ac{GUI} was developed based on \textit{Tkinter} with the \textit{customtkinter} wrapper package to provide a more contemporary look.
 
 %%% CHECK THE SPL LEVELS!
@@ -205,8 +290,8 @@ ALSO CONSIDER RMS MEASUREMENTS???
 All audio processing has been done using Audacity with the \textit{\ac{RMS} measurement} and \textit{\ac{RMS} normalize} plugins (ADD REFERENCES!).
 
 
-% Entwicklung VR condition und MATLAB speaker setup
-\subsection{Development}
+\subsection{Test setup II: VR HINT}
+
 
 \paragraph{Feedback system} To allow the procedure to be performed without the presence of an experimenter, a new system had to be added that could determine whether the participant has understood the last sentence or not. In the original \ac{HINT} program this is done by the subject repeating what they've understood out loud and an experimenter comparing their reply with the actual sentence. However, even though this method would allow to rate each sentence on a word by word basis, the procedure only separated between either the majority of the sentence was understood or not. This rather broad division leaves some tolerance on the implementation of a new feedback system. A possible option would have been to follow the subjective feedback implemented in \ac{LiSN-S} \cite{Cameron2007}. In this case, participant have been confronted with a forced 3-way choice consisting of the sentence was understood a) good, b) medium or c) bad. But it has to be noted that \ac{LiSN-S} was not designed to be performed at home with completely unsupervised participants. To mitigate the issue of users not being honest, a randomized 5-way multiple choice system has been implemented for each word of the sentence. The wrong options are filtered to roughly match the length of the correct word and to consider capitalization and the start of the sentence (which is of course also capitalized). To make it impossible for the participant to recognize the correct sentence up front by eliminating grammatically incorrect or non-sensible options, only the options for the current word are shown and there is no possibility to go back and change a previous word-submission. Of course this system still has some weaknesses. If the participant understood a large part of the sentence it will be easy to eliminate a lot of the wrong options. However, since the system is only intended to determine whether the majority of the sentence has been understood this should not alter results strongly.
 \newline
@@ -303,6 +388,7 @@ The new feedback system will transition the \ac{HINT} procedure from being an \t
 %	\acro{IDE}{Integrated Development Environment}
 	\acro{ILD}{Interaural Level Difference}
 	\acro{ITD}{Interaural Time Difference}
+	\acro{JSON}{JavaScript Object Notaion}
 	\acro{LiSN}{Listening in Spatialized Noise}
 	\acro{LiSN-S}{Listening in Spatialized Noise - Sentences Test}
 %	\acro{RMS}{Root Mean Square}
