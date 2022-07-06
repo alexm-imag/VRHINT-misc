@@ -110,8 +110,8 @@ class hintGUIMaster(ctk.CTk):
         self.userName = userName;
         self.path = path;
     
-        #self.hintObject = hint.hintTest(path, self.userName, self.userIndex); 
-        self.hintObject = hint.hintTest(self.path, self.userName, 2, 2, 0); 
+        self.hintObject = hint.hintTest(path, self.userName); 
+        #self.hintObject = hint.hintTest(self.path, self.userName, 2, 2, 0); 
         self.hintObject.audioSettings(ChLeft, ChFront, ChRight);
         self.userIndex = self.hintObject.getUserIndex();
         
