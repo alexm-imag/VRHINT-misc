@@ -9,10 +9,6 @@ from tkinter import filedialog
 import customtkinter as ctk
 import os
 
-import soundfile as sf
-import sounddevice as sd
-
-
 class HintSetup(ctk.CTkFrame):
         
     def __init__(self, parent, controller):   
