@@ -69,6 +69,9 @@ class HintPractice(ctk.CTkFrame):
         
         self.doneBtn = ctk.CTkButton(self, text="Done", padx = 15, pady = 5, bg = "#263D42", command=controller.practiceDone)
         
+        self.returnBtn = ctk.CTkButton(self, text="Return", padx = 15, pady = 5, bg = "#263D42", command= controller.practiceDone)
+        self.returnBtn.grid(row = 5, column = 2);
+        
         self.quitBtn = ctk.CTkButton(self, text="Quit", padx = 15, pady = 5, bg = "#263D42", command= controller.quit_app)
         self.quitBtn.grid(row = 6, column = 2);
         
@@ -113,7 +116,8 @@ class HintPractice(ctk.CTkFrame):
         
         
     def startTest(self):
-        self.updateHintLabels();          
+        self.updateHintLabels();    
+        self.doneBtn.grid_forget();
         self.feedbackField.grid_forget();
         
         
