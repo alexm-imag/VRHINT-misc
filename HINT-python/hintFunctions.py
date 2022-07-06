@@ -56,7 +56,7 @@ class hintTest:
         
         self.chLeft = 1;
         self.chFront = 2;
-        self.chRight = 2;
+        self.chRight = 5;
         
         self.snrCalibStepSize = 4;
         self.snrStepSize = 2;

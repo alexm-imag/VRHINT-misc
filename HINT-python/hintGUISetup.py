@@ -9,6 +9,9 @@ from tkinter import filedialog
 import customtkinter as ctk
 import os
 
+import soundfile as sf
+import sounddevice as sd
+
 
 class HintSetup(ctk.CTkFrame):
         
@@ -18,6 +21,10 @@ class HintSetup(ctk.CTkFrame):
         
         self.path = "emptyPath";
         self.userName = "default";
+        
+        self.ChLeft = 1;
+        self.ChFront = 2;
+        self.ChRight = 5;
         
         self.parent = parent;
         self.controller = controller;
@@ -47,14 +54,22 @@ class HintSetup(ctk.CTkFrame):
         self.errorLabel = ctk.CTkLabel(self, text=" ");
         self.errorLabel.grid(row = 6, column = 1);
         
+        self.calibBtn = ctk.CTkButton(self, text="Calibrate", padx = 15, pady = 5, bg = "#263D42", command= self.calibrate)
+        self.calibBtn.grid(row = 7, column = 1, pady = 5);
+        
         self.quitBtn = ctk.CTkButton(self, text="Quit", padx = 15, pady = 5, bg = "#263D42", command= controller.quit_app)
-        self.quitBtn.grid(row = 7, column = 1, pady = 5);
+        self.quitBtn.grid(row = 8, column = 1, pady = 5);
         
         self.nameField.bind('<Return>', self.enterName)
     
     def setDefaultPath(self, path):
         self.path = path;
         self.updateLabels();
+        
+    def setAudioChannels(self, left, front, right):
+        self.ChLeft = left;
+        self.ChFront = front;
+        self.ChRight = right;
         
     def updateLabels(self):
         self.pathLabel['text'] = self.path;
@@ -102,3 +117,15 @@ class HintSetup(ctk.CTkFrame):
             
         # hand over setup data to master after sanity check    
         self.controller.setHintParameters(self.userName, self.path);
+        
+    def calibrate(self):
+        
+        if self.pathSanityCheck(self.path) != True:
+            self.pathLabel['text'] = "Invalid path!";
+            self.pathLabel.after(2000, self.resetPathLabel);
+            return;
+            
+        self.controller.showCalibration(self.path);
+        return;
+
+        
