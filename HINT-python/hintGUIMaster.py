@@ -11,12 +11,17 @@ import os
 import hintFunctions as hint
 import hintGUISetup as setup
 import hintGUITest as test
+import hintGUICalibration as calib
 import hintGUIPractice as prac
 import hintGUIResults as res
 
 ctk.set_appearance_mode("System")
 #ctk.set_default_color_theme("blue")
 
+# globals
+ChLeft = 3;
+ChFront = 2;
+ChRight = 1;
 
 class hintGUIMaster(ctk.CTk):
     
@@ -47,6 +52,7 @@ class hintGUIMaster(ctk.CTk):
         self.frames = {}
         
         for F in (setup.HintSetup, 
+                  calib.HintCalibration,
                   test.HintTestOverview, 
                   test.HintTestProcedure, 
                   prac.HintPractice,
@@ -60,6 +66,7 @@ class hintGUIMaster(ctk.CTk):
          
         # show first frame
         self.frames[setup.HintSetup].setDefaultPath(self.path);
+        self.frames[setup.HintSetup].setAudioChannels(ChLeft, ChFront, ChRight);
         self.showSetup()
         
     def show_frame(self, cont):
@@ -90,15 +97,22 @@ class hintGUIMaster(ctk.CTk):
        
     def showSetup(self):
         print("Show setup");
-        self.root.geometry(self, "400x300");
+        self.root.geometry(self, "400x350");
         self.show_frame(setup.HintSetup);
+        
+    def showCalibration(self, path):
+        self.root.geometry(self, "450x250");
+        self.frames[calib.HintCalibration].setAudioChannels(ChLeft, ChFront, ChRight);
+        self.frames[calib.HintCalibration].setPath(path);
+        self.show_frame(calib.HintCalibration);
        
     def setHintParameters(self, userName, path):
         self.userName = userName;
         self.path = path;
     
-        #self.hintObject = hint.hintTest(path, self.userName, self.userIndex); 
-        self.hintObject = hint.hintTest(self.path, self.userName, 2, 2, 0); 
+        self.hintObject = hint.hintTest(path, self.userName); 
+        #self.hintObject = hint.hintTest(self.path, self.userName, 2, 2, 0); 
+        self.hintObject.audioSettings(ChLeft, ChFront, ChRight);
         self.userIndex = self.hintObject.getUserIndex();
         
         self.frames[test.HintTestOverview].setParams(self.userName, self.userIndex);  
@@ -110,14 +124,14 @@ class hintGUIMaster(ctk.CTk):
         self.frames[prac.HintPractice].setParams(self.userName, self.userIndex, self.hintObject);
         self.hintObject.practiceSetup();
         self.frames[prac.HintPractice].startTest();
-        self.root.geometry(self, "550x300");
+        self.root.geometry(self, "600x300");
         self.show_frame(prac.HintPractice);
         
     def startHintProcedure(self):
         self.frames[test.HintTestProcedure].setParams(self.userName, self.userIndex, self.hintObject);
         self.hintObject.testSetup();
         self.frames[test.HintTestProcedure].startTest();
-        self.root.geometry(self, "550x350");
+        self.root.geometry(self, "600x400");
         self.show_frame(test.HintTestProcedure);
         
     def showResults(self):

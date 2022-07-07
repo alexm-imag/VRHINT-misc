@@ -56,7 +56,7 @@ class hintTest:
         
         self.chLeft = 1;
         self.chFront = 2;
-        self.chRight = 2;
+        self.chRight = 5;
         
         self.snrCalibStepSize = 4;
         self.snrStepSize = 2;
@@ -81,7 +81,7 @@ class hintTest:
         self.currList = 0;
         self.currSentenceString = "empty";
         
-        self.listSetup();
+        #self.listSetup();
         
     def audioSettings(self, chLeft, chFront, chRight):
         self.chLeft = chLeft;
@@ -117,7 +117,6 @@ class hintTest:
         
     def createResultStorage(self, numTestLists, numListSentences, calibRounds):
         # first 4 rounds of each round are not considered in results
-        print("tempData: " + str(numListSentences - calibRounds));
         templateData = np.zeros(numListSentences - calibRounds);
         templateCondition = "noiseLeft";
         templateListIndex = 12;
@@ -137,7 +136,7 @@ class hintTest:
         
         
     def listSetup(self):
-        print(["Starting List " + str(self.listIndex) + " with condition: " + self.testConditions[self.listIndex]]);
+        print("Starting List " + str(self.listIndex) + " with condition: " + self.testConditions[self.listIndex]);
         
         self.listSentenceOrder = np.random.permutation(range(sentencesPerList))[0:self.sentenceCount];
         
@@ -190,12 +189,16 @@ class hintTest:
         return self.userIndex;
 
     def practiceSetup(self):
+         print("Practice setup: List: " + str(self.practiceList) + " Condition: " + str(self.practiceCondition));
          self.currSNR = 0;
+         self.sentenceIndex = 0;
          self.listSentenceOrder = np.zeros(self.numPracticeSentences);
          self.listSentenceOrder = np.random.permutation(range(sentencesPerList))[0:self.numPracticeSentences];  
          self.listSentenceStrings = util.loadListSentences(self.practiceList, self.hintDir);
          self.currSentenceString = self.listSentenceStrings[self.listSentenceOrder[0]];
          self.currSentenceLength = len(self.currSentenceString.split());
+         self.currCondition = self.practiceCondition;
+         self.currList = self.practiceList;
                
          
     def playPracticeSentence(self):
@@ -237,11 +240,13 @@ class hintTest:
              
     def testSetup(self):
         self.currSNR = 0;
+        self.sentenceIndex = 0;
         self.listSentenceOrder = np.zeros(self.sentenceCount);
         self.listSentenceOrder = np.random.permutation(range(sentencesPerList))[0:self.sentenceCount];  
         self.listSentenceStrings = util.loadListSentences(self.practiceList, self.hintDir);
         self.currSentenceString = self.listSentenceStrings[self.listSentenceOrder[0]];
         self.currSentenceLength = len(self.currSentenceString.split());
+        self.listSetup();
         
 
     def playCurrentSentence(self):
