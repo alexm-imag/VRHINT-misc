@@ -8,6 +8,7 @@ Created on Thu Apr  7 11:07:55 2022
 
 from pydub import AudioSegment
 import os
+import numpy as np
 
 def match_target_amplitude(sound, target_dBFS):
     change_in_dBFS = target_dBFS - sound.dBFS
@@ -23,7 +24,7 @@ importDir = 'german-hint-48kHz\\';
 exportDir = 'HINT\\';
 
 stepSize = 2
-lowerBound = -16
+lowerBound = -30
 upperBound = +4
 
 listSize = 20
@@ -75,12 +76,16 @@ else:
 
 c = 0;
 lst = 1;
+print("Lower bound: " + str(lowerBound));
+print("upper bound: " + str(upperBound));
 
 for j in range(len(dir)):
     print("Processing file " + str(j) + " of " + str(len(dir)));
-    sound = AudioSegment.from_file(importDir + dir[j], base_type)
+    #sound = AudioSegment.from_file(importDir + dir[j], base_type)
+    sound = AudioSegment.from_file(importPath + '\\' + dir[j], base_type)
     
     k = 0
+    #print("Subpath: " + subPaths[k + c]);
     
     for i in range(lowerBound, upperBound, stepSize):
         dSound = sound.apply_gain(i);
@@ -95,9 +100,9 @@ for j in range(len(dir)):
         dSound.export(outPath, base_type);
         
     
-    if (j+1) % 20 == 0:
-        if (j+1) >= 20:
-            c = c + 10
+    if (j+1) % listSize == 0:
+        if (j+1) >= listSize:
+            c = c + (int)((np.abs(lowerBound) + np.abs(upperBound)) / np.abs(stepSize));
             lst = lst + 1;
             print("Next list " + str(lst) +  " at file " + str(j));
 
