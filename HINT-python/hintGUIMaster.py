@@ -65,6 +65,9 @@ class hintGUIMaster(ctk.CTk):
             frame.grid(row=0, column=0, sticky="nsew")
          
         # show first frame
+        print("Call sd setup...");
+        self.frames[calib.HintCalibration].setAudioChannels(ChLeft, ChFront, ChRight, 8);
+        
         self.frames[setup.HintSetup].setDefaultPath(self.path);
         self.frames[setup.HintSetup].setAudioChannels(ChLeft, ChFront, ChRight);
         self.showSetup()
@@ -102,7 +105,7 @@ class hintGUIMaster(ctk.CTk):
         
     def showCalibration(self, path):
         self.root.geometry(self, "450x250");
-        self.frames[calib.HintCalibration].setAudioChannels(ChLeft, ChFront, ChRight);
+        self.frames[calib.HintCalibration].setAudioChannels(ChLeft, ChFront, ChRight, 8);
         self.frames[calib.HintCalibration].setPath(path);
         self.show_frame(calib.HintCalibration);
        

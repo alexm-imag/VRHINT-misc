@@ -55,27 +55,35 @@ class HintCalibration(ctk.CTkFrame):
         self.quitBtn.grid(row = 4, column = 1, pady = 5);
     
         
-    def setAudioChannels(self, left, front, right):
+    def setAudioChannels(self, left, front, right, defaultDevice = 0):
         self.ChLeft = left;
         self.ChFront = front;
         self.ChRight = right;
         
+        print("Set default device to: " + str(defaultDevice));
+        sd.default.device = defaultDevice;
+        
+        
         
     def setPath(self, path):
         self.path = path;
+        noise, fs = sf.read(self.path + "noiseGR_male_-27dB.wav");
+        print("Set default sampleRate to: " + str(fs));
+        sd.default.samplerate = fs;
              
         
     def calibrateNoise(self, channel):
-        noise, fs = sf.read(self.path + "noiseGR_male.wav");
+        noise, fs = sf.read(self.path + "noiseGR_male_-27dB.wav");
         
         print("Noise (" + str(channel) + ")");
         sd.play(noise, loop = 'true', mapping = channel);
         
         
     def calibrateSpeech(self):
-        speech,fs = sf.read(self.path + "\\01\\-0dB\\Ger_male001.wav");
+        speech,fs = sf.read(self.path + "\\01\\-6dB\\Ger_male001.wav");
         
         print("Speech front (" + str(self.ChFront) + ")");
+        
         sd.play(speech, loop = 'true', mapping = self.ChFront);
         
     def calibrateStop(self):

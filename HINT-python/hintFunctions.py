@@ -14,6 +14,9 @@ import hintUtilities as util
 sentencesPerList = 20;
 minSNR = -30;
 maxSNR = 2;
+# contents of -6 dB folder match RMS of noiseGR_-27dB
+# therefore 6 dB is the offset for our SNR
+snrOffset = -6;
 
 class hintTest:
     
@@ -67,7 +70,7 @@ class hintTest:
         [self.testLists, self.testConditions] = self.createTestSetup(self.userIndex, numLists);
         self.resultStorage = self.createResultStorage(numLists, self.sentenceCount, self.calibrationRounds);
         
-        self.noise, self.fs = sf.read(self.hintDir + "noiseGR_male.wav");    
+        self.noise, self.fs = sf.read(self.hintDir + "noiseGR_male_-27dB.wav");    
         
         self.listIndex = 0;     #self.testLists[0];
         self.sentenceIndex = 0;
@@ -77,6 +80,7 @@ class hintTest:
         self.listSentenceStrings = util.loadListSentences(self.testLists[self.listIndex], self.hintDir);
         
         self.currSNR = 0;
+        self.offsetSNR = self.currSNR + snrOffset;
         self.currCondition = "emptyCondition";
         self.currList = 0;
         self.currSentenceString = "empty";
@@ -205,10 +209,10 @@ class hintTest:
          # get random index        
         index = self.listSentenceOrder[self.sentenceIndex];
         
-        print("Practice: Current playback level: " + str(self.currSNR));
+        print("Practice: Current SNR: " + str(self.currSNR));
         print("Practice: Round " + str(self.sentenceIndex + 1) + " out of " + str(self.numPracticeSentences));
         # audio files are labeled from Ger_male001 and not Ger_male000 so add '1'
-        currSentenceAudio = util.loadSentenceAudio(self.practiceList, index + 1, self.currSNR, self.hintDir);
+        currSentenceAudio = util.loadSentenceAudio(self.practiceList, index + 1, self.offsetSNR, self.hintDir);
             
         util.playAudio(currSentenceAudio, self.noise, self.practiceCondition, self.chFront, self.chLeft, self.chRight);
         
@@ -261,7 +265,7 @@ class hintTest:
         print("Current playback level: " + str(self.currSNR));
         print("Round " + str(self.sentenceIndex + 1) + " out of " + str(self.sentenceCount));
         # audio files are labeled from Ger_male001 and not Ger_male000 so add '1'
-        currSentenceAudio = util.loadSentenceAudio(self.currList, index + 1, self.currSNR, self.hintDir);
+        currSentenceAudio = util.loadSentenceAudio(self.currList, index + 1, self.offsetSNR, self.hintDir);
             
         util.playAudio(currSentenceAudio, self.noise, self.currCondition, self.chFront, self.chLeft, self.chRight);       
     
@@ -321,18 +325,23 @@ class hintTest:
             
             # adapt SNR based on hitQuote
             if hitQuote < 0.5:
-                self.currSNR = self.currSNR+ self.snrStepSize;
+                self.currSNR = self.currSNR + self.snrStepSize;
             else:
                 self.currSNR = self.currSNR - self.snrStepSize;
+            
+        
+        self.offsetSNR = self.currSNR + snrOffset;
 
         # SNR sanity check
-        if self.currSNR < minSNR:
-            self.currSNR = minSNR;
+        if self.offsetSNR < minSNR:
+            self.offsetSNR = minSNR;
             print("Warning: reached min SNR!" + str(minSNR));
-        elif self.currSNR > maxSNR:
-            self.currSNR = maxSNR;
+        elif self.offsetSNR > maxSNR:
+            self.offsetSNR = maxSNR;
             print("Warning: reached max SNR!" + str(maxSNR));
             
+        self.currSNR = self.offsetSNR - snrOffset;
+        print("Offset SNR: " + str(self.offsetSNR) + " currSNR: " + (str(self.currSNR)));
  
     def storeResults(self):
         print(["Storing resutls for list " + str(self.listIndex + 1) + " out of " + str(self.numTestLists)]);

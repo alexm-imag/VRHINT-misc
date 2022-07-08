@@ -65,6 +65,7 @@ def loadSentenceAudio(listIndex, sentenceIndex, dbLevel, hintDir):
 
     data,fs = sf.read(audioPath);
     sd.default.samplerate = fs;
+    
     return data;
 
 
