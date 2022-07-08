@@ -12,7 +12,7 @@ import hintUtilities as util
 
 ## statics
 sentencesPerList = 20;
-minSNR = -16;
+minSNR = -30;
 maxSNR = 2;
 
 class hintTest:
