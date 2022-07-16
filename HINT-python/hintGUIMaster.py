@@ -26,7 +26,6 @@ ChRight = 1;
 class hintGUIMaster(ctk.CTk):
     
     def __init__(self, *args, **kwargs):
-        #self.root = 
         ctk.CTk.__init__(self, *args, **kwargs)
         self.root = ctk.CTk;
         # Adding a title to the window
@@ -72,6 +71,13 @@ class hintGUIMaster(ctk.CTk):
         self.frames[setup.HintSetup].setAudioChannels(ChLeft, ChFront, ChRight);
         self.showSetup()
         
+        
+        #self.bind('<space>', self.bindFunc);
+        #self.bind('<c>', self.frames[setup.HintSetup].testCbk);
+        
+    def bindFunc(self, event=None):
+        print("Bind cbk");
+        
     def show_frame(self, cont):
        frame = self.frames[cont]
        # raises the current frame to the top
@@ -99,7 +105,11 @@ class hintGUIMaster(ctk.CTk):
             print("Don't update save.txt if nothing has been set!");
        
     def showSetup(self):
-        print("Show setup");
+        
+        # set all setup bindings
+        self.bind('<space>', self.frames[setup.HintSetup].initTest);
+        
+        
         self.root.geometry(self, "400x350");
         self.show_frame(setup.HintSetup);
         
@@ -112,6 +122,10 @@ class hintGUIMaster(ctk.CTk):
     def setHintParameters(self, userName, path):
         self.userName = userName;
         self.path = path;
+        
+        # unbind events for other screens
+        self.unbind('<space>');
+        self.unbind('<Tab>');
     
         #self.hintObject = hint.hintTest(path, self.userName); 
         self.hintObject = hint.hintTest(self.path, self.userName, 2, 8, 0); 
@@ -131,6 +145,11 @@ class hintGUIMaster(ctk.CTk):
         self.show_frame(prac.HintPractice);
         
     def startHintProcedure(self):
+        
+        self.unbind_all('<space>')
+        self.bind('<space>', self.frames[test.HintTestProcedure].nextRound)
+        self.bind('<Tab>', self.frames[test.HintTestProcedure].setFocus)
+        
         self.frames[test.HintTestProcedure].setParams(self.userName, self.userIndex, self.hintObject);
         self.hintObject.testSetup();
         self.frames[test.HintTestProcedure].startTest();

@@ -101,7 +101,7 @@ class HintSetup(ctk.CTkFrame):
         self.userNameLabel['text'] = "Name: " + self.userName;
         
     
-    def initTest(self):        
+    def initTest(self, event = None):        
         if self.userName == "default":
             self.errorLabel['text'] = "No userName set!"; 
             return

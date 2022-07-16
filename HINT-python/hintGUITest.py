@@ -127,7 +127,13 @@ class HintTestProcedure(ctk.CTkFrame):
         
         self.feedbackField.bind('<Return>', self.takeFeedback);
         ### This does not work
-        self.continueBtn.bind('<Return>', self.nextRound);
+        #self.frame.bind('<space>', self.testBind);
+        self.feedbackField.bind('<Activate>', self.setFocus);
+        
+        
+    def setFocus(self, event = None):
+        print("Focus cbk");
+        self.feedbackField.focus();
     
     def setParams(self, userName, userIndex, hintObject):
         self.userName = userName;
@@ -139,7 +145,7 @@ class HintTestProcedure(ctk.CTkFrame):
         self.updateHintLabels();          
         self.feedbackField.grid_forget();
     
-    def nextRound(self):
+    def nextRound(self, event=None):
         
         if self.continueBtn.grid_info() == {}:
             print("GUI Test: PlayBtn not available");
@@ -149,6 +155,7 @@ class HintTestProcedure(ctk.CTkFrame):
         self.hintObject.playCurrentSentence();
         self.feedbackField.grid(row = 2, column = 2);
         self.feedbackField.focus();
+        self.feedbackField.focus_set();
         
     def takeFeedback(self, event=None):
         
