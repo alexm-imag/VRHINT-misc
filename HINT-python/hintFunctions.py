@@ -135,7 +135,13 @@ class hintTest:
             };
         
         # allocate numTestLists structs to store results
-        resultStorage = [resultTemplate.copy() for k in range(numTestLists)];
+        subResults = [resultTemplate.copy() for k in range(numTestLists)];
+        
+        resultStorage = {
+            "subResults": subResults,
+            "testSetup": "loudspeaker"
+            };
+        
         return resultStorage;
         
         
@@ -346,16 +352,15 @@ class hintTest:
     def storeResults(self):
         print(["Storing resutls for list " + str(self.listIndex + 1) + " out of " + str(self.numTestLists)]);
         print("List index: " + str(self.listIndex));
-    
-        # store data in resultStorage
-        self.resultStorage[self.listIndex]["Time"] = dt.datetime.now().strftime("%d-%m-%y--%H-%M-%S");
-        self.resultStorage[self.listIndex]["ListIndex"] = self.testLists[self.listIndex];
-        self.resultStorage[self.listIndex]["Condition"] = self.testConditions[self.listIndex];
-        self.resultStorage[self.listIndex]["ListSNRs"] = self.listSNR;
-        self.resultStorage[self.listIndex]["ListHitQuotes"] = self.listHitQuotes;
-              
+        
+        
+        self.resultStorage['subResults'][self.listIndex]["Time"] = dt.datetime.now().strftime("%d-%m-%y--%H-%M-%S");
+        self.resultStorage['subResults'][self.listIndex]["ListIndex"] = self.testLists[self.listIndex];
+        self.resultStorage['subResults'][self.listIndex]["Condition"] = self.testConditions[self.listIndex];
+        self.resultStorage['subResults'][self.listIndex]["ListSNRs"] = self.listSNR;
+        self.resultStorage['subResults'][self.listIndex]["ListHitQuotes"] = self.listHitQuotes;
         # calculate average SNR of current list
-        self.resultStorage[self.listIndex]["ListSNRAverage"] = sum(self.listSNR) / len(self.listSNR);
+        self.resultStorage['subResults'][self.listIndex]["ListSNRAverage"] = sum(self.listSNR) / len(self.listSNR);
         
         print(self.resultStorage)
             

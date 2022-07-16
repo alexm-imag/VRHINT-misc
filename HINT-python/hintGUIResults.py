@@ -70,7 +70,7 @@ class HintResults(ctk.CTkFrame):
         self.listsLabel['text'] = str(lists);
     
     def setData(self, hintObject, userName, userIndex):        
-        resultData = hintObject.resultStorage;
+        resultData = hintObject.resultStorage['subResults'];
         self.setUserName(userName);
         conds = [resultData[k]['Condition'] for k in range(len(resultData))]
         lists = [resultData[k]['ListIndex'] for k in range(len(resultData))]

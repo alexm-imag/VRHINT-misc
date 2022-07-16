@@ -144,9 +144,9 @@ class HintTestProcedure(ctk.CTkFrame):
         if self.continueBtn.grid_info() == {}:
             print("GUI Test: PlayBtn not available");
             return;
-            
-        self.hintObject.playCurrentSentence();
+        
         self.continueBtn.grid_forget();
+        self.hintObject.playCurrentSentence();
         self.feedbackField.grid(row = 2, column = 2);
         self.feedbackField.focus();
         

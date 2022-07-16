@@ -19,7 +19,7 @@ ctk.set_appearance_mode("System")
 #ctk.set_default_color_theme("blue")
 
 # globals
-ChLeft = 3;
+ChLeft = 2; #3
 ChFront = 2;
 ChRight = 1;
 
@@ -113,8 +113,8 @@ class hintGUIMaster(ctk.CTk):
         self.userName = userName;
         self.path = path;
     
-        self.hintObject = hint.hintTest(path, self.userName); 
-        #self.hintObject = hint.hintTest(self.path, self.userName, 2, 2, 0); 
+        #self.hintObject = hint.hintTest(path, self.userName); 
+        self.hintObject = hint.hintTest(self.path, self.userName, 2, 8, 0); 
         self.hintObject.audioSettings(ChLeft, ChFront, ChRight);
         self.userIndex = self.hintObject.getUserIndex();
         
