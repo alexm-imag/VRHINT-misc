@@ -30,9 +30,9 @@ class NumpyEncoder(json.JSONEncoder):
 def getUserIndex():
      return len(os.listdir('results'));  
     
-def exportResults(resultStorage, userName):
+def exportResults(resultStorage, userIndex, userName):
     
-    resultFileName = "results\\results-%s-%s.json" % (userName,  dt.datetime.now().strftime("%d-%m-%y--%H-%M-%S"));
+    resultFileName = "results\\%s-%s-%s.json" % (userIndex, userName,  dt.datetime.now().strftime("%d-%m-%y--%H-%M-%S"));
     
     results = json.dumps(resultStorage, indent = 4, cls=NumpyEncoder);
     # store json into file

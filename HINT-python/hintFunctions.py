@@ -68,7 +68,7 @@ class hintTest:
         self.userIndex = util.getUserIndex();
         
         [self.testLists, self.testConditions] = self.createTestSetup(self.userIndex, numLists);
-        self.resultStorage = self.createResultStorage(numLists, self.sentenceCount, self.calibrationRounds);
+        self.resultStorage = self.createResultStorage(numLists, self.userIndex, self.sentenceCount, self.calibrationRounds);
         
         self.noise, self.fs = sf.read(self.hintDir + "noiseGR_male_-27dB.wav");    
         
@@ -119,7 +119,7 @@ class hintTest:
         
         return testLists, testConditions;
         
-    def createResultStorage(self, numTestLists, numListSentences, calibRounds):
+    def createResultStorage(self, numTestLists, userIndex, numListSentences, calibRounds):
         # first 4 rounds of each round are not considered in results
         templateData = np.zeros(numListSentences - calibRounds);
         templateCondition = "noiseLeft";
@@ -138,8 +138,9 @@ class hintTest:
         subResults = [resultTemplate.copy() for k in range(numTestLists)];
         
         resultStorage = {
-            "subResults": subResults,
-            "testSetup": "loudspeaker"
+            "testSetup": "loudspeaker",
+            "userIndex": userIndex,
+            "subResults": subResults
             };
         
         return resultStorage;
@@ -302,7 +303,7 @@ class hintTest:
             
             if self.listIndex + 1 > self.numTestLists:
                 print("Test done!");
-                util.exportResults(self.resultStorage, self.userName)
+                util.exportResults(self.resultStorage, self.userIndex, self.userName)
                 return 1;
             
             self.listSetup();
