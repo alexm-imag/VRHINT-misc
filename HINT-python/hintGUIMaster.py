@@ -71,13 +71,6 @@ class hintGUIMaster(ctk.CTk):
         self.frames[setup.HintSetup].setAudioChannels(ChLeft, ChFront, ChRight);
         self.showSetup()
         
-        
-        #self.bind('<space>', self.bindFunc);
-        #self.bind('<c>', self.frames[setup.HintSetup].testCbk);
-        
-    def bindFunc(self, event=None):
-        print("Bind cbk");
-        
     def show_frame(self, cont):
        frame = self.frames[cont]
        # raises the current frame to the top

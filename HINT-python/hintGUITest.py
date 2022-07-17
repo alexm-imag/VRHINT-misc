@@ -153,9 +153,11 @@ class HintTestProcedure(ctk.CTkFrame):
         
         self.continueBtn.grid_forget();
         self.hintObject.playCurrentSentence();
+        #self.feedbackField.focus();
         self.feedbackField.grid(row = 2, column = 2);
-        self.feedbackField.focus();
-        self.feedbackField.focus_set();
+        
+        #self.feedbackField.after(1000, self.setFocus);
+        #self.feedbackField.focus_set();
         
     def takeFeedback(self, event=None):
         
