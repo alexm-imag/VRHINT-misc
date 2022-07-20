@@ -105,8 +105,7 @@ class hintGUIMaster(ctk.CTk):
         # set all setup bindings
         self.bind('<space>', self.frames[setup.HintSetup].initTest);
         
-        
-        self.root.geometry(self, "400x350");
+        self.root.geometry(self, "450x400");
         self.show_frame(setup.HintSetup);
         
     def showCalibration(self, path):
@@ -115,7 +114,7 @@ class hintGUIMaster(ctk.CTk):
         self.frames[calib.HintCalibration].setPath(path);
         self.show_frame(calib.HintCalibration);
        
-    def setHintParameters(self, userName, path):
+    def setHintParameters(self, userName, path, testOrder):
         self.userName = userName;
         self.path = path;
         
@@ -123,8 +122,8 @@ class hintGUIMaster(ctk.CTk):
         self.unbind('<space>');
         self.unbind('<Tab>');
     
-        #self.hintObject = hint.hintTest(path, self.userName); 
-        self.hintObject = hint.hintTest(self.path, self.userName, 2, 8, 0); 
+        self.hintObject = hint.hintTest(path, self.userName, testOrder); 
+        #self.hintObject = hint.hintTest(self.path, self.userName, testOrder, 5, 8, 0); 
         self.hintObject.audioSettings(ChLeft, ChFront, ChRight);
         self.userIndex = self.hintObject.getUserIndex();
         

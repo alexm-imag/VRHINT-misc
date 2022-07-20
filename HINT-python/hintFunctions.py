@@ -21,7 +21,7 @@ snrOffset = -6;
 class hintTest:
     
     # put stuff here that only has to be set once
-    def __init__(self, hintDir, userName, numLists = 5, rounds = 20, calibrationRounds = 4, practiceList = 12, numPracticeSentences = 5):
+    def __init__(self, hintDir, userName, testOrder, numLists = 5, rounds = 20, calibrationRounds = 4, practiceList = 12, numPracticeSentences = 5):
         
         self.hintDir = hintDir;
         self.userName = userName;
@@ -48,8 +48,9 @@ class hintTest:
             calibrationRounds = 4;
             
         
-        print("Test Setup: " + str(numLists) + " lists, " + str(rounds) + " rounds, " + str(calibrationRounds) + " (calib)");
+        print("Test Setup: " + str(testOrder) + " order, " + str(numLists) + " lists, " + str(rounds) + " rounds, " + str(calibrationRounds) + " (calib)");
         
+        self.testOrder = testOrder
         self.sentenceCount = rounds;
         self.practiceList = practiceList;
         self.numPracticeSentences = numPracticeSentences;
@@ -67,7 +68,7 @@ class hintTest:
         self.numTestLists = numLists;
         self.userIndex = util.getUserIndex();
         
-        [self.testLists, self.testConditions] = self.createTestSetup(self.userIndex, numLists);
+        [self.testLists, self.testConditions] = self.createTestSetup(self.userIndex, numLists, testOrder);
         self.resultStorage = self.createResultStorage(numLists, self.userIndex, self.sentenceCount, self.calibrationRounds);
         
         self.noise, self.fs = sf.read(self.hintDir + "noiseGR_male_-27dB.wav");    
@@ -92,7 +93,7 @@ class hintTest:
         self.chFront = chFront;
         self.chRight = chRight
         
-    def createTestSetup(self, userIndex, numTestLists):
+    def createTestSetup(self, userIndex, numTestLists, testOrder):
         
         with open('lqConditions.csv', mode ='r')as file:
           lqConditions = list(csv.reader(file));
@@ -100,13 +101,20 @@ class hintTest:
         with open('lqLists.csv', mode ='r')as file:
           lqLists = list(csv.reader(file));
         
+        
         # convert List<List<str>> to List<List<int>>
         for i in range(len(lqLists)):
             lqLists[i] = [int(j) for j in lqLists[i]];
 
         
+        ## Warning: numTestLists MUST NOT be greater then 5! (or lqLists.dim/2)
         # this will be determined by number of result files!
-        testLists = [lqLists[userIndex % len(lqLists)][k] for k in range(numTestLists)];
+        if testOrder == 1:
+            testLists = [lqLists[userIndex % len(lqLists)][k] for k in range(numTestLists)];
+        elif testOrder == 2:
+            testLists = [lqLists[userIndex % len(lqLists)][k + numTestLists] for k in range(numTestLists)];    
+        
+        print("Test lists: " + str(testLists));
         
         # pre-allocate text array
         testConditions = ["emptyCondition" for k in range(numTestLists)]; 

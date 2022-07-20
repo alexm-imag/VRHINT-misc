@@ -44,17 +44,20 @@ class HintSetup(ctk.CTkFrame):
         self.pathLabel = ctk.CTkLabel(self, text = self.path);
         self.pathLabel.grid(row = 4, columnspan = 3)
         
-        self.initBtn = ctk.CTkButton(self, text="Init Test", padx = 15, pady = 5, bg = "#263D42", command=self.initTest)
-        self.initBtn.grid(row = 5, column = 1, pady = 5);
+        self.init1Btn = ctk.CTkButton(self, text="Init Test (1)", padx = 15, pady = 5, bg = "#263D42", command=lambda: self.initTest(1))
+        self.init1Btn.grid(row = 5, column = 1, pady = 5);
+        
+        self.init2Btn = ctk.CTkButton(self, text="Init Test (2)", padx = 15, pady = 5, bg = "#263D42", command=lambda: self.initTest(2))
+        self.init2Btn.grid(row = 6, column = 1, pady = 5);
         
         self.errorLabel = ctk.CTkLabel(self, text=" ");
-        self.errorLabel.grid(row = 6, column = 1);
+        self.errorLabel.grid(row = 7, column = 1);
         
         self.calibBtn = ctk.CTkButton(self, text="Calibrate", padx = 15, pady = 5, bg = "#263D42", command= self.calibrate)
-        self.calibBtn.grid(row = 7, column = 1, pady = 5);
+        self.calibBtn.grid(row = 8, column = 1, pady = 5);
         
         self.quitBtn = ctk.CTkButton(self, text="Quit", padx = 15, pady = 5, bg = "#263D42", command= controller.quit_app)
-        self.quitBtn.grid(row = 8, column = 1, pady = 5);
+        self.quitBtn.grid(row = 9, column = 1, pady = 5);
         
         self.nameField.bind('<Return>', self.enterName)
     
@@ -101,7 +104,7 @@ class HintSetup(ctk.CTkFrame):
         self.userNameLabel['text'] = "Name: " + self.userName;
         
     
-    def initTest(self, event = None):        
+    def initTest(self, testOrder, event = None):        
         if self.userName == "default":
             self.errorLabel['text'] = "No userName set!"; 
             return
@@ -111,8 +114,10 @@ class HintSetup(ctk.CTkFrame):
             self.errorLabel['text'] = "No path set!"; 
             return;     
             
+        print("testOrder: " + str(testOrder));
+            
         # hand over setup data to master after sanity check    
-        self.controller.setHintParameters(self.userName, self.path);
+        self.controller.setHintParameters(self.userName, self.path, testOrder);
         
     def calibrate(self):
         
