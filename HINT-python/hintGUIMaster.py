@@ -98,7 +98,7 @@ class hintGUIMaster(ctk.CTk):
                 print(self.path);
                 f.write(self.path);
         else:
-            print("Don't update save.txt if nothing has been set!");
+            print("Don't update s'ave.txt if nothing has been set!");
        
     def showSetup(self):
         

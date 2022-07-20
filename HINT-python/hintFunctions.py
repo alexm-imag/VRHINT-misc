@@ -73,11 +73,10 @@ class hintTest:
         
         self.noise, self.fs = sf.read(self.hintDir + "noiseGR_male_-27dB.wav");    
         
-        self.listIndex = 0;     #self.testLists[0];
+        self.listIndex = 0;
         self.sentenceIndex = 0;
         
         self.listSentenceOrder = np.zeros(self.sentenceCount);
-        #self.listSentenceOrder = np.random.permutation(range(self.sentenceCount));
         self.listSentenceStrings = util.loadListSentences(self.testLists[self.listIndex], self.hintDir);
         
         self.currSNR = 0;
@@ -122,9 +121,14 @@ class hintTest:
         # userIndex determines start line of lqConditions matrix
         lqCondDim = len(lqConditions[0]);
         
+        # this creates a list of 13... (5 [alloc] + 4 + 4)
+        # this won't work for 5 first, 5 latter conditions! FIX THIS!!!
+        # ALSO APPKY THIS TO UNITY!
         for i in range((int)(numTestLists / lqCondDim) + 1):
             testConditions[(i * lqCondDim):min(numTestLists, (i *lqCondDim))] = lqConditions[(userIndex + i) % len(lqConditions)];
-        
+     
+        print("Test conditions: " + str(testConditions));   
+     
         return testLists, testConditions;
         
     def createResultStorage(self, numTestLists, userIndex, numListSentences, calibRounds):

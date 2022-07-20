@@ -177,7 +177,7 @@ class HintTestProcedure(ctk.CTkFrame):
             
         self.updateHintLabels();
         
-        self.feedbackField.delete(0, 'end');
+        self.feedbackField.delete(0, "end");
         self.feedbackField.grid_forget();
         self.continueBtn.grid(row = 2, column = 2);
         
