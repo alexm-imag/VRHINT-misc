@@ -157,6 +157,7 @@ class hintTest:
         self.listHitQuotes = np.zeros(self.sentenceCount - self.calibrationRounds);
         
         self.currSNR = 0;
+        self.offsetSNR = self.currSNR + snrOffset;
         self.currCondition = self.testConditions[self.listIndex];
         self.currList = self.testLists[self.listIndex];
         
@@ -202,6 +203,7 @@ class hintTest:
     def practiceSetup(self):
          print("Practice setup: List: " + str(self.practiceList) + " Condition: " + str(self.practiceCondition));
          self.currSNR = 0;
+         self.offsetSNR = self.currSNR + snrOffset;
          self.sentenceIndex = 0;
          self.listSentenceOrder = np.zeros(self.numPracticeSentences);
          self.listSentenceOrder = np.random.permutation(range(sentencesPerList))[0:self.numPracticeSentences];  
@@ -251,6 +253,7 @@ class hintTest:
              
     def testSetup(self):
         self.currSNR = 0;
+        self.offsetSNR = self.currSNR + snrOffset;
         self.sentenceIndex = 0;
         self.listSentenceOrder = np.zeros(self.sentenceCount);
         self.listSentenceOrder = np.random.permutation(range(sentencesPerList))[0:self.sentenceCount];  
