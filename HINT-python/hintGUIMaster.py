@@ -19,9 +19,12 @@ ctk.set_appearance_mode("System")
 #ctk.set_default_color_theme("blue")
 
 # globals
-ChLeft = 2; #3
+ChLeft = 3;
 ChFront = 2;
 ChRight = 1;
+# use sounddevice.query_devices() to find correct one!
+# 8 on laptop, 10 on TH desktop
+audioInterface = 10;
 
 class hintGUIMaster(ctk.CTk):
     
@@ -65,7 +68,7 @@ class hintGUIMaster(ctk.CTk):
          
         # show first frame
         print("Call sd setup...");
-        self.frames[calib.HintCalibration].setAudioChannels(ChLeft, ChFront, ChRight, 8);
+        self.frames[calib.HintCalibration].setAudioChannels(ChLeft, ChFront, ChRight, audioInterface);
         
         self.frames[setup.HintSetup].setDefaultPath(self.path);
         self.frames[setup.HintSetup].setAudioChannels(ChLeft, ChFront, ChRight);
@@ -108,7 +111,7 @@ class hintGUIMaster(ctk.CTk):
         
     def showCalibration(self, path):
         self.root.geometry(self, "450x250");
-        self.frames[calib.HintCalibration].setAudioChannels(ChLeft, ChFront, ChRight, 8);
+        self.frames[calib.HintCalibration].setAudioChannels(ChLeft, ChFront, ChRight, audioInterface);
         self.frames[calib.HintCalibration].setPath(path);
         self.show_frame(calib.HintCalibration);
        
