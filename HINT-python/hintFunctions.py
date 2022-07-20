@@ -121,12 +121,21 @@ class hintTest:
         # userIndex determines start line of lqConditions matrix
         lqCondDim = len(lqConditions[0]);
         
-        # this creates a list of 13... (5 [alloc] + 4 + 4)
-        # this won't work for 5 first, 5 latter conditions! FIX THIS!!!
         # ALSO APPKY THIS TO UNITY!
-        for i in range((int)(numTestLists / lqCondDim) + 1):
-            testConditions[(i * lqCondDim):min(numTestLists, (i *lqCondDim))] = lqConditions[(userIndex + i) % len(lqConditions)];
-     
+        #### WARNING!!!! CORRECLTY ADDING +5 to conds leads to NOT every cond
+        #### being part of the test!!!
+        #### Instead tread testOder as userIndex + 1!!!!
+        
+        # row offset based on userIndex and testOrder...
+        if testOrder == 1:
+            userRow = userIndex % lqCondDim;
+        elif testOrder == 2:
+            userRow = (userIndex + 1) % lqCondDim;
+            
+        for i in range(numTestLists):
+            row = (userRow + (int)(i / lqCondDim)) % lqCondDim;
+            testConditions[i] = lqConditions[row][i % lqCondDim];
+
         print("Test conditions: " + str(testConditions));   
      
         return testLists, testConditions;
