@@ -202,7 +202,7 @@ For this purpose, the German \ac{HINT} will be used as a foundation. Using the s
 
 \paragraph{Cocktail-party-effect}
 
-\paragraph{Spatial Release from Masking (SRM)
+\paragraph{Spatial Release from Masking (SRM)}
 
 
 \subsection{3D audio rendering}
@@ -215,7 +215,7 @@ For this purpose, the German \ac{HINT} will be used as a foundation. Using the s
 
 \paragraph{Multisensory information}
 
-\paragraph{Usage of generic \acs{HRTF}s)
+\paragraph{Usage of generic \acs{HRTF}s}
 	
 \subsection{Auditory test procedures}
 
@@ -302,18 +302,96 @@ These problems could be addressed by multiple means. One option would be to manu
 The new feedback system will transition the \ac{HINT} procedure from being an \textit{open test} (without any limitations towards response options) towards a \textit{closed test}. The most important advantage of a closed test is the omission of the requirement of an experimenter that evaluates the answers of the participant.
 
 
+\section{Study design}
+To evaluate the efficacy of \ac{VR} peripherals to perform \ac{SRM} tests as remote medical applications a small study will be conducted. In this study two main aspects will be investigated using two separate experiments:
+\begin{enumerate}
+	\item The efficacy of audio source virtualization in \Ac{VR} applications using non-individualized \ac{HRTF}s
+	\item The effects of of non-supervised feedback systems
+\end{enumerate}
+Both experiments will be based on the \ac{HINT} procedure and use the German \ac{HINT} speech and noise stimuli provided by Rader et. al.
+
+
+\subsection{Setup and Calibration}
+
+
 
 % Versuchsteilnehmer (entweder zusammengenommen oder auf Gruppen aufgeteilt erwähnen)
 \subsection{Subjects}
+Subjects for both experiments will be adults with - self proclaimed - regular hearing abilities.
 
 %% Loudspeaker vs HRTF headphones w/ VR
-\section{Experiment I}
+\subsection{Experiment I}
+The first experiment will focus on possible deviations in \ac{SRT}s based on \ac{SRM} due to the virtual spatialization of audio sources. For this purposes participants will perform the \ac{HINT} procedure in both a reference condition and in a \ac{VR} application. The reference condition will be performed using loudspeakers in an anechoic chamber located at the locations defined by the \ac{HINT} experiment. For this purpose speakers will be located at 0, 90 and 270 degrees azimuth around the participant in a distance of 1 m, with the center of the speakers matching the elevation of the listeners ears. By this means the \ac{SRM} of participants can be determined from their \ac{SRT}s without any deviations caused by non-individualized \ac{HRTF}s or similar means. 
+\newline
+\newline
+The second condition will be run in a \ac{VR}-based implementation of the \ac{HINT} experiment. The application has been developed using the Unity engine and is presentend using an \textit{Oculus Rift} \ac{HMD} and a pair of \textit{Sennheiser HD600} headphones. All stimuli have been filtered in advance to equalize the frequency response curve of the headphones. Spatialization will be performed by the \ac{3DTI} framework using a set of \ac{HRTF}s recorded using a \textit{Neumann KU100} dummy head.
+\newline
+\newline
+In both cases the participant will be advised to look straight forward, facing the \textit{front} position in the experiment. Only small head movements will be permitted. If the participants turns their head too far, the experiment will be stopped. This deviation from other \ac{HINT} experiments where the headphone-based approach does not consider head movements at all is planned, since the head-tracking capabilities of \ac{VR} peripherals might prove advantageous to more accurately reproduce real-world listening scenarios.
+\newline
+\newline
+Since only ten sentence-lists (excluding the two practice lists) are available to us and to avoid exhaustion of the participants to affect the results, the test procedure will be shortened. Instead of testing ten sentence-lists at once the experiment will separate them into two pairs of five lists for each condition. This still allows to include every noise condition in both conditions (\textit{quiet}, \textit{noiseLeft}, \textit{noiseRight}, \textit{noiseFront}), while keeping the duration of the experiment at a manageable level. As in the original experiments the participant will repeat the sentences out loud and the experimenter will enter the number of correct words into the test system, which will then automatically adjust the \ac{SNR} according to the listeners performance.
+
+
 
 %% Feedback by repetition vs feedback by user interface
-\section{Experiment II}
+\subsection{Experiment II}
+While the first experiment focuses on the aspect of audio spatialization the second one will investigate the effects a non-supervised feedback system might introduce. In this case both test conditions will be performed in \ac{VR}. As in experiment I the procedure will be split into two parts, both consisting of five test lists. One half will be performed using the established feedback method of repeating the understood sentences out loud and an experimenter entering the amount of correct words into the system. For the other half a 5-way forced-choice word-proposal system will be used. After each sentence participants have to recreate the target sentence as good as possible on a word-by-word basis of randomly selected alternatives. To avoid participants to easily guess the correct sentence by context or grammar only suggestions for one position at a time will be shown with no option of going back and adjusting a previous selection after reading the suggestions of for the following words.
 
+
+\subsection{Counterbalancing}
+To avoid order effects in the test procedure, an automated latin-squares based counterbalancing systems has been implemented. The latin-square matrices have been pre-generated and imported into the test systems as .csv files. At the initialization of the procedure the applications check the amount of files in the result storage to determine the start vector for the counterbalancing matrices. This start index and the resulting list and conditions order is made visible to the experimenter to add another control instance. Figures \ref{fig:lqConds} and \ref{fig:lqLists} show the latin-squares matrices used.
+\begin{figure}
+\[
+\begin{matrix}
+	Q & F & R & L \\
+	F & L & Q & R \\
+	L & R & F & Q \\
+	R & Q &L & F
+\end{matrix}
+\]
+\caption{Conditions - Latin Squares}
+\small
+\begin{tabular}{r@{: }l r@{: }l}
+	$Q$ & quiet & $F$ & noiseFront\\
+	$R$& noiseRight & $L$ & nosieLeft
+\end{tabular}
+\label{fig:lqConds}
+\end{figure}
+
+\begin{figure}
+\[
+\begin{matrix}
+	1 & 2 & 10 & 3 & 9 & 4 & 8 & 5 & 7 & 6 \\
+	2 & 3 & 1 & 4 & 10 & 5 & 9 & 6 & 8 & 7 \\
+	3 & 4 & 2 & 5 & 1 & 6 & 10 & 7 & 9 & 8 \\
+	4 & 5 & 3 & 6 & 2 & 7 & 1 & 8 & 10 & 9 \\
+	5 & 6 & 4 & 7 & 3 & 8 & 2 & 9 & 1 & 10 \\
+	6 & 7 & 5 & 8 & 4 & 9 & 3 & 10 & 2 & 1 \\
+	7 & 8 & 6 & 9 & 5 & 10 & 4 & 1 & 3 & 2 \\
+	8 & 9 & 7 & 10 & 6 & 1 & 5 & 2 & 4 & 3 \\
+	9 & 10 & 8 & 1 & 7 & 2 & 6 & 3 & 5 & 4 \\
+	10 & 1 & 9 & 2 & 8 & 3 & 7 & 4 & 6 & 5
+\end{matrix}
+\]
+\caption{Sentence lists - Latin Squares}
+\label{fig:lqLists}
+\end{figure}
+
+
+\begin{enumerate}
+	\item Latin Squares
+	\item First / Second test
+	\item UserIndex tracking
+\end{enumerate}
 
 \section{Results}
+
+\paragraph{Experiment I}
+
+\paragraph{Experiment II}
+
+
 
 \section{Discussion}
 
