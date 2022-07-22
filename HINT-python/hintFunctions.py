@@ -12,7 +12,7 @@ import hintUtilities as util
 
 ## statics
 sentencesPerList = 20;
-minSNR = -30;
+minSNR = -50;
 maxSNR = 2;
 # contents of -6 dB folder match RMS of noiseGR_-27dB
 # therefore 6 dB is the offset for our SNR
