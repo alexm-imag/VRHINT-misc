@@ -18,6 +18,12 @@ maxSNR = 2;
 # therefore 6 dB is the offset for our SNR
 snrOffset = -6;
 
+# German HINT results show 19 dBA for quiet
+# -6 dB in our case resembles 65 dBA
+# Starting at 30 dBA should move us in the right area during the 4 calibration
+# rounds
+quietStartingLevel = -30;
+
 class hintTest:
     
     # put stuff here that only has to be set once
@@ -121,11 +127,6 @@ class hintTest:
         # userIndex determines start line of lqConditions matrix
         lqCondDim = len(lqConditions[0]);
         
-        # ALSO APPKY THIS TO UNITY!
-        #### WARNING!!!! CORRECLTY ADDING +5 to conds leads to NOT every cond
-        #### being part of the test!!!
-        #### Instead tread testOder as userIndex + 1!!!!
-        
         # row offset based on userIndex and testOrder...
         if testOrder == 1:
             userRow = userIndex % lqCondDim;
@@ -177,8 +178,6 @@ class hintTest:
         self.listSNR = np.zeros(self.sentenceCount  - self.calibrationRounds);
         self.listHitQuotes = np.zeros(self.sentenceCount - self.calibrationRounds);
         
-        self.currSNR = 0;
-        self.offsetSNR = self.currSNR + snrOffset;
         self.currCondition = self.testConditions[self.listIndex];
         self.currList = self.testLists[self.listIndex];
         
@@ -186,6 +185,14 @@ class hintTest:
         self.currSentenceLength = len(self.currSentenceString.split());
         
         self.sentenceIndex = 0;
+        
+        self.currSNR = 0;
+        
+        if self.currCondition == 'quiet':
+            print("Adjust starting level for quiet condition: " + str(quietStartingLevel));
+            self.currSNR = quietStartingLevel;
+            
+        self.offsetSNR = self.currSNR + snrOffset;
         
     
     def getCurrentSentenceString(self):
@@ -295,6 +302,7 @@ class hintTest:
         
         print("Current playback level: " + str(self.currSNR));
         print("Round " + str(self.sentenceIndex + 1) + " out of " + str(self.sentenceCount));
+        
         # audio files are labeled from Ger_male001 and not Ger_male000 so add '1'
         currSentenceAudio = util.loadSentenceAudio(self.currList, index + 1, self.offsetSNR, self.hintDir);
             
