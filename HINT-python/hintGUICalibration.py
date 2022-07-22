@@ -34,6 +34,8 @@ class HintCalibration(ctk.CTkFrame):
         self.topLabel = ctk.CTkLabel(self, text="Calibration")
         self.topLabel.grid(row = 0, column = 1);
         
+        self.stop = False;
+        
         
         self.initBtn = ctk.CTkButton(self, text="Noise Left", padx = 15, pady = 5, bg = "#263D42", command=lambda: self.calibrateNoise(self.ChLeft))
         self.initBtn.grid(row = 1, column = 0, pady = 5);
@@ -80,12 +82,26 @@ class HintCalibration(ctk.CTkFrame):
         
         
     def calibrateSpeech(self):
-        speech,fs = sf.read(self.path + "\\01\\-6dB\\Ger_male001.wav");
         
         print("Speech front (" + str(self.ChFront) + ")");
+        #speech,fs = sf.read(self.path + "\\01\\-6dB\\Ger_male001.wav");
+        #sd.play(speech, loop = 'true', mapping = self.ChFront);
         
-        sd.play(speech, loop = 'true', mapping = self.ChFront);
+        for i in range(20):
+            
+            if self.stop == True:
+                self.stop = False;
+                return;
+            
+            if (i+1) < 10:
+                speechPath = self.path + "\\01\\-6dB\\Ger_male00" + str(i+1) + ".wav"
+            else:
+                speechPath = self.path + "\\01\\-6dB\\Ger_male0" + str(i+1) + ".wav"
+                
+            speech,fs = sf.read(speechPath);
+            sd.play(speech, blocking = 'true', mapping = self.ChFront);                
         
     def calibrateStop(self):
+        self.stop = False;
         sd.stop();
         
