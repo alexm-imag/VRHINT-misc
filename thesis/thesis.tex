@@ -312,7 +312,42 @@ Both experiments will be based on the \ac{HINT} procedure and use the German \ac
 
 
 \subsection{Setup and Calibration}
+% setup / aufbau beschreiben:
+All experiments will be conducted in the anechoic chamber at TH cologne. For the louspeaker based conditions three Genelec XYZ speakers. These will be controlled using an \textit{RME UFXII} interface.
+\newline
+\newline
+The speakers have been placed at 0, 90 and 270 degrees azimuth around the listeners positions at a distance of 1 m. The height of the speakers has been set to 1.2m, which resembles the elevation of the ears of a listener of normal height while seated. During the experiment the seat height will be adjusted according to the height of the participant.
 
+% speaker, audio interface, VR peripherals, headphones
+
+% calib speakers
+\paragraph{Loudspeaker calibration} At the position of the listener an \textit{Ono Sokki} Intergrating Sound Level Meter has been placed. Using the interface control software each speaker has been calibrated to 65 dBA while playing back the noise signal.
+
+\paragraph{VR calibaration} To get a reference value a \textit{Neumann KU100} dummy head has been placed at the listeners location. The microphone signals are picked up using an \textit{Edirol UA-25EX} audio interface and feed into a \textit{Reaper} session running the \textit{TBProAudio dpMeter4} plugin. Using this plugin the integrated \ac{RMS} values have been noted for the noise playback from all three positions. Afterwards a pair of \textit{Senneheiser HD600} headphones has been connected to the \textit{RME UFXII} and set as default output device for the \ac{VR} \ac{HINT} application. In a demo scene the noise signal has been played from the three virtual positions and the level of the virtual audio mixer has been adjusted to achieve the same \ac{RMS} levels as in the loudspeaker condition. Since a deviation between the front and left / right positions of 1.5 dB could be measured, it was decided to calibrate the \ac{VR} condition for the front channel, which leads to slightly increase \ac{RMS} levels for the side channels compared to the loudspeaker condition.
+\newline
+\newline
+These measurements have been repeated several times with headphone readjustements in between to mitigate effects of headphone misplacement.
+\begin{table}
+	\begin{tabular}{|l|l|l|l|}
+		\hline
+		Setup & noiseLeft (db RMS) & noiseFront (db RMS) & noiseRight (db RMS)  \\
+		\hline
+		Loudspeaker  & -33.2     & -32.7      & -33.0       \\
+		\hline
+		VR HD600 (1) & -31.2     & -32.7      & -31.2       \\
+		\hline
+		VR HD600 (2) & -32.1     & -33.4      & -31.7       \\
+		\hline
+		VR HD600 (3) & -31.6     & -33.2      & -31.4       \\
+		\hline
+		VR HD600 (4) & -31.5     & -32.7      & -30.9       \\
+		\hline
+		VR HD600 (5) & -31.6     & -32.8      & -30.9       \\
+		\hline
+	\end{tabular}
+	\centering
+\caption{VR calibration - RMS measurements}
+\end{table}
 
 
 % Versuchsteilnehmer (entweder zusammengenommen oder auf Gruppen aufgeteilt erwähnen)
@@ -398,50 +433,47 @@ To avoid order effects in the test procedure, an automated latin-squares based c
 \section{Conclusion}
 
 
-\addcontentsline{toc}{subsection}{Method}
-\addcontentsline{toc}{subsection}{Motivation}
 
-\addcontentsline{toc}{section}{Theoretical foundations}
-\addcontentsline{toc}{subsection}{Spatial hearing}
-\addcontentsline{toc}{subsubsection}{Cocktail-party-effect}
-\addcontentsline{toc}{subsubsection}{Spatial Release from Masking}
-\addcontentsline{toc}{subsection}{3D audio rendering}
-\addcontentsline{toc}{subsubsection}{HRTFs}
-\addcontentsline{toc}{subsubsection}{Simulation of sound propagation effects}
-\addcontentsline{toc}{subsection}{Virtual Reality - Development}
-\addcontentsline{toc}{subsubsection}{Mutlisensory information}
-\addcontentsline{toc}{subsubsection}{Generic HRTFs in VR}
-\addcontentsline{toc}{subsection}{Auditory test programs}
-\addcontentsline{toc}{subsubsection}{Hearing in Noise Test}
-\addcontentsline{toc}{subsubsection}{German HINT}
-\addcontentsline{toc}{subsubsection}{LiSN-S}
+%\addcontentsline{toc}{section}{Theoretical foundations}
+%\addcontentsline{toc}{subsection}{Spatial hearing}
+%\addcontentsline{toc}{subsubsection}{Cocktail-party-effect}
+%\addcontentsline{toc}{subsubsection}{Spatial Release from Masking}
+%\addcontentsline{toc}{subsection}{3D audio rendering}
+%\addcontentsline{toc}{subsubsection}{HRTFs}
+%\addcontentsline{toc}{subsubsection}{Simulation of sound propagation effects}
+%\addcontentsline{toc}{subsection}{Virtual Reality - Development}
+%\addcontentsline{toc}{subsubsection}{Mutlisensory information}
+%\addcontentsline{toc}{subsubsection}{Generic HRTFs in VR}
+%\addcontentsline{toc}{subsection}{Auditory test programs}
+%\addcontentsline{toc}{subsubsection}{Hearing in Noise Test}
+%\addcontentsline{toc}{subsubsection}{German HINT}
+%\addcontentsline{toc}{subsubsection}{LiSN-S}
 
 
-\addcontentsline{toc}{section}{Approach}
-\addcontentsline{toc}{subsection}{HINT analysis}
-\addcontentsline{toc}{subsection}{Concept for VR HINT}
+%\addcontentsline{toc}{section}{Approach}
+%\addcontentsline{toc}{subsection}{HINT analysis}
+%\addcontentsline{toc}{subsection}{Concept for VR HINT}
 
 
-\addcontentsline{toc}{section}{Application design}
-\addcontentsline{toc}{subsection}{Script hierachy}
-\addcontentsline{toc}{subsection}{3D audio}
-\addcontentsline{toc}{subsection}{Asset management}
-\addcontentsline{toc}{subsection}{Data storage}
-\addcontentsline{toc}{subsection}{Feedback systems}
-\addcontentsline{toc}{subsection}{Visuals}
+%\addcontentsline{toc}{section}{Application design}
+%\addcontentsline{toc}{subsection}{Script hierachy}
+%\addcontentsline{toc}{subsection}{3D audio}
+%\addcontentsline{toc}{subsection}{Asset management}
+%addcontentsline{toc}{subsection}{Data storage}
+%\addcontentsline{toc}{subsection}{Feedback systems}
+%\addcontentsline{toc}{subsection}{Visuals}
 
 
-\addcontentsline{toc}{section}{Study design}
-\addcontentsline{toc}{subsection}{Test conditions}
-\addcontentsline{toc}{subsection}{Test setup}
+%\addcontentsline{toc}{section}{Study design}
+%\addcontentsline{toc}{subsection}{Test conditions}
+%\addcontentsline{toc}{subsection}{Test setup}
 
-\addcontentsline{toc}{section}{Results}
-\addcontentsline{toc}{subsection}{Group A (3D audio)}
-\addcontentsline{toc}{subsection}{Group A (user feedback)}
+%\addcontentsline{toc}{section}{Results}
+%\addcontentsline{toc}{subsection}{Group A (3D audio)}
+%\addcontentsline{toc}{subsection}{Group A (user feedback)}
 
-
-\addcontentsline{toc}{section}{Discussion}
-\addcontentsline{toc}{section}{Conclusion}
+%\addcontentsline{toc}{section}{Discussion}
+%\addcontentsline{toc}{section}{Conclusion}
 
 
 \tableofcontents
@@ -469,7 +501,7 @@ To avoid order effects in the test procedure, an automated latin-squares based c
 	\acro{JSON}{JavaScript Object Notaion}
 	\acro{LiSN}{Listening in Spatialized Noise}
 	\acro{LiSN-S}{Listening in Spatialized Noise - Sentences Test}
-%	\acro{RMS}{Root Mean Square}
+	\acro{RMS}{Root Mean Square}
 	\acro{SDK}{Software Development Kit}
 	\acro{SNR}{Signal to Noise Ratio}
 	\acro{SPD}{Spatial Processing Disorder}
