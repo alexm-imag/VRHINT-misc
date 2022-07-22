@@ -20,9 +20,9 @@ snrOffset = -6;
 
 # German HINT results show 19 dBA for quiet
 # -6 dB in our case resembles 65 dBA
-# Starting at 30 dBA should move us in the right area during the 4 calibration
+# Starting at 25 dBA should move us in the right area during the 4 calibration
 # rounds
-quietStartingLevel = -30;
+quietStartingLevel = -40;
 
 class hintTest:
     
